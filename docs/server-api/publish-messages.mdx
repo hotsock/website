@@ -1,0 +1,244 @@
+---
+sidebar_label: Publish Messages
+---
+
+import Tabs from "@theme/Tabs"
+import TabItem from "@theme/TabItem"
+
+# Publish Messages 📝
+
+Sending server-side messages to subscribers on Hotsock channels is the most common way to enable real-time features in your applications. Hotsock allows you to publish messages from your backend by invoking a Lambda function or by making an authenticated HTTP request.
+
+## Publish with Lambda {#publish-with-lambda}
+
+:::tip
+**This is the recommended method for publishing events from your backend.** If you have the [AWS SDK](https://aws.amazon.com/developer/tools/) available in your backend application or are able to add it as a dependency, take this route.
+
+All AWS SDKs across all available languages can invoke a Lambda function securely, enforcing least-privilege access using [IAM roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) with temporary credentials that are refreshed automatically by your EC2 instance, ECS task, or Lambda function.
+:::
+
+In each language-specific example below, `lambdaClient` or `lambda_client` is assumed to be a client configured to run as an IAM role or user that has permission to invoke your installation's publish function. Copy your function Arn from your installation's [`PublishFunctionArn`](../installation/initial-setup.mdx#PublishFunctionArn) output - the permissions assigned to your IAM role or user should look something like this:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["lambda:InvokeFunction"],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:lambda:us-east-1:111111111111:function:Hotsock-PublishFunction-AAABBBCCCDDD"
+      ]
+    }
+  ]
+}
+```
+
+For more complete examples - package imports, configuring the Lambda client, etc., reference the documentation for your preferred SDK.
+
+Using the language of your choice, invoke the function referenced in the [`PublishFunctionArn`](../installation/initial-setup.mdx#PublishFunctionArn) output to publish a message. Copy the Arn from the stack output to the function name argument in your invoke call (either the full Arn or just the function name are supported).
+
+<Tabs>
+  <TabItem value="go" label="Go" default>
+
+```go
+lambdaClient.Invoke(context.TODO(), &lambda.InvokeInput{
+  FunctionName: aws.String("Hotsock-PublishFunction-AAABBBCCCDDD"),
+  Payload:      []byte(`{"channel": "my-channel", "event": "my-event", "data": "👋"}`),
+})
+```
+
+    View the full documentation in the [API reference](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/service/lambda#Client.Invoke).
+
+  </TabItem>
+
+  <TabItem value="js" label="JS">
+
+```js
+lambdaClient.send(
+  new InvokeCommand({
+    FunctionName: "Hotsock-PublishFunction-AAABBBCCCDDD",
+    Payload: JSON.stringify({
+      channel: "my-channel",
+      event: "my-event",
+      data: "👋",
+    }),
+  })
+)
+```
+
+    View the full documentation in the [API reference](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/lambda/command/InvokeCommand/)
+
+  </TabItem>
+
+  <TabItem value="ruby" label="Ruby">
+    There's an official [Hotsock Ruby Gem](https://github.com/hotsock/hotsock-ruby) if you prefer.
+
+```ruby
+lambda_client.invoke({
+  function_name: 'Hotsock-PublishFunction-AAABBBCCCDDD',
+  payload: {
+    channel: 'my-channel',
+    event: 'my-event',
+    data: '👋'
+  }.to_json
+})
+```
+
+    View the full documentation in the [API reference](https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/Lambda/Client.html#invoke-instance_method)
+
+  </TabItem>
+
+  <TabItem value="python" label="Python">
+
+```python
+lambda_client.invoke(
+    FunctionName='Hotsock-PublishFunction-AAABBBCCCDDD',
+    Payload=json.dumps({
+        'channel': 'my-channel',
+        'event': 'my-event',
+        'data': '👋'
+    })
+)
+```
+
+    View the full documentation in the [API reference](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda/client/invoke.html)
+
+  </TabItem>
+
+  <TabItem value="dotnet" label="C#">
+
+```csharp
+await lambdaClient.Invoke(new InvokeRequest
+  {
+    FunctionName = "Hotsock-PublishFunction-AAABBBCCCDDD",
+    Payload = "{\"channel\":\"my-channel\",\"event\":\"my-event\",\"data\":\"👋\"}"
+  });
+```
+
+    View the full documentation in the [API reference](https://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/Lambda/MLambdaInvokeInvokeRequest.html)
+
+  </TabItem>
+
+  <TabItem value="java" label="Java">
+
+```java
+lambdaClient.invoke(new InvokeRequest()
+  .withFunctionName("Hotsock-PublishFunction-AAABBBCCCDDD")
+  .withPayload("{\"channel\":\"my-channel\",\"event\":\"my-event\",\"data\":\"👋\"}"));
+```
+
+    View the full documentation in the [API reference](<https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/lambda/LambdaClient.html#invoke(java.util.function.Consumer)>).
+
+  </TabItem>
+
+  <TabItem value="php" label="PHP">
+
+```php
+$lambdaClient->invoke([
+  'FunctionName' => 'Hotsock-PublishFunction-AAABBBCCCDDD',
+  'Payload' => json_encode([
+    'channel' => 'my-channel',
+    'event' => 'my-event',
+    'data' => '👋'
+  ]),
+]);
+```
+
+    View the full documentation in the [API reference](https://docs.aws.amazon.com/aws-sdk-php/v3/api/class-Aws.Lambda.LambdaClient.html#method_invoke)
+
+  </TabItem>
+
+  <TabItem value="cli" label="AWS CLI">
+
+```bash
+aws lambda invoke \
+  --function-name Hotsock-PublishFunction-AAABBBCCCDDD \
+  --payload '{"channel":"my-channel", "event":"my-event", "data":"👋"}' \
+  --cli-binary-format raw-in-base64-out \
+  /dev/stdout
+```
+
+    View the full documentation in the [API reference](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/invoke.html)
+
+  </TabItem>
+</Tabs>
+
+## Publish via HTTP URL {#publish-with-http-url}
+
+:::warning
+
+There are some downsides to using this publish method. It's fully supported, but the [Lambda](#publish-with-lambda) approach is more secure.
+
+- The API keys that can be used for all requests are static and must be used by all of your backend clients. Whether your backend publishers store a copy of this key or request its current value from Parameter Store periodically, having a shared key poses a security risk if the key leaks.
+- Hotsock grabs the current API key values from Parameter Store during each Lambda cold-start. This adds some (though minimal) cold-start latency because of the inline call to another AWS service.
+- API keys can be used to publish messages from anywhere on the Internet by anyone who has a key. Not ideal from a usage auditing perspective and often tough to keep track of who has the key(s).
+- Rotating the key is a manual process that you need to remember to do periodically.
+
+:::
+
+## Message format {#message-format}
+
+The shape of a message is the same, whether you're invoking Lambda directly or using the HTTP API. At a minimum all messages must contain a `channel` and an `event`. Additional supported attributes are listed below.
+
+```json
+{
+  "channel": "my-channel",
+  "event": "my-event"
+}
+```
+
+### `channel` {#message-format--channel}
+
+`String` (required) - The name of the channel where this message will be published. This can be any string up to 128 characters, but must not contain any asterisk (`*`), number sign (`#`), comma (`,`), or whitespace/newline characters.
+
+### `deduplicationId` {#message-format--deduplicationId}
+
+`String` (optional) - If supplied and if multiple messages with the same `deduplicationId` value are received within 5 minutes of each other, only the first message will be published. Additional copies will be dropped.
+
+If you're publishing from a source that retries upon failure, set this to a value that is consistent across all attempts to publish that message. This ensures that if Hotsock receives the message but a networking issue prevents your application from receiving the success response, retry attempts will not publish duplicate messages.
+
+:::warning
+Providing a `deduplicationId` while also enabling `eagerIdGeneration` is not recommended. See [below](#message-format--eagerIdGeneration) for details.
+:::
+
+### `eagerIdGeneration` {#message-format--eagerIdGeneration}
+
+`Boolean` (optional) - If you need to store a backend copy of the message ID that is published to the channel for follow-up requests (such as replies or reactions), set this to `true`. Default is `false`.
+
+Enabling this can ever-so-slightly affect message ordering. When this is option is disabled, messages receive an monotonically increasing ID at the time they are processed, ensuring that messages are always processed and identifiable sequentially within a channel. When this option is enabled (`true`), messages receive an ID at publish time prior to being enqueued for processing, which is returned to the publisher. In scenarios where multiple messages are published within a few milliseconds, actual processing order is indeterminate.
+
+:::warning
+Enabling `eagerIdGeneration` while also providing a `deduplicationId` is not recommended.
+
+Consider the following scenario:
+
+1. A publish request made with `eagerIdGeneration` enabled and `deduplicationId` set to "ECHO". Hotsock received the message and the message ID in its response is `01H62H35Q7JJBDB4EE5XA44CHV`.
+1. Due to unstable network conditions, the requestor did not receive this response.
+1. Since the requestor saw the publish as a failure, they re-publish the message with the same `deduplicationId` set to "ECHO". This time the response message ID is `01H62H8HYRCY1F6ZS85BX24B9R` but since the initial message was already received, this follow-up message will never be processed and no message with the second `01H62H8HYRCY1F6ZS85BX24B9R` ID will ever be processed or sent to channel subscribers.
+
+:::
+
+### `emitPubSubEvent` {#message-format--emitPubSubEvent}
+
+`Boolean` (optional) - Whether or not this message will trigger a [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). This setting has no effect if both SNS and EventBridge events are disabled globally. Default is `false`.
+
+### `event` {#message-format--event}
+
+`String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` and must not contain any asterisk (`*`) characters.
+
+### `data` {#message-format--data}
+
+`JSON` (optional) - Up to 32KiB of custom data specific to your application. This can be anything that is valid JSON - object, array, string, number, boolean, or `null`. Binary data must be Base64-encoded to a string.
+
+<!-- ### `reactTo`
+
+`String` (optional) - The 26-character ID of the existing message that this message is in reaction to. If supplied, the `data` attribute cannot exceed 64 bytes.-->
+
+<!-- ### `replyTo`
+
+`String` (optional) - The 26-character ID of the existing message that this message is in reply to.-->
+
+<!-- ### `store`
+
+`Integer` (optional) - The message retention duration in seconds. `0` (default) does not store the message. `-1` stores the message forever. For example, setting this to `2592000` (60 \* 60 \* 24 \* 30) would store the message for 30 days.-->

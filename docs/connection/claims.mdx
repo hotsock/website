@@ -1,0 +1,391 @@
+---
+sidebar_label: Claims
+toc_max_heading_level: 4
+---
+
+# Claims ✉️
+
+When issuing a JWT, you're allowing the recipient of the token to connect to the WebSocket, access channels and perform operations on the WebSocket, or both. By design, Hotsock has minimal global configuration and allows as much as possible to be specified per-token using signed JWT claims.
+
+At minimum, a token must have an `exp` claim specifying when the token expires and a `scope` claim indicating where the the token can be used. If your installation requires a particular `aud` audience and/or `iss` issuer claim, these must be specified as well. The following minimal token claims allow connecting to the WebSocket (assuming `1686011549` is a Unix timestamp in the future).
+
+```json
+{
+  "exp": 1686011549,
+  "scope": "connect"
+}
+```
+
+## `aud` - Audience {#aud}
+
+`String` or `Array[String]` (optional, recommended) - The audience claim is [optionally required by `TokenAudienceParameter`](./authentication.mdx#update-the-stack) when installing or updating the Hotsock stack. If enabled, every issued token must include it with the value set in the installation settings. Its purpose is to ensure that tokens issued by the same signer are not used across multiple services unintentionally.
+
+If you sign Hotsock tokens with a single key across multiple installations for scaling, tenancy, locality, or data residency requirements, requiring a unique `aud` claim per installation ensures that the user of the key cannot use the key on another tenant's Hotsock installation.
+
+```json
+{
+  "aud": "hotsock-us-east-1"
+}
+```
+
+Per the JWT spec, `aud` can also be an array of audiences, where the installation's `TokenAudienceParameter` must match any one of the supplied audiences.
+
+```json
+{
+  "aud": ["hotsock-us-east-1", "hotsock-eu-west-2"]
+}
+```
+
+## `channels`
+
+`Object` (optional) - The channels claim specifies the channel permissions that are granted to this connection. Each object key is the name of a channel and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that channel or channel wildcard.
+
+The following grants subscribe access to any channel with the prefix `account.123.` and the channel named `user.456`.
+
+```json
+{
+  // highlight-next-line
+  "channels": {
+    "account.123.*": {
+      "subscribe": true
+    },
+    "user.456": {
+      "subscribe": true
+    }
+  }
+}
+```
+
+For wildcards that overlap, any explicit `false` is used as the value and cannot be overridden, regardless of the order that they are specified. In the following example, the connection can subscribe to `chat.*` (`chat.123`, `chat.everyone`, etc), but not `chat.admin`.
+
+```json
+{
+  // highlight-next-line
+  "channels": {
+    "chat.admin": {
+      "subscribe": false
+    },
+    "chat.*": {
+      "subscribe": true
+    }
+  }
+}
+```
+
+Each object inside the channels object accepts [`subscribe`](#subscribe) and [`sendMessages`](#sendMessages) attributes.
+
+### `subscribe`
+
+`Boolean` (optional) - Whether or not to allow the connection to subscribe to the channel(s) specified by the object key. Default is `false`.
+
+The following sets `subscribe` to `true` on "mychannel".
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      // highlight-next-line
+      "subscribe": true
+    }
+  }
+}
+```
+
+You can also explicitly set `subscribe` to `false`, preventing subscriptions to this channel. An explicit `false` for a channel will always cause a deny, regardless of other permissions (such as wildcards) that may set this value to `true`.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      // highlight-next-line
+      "subscribe": false
+    }
+  }
+}
+```
+
+<!--### `subscriptionsCountStat`
+
+`Boolean` (optional) - If set to `true`, this connection will receive a `hotsock.subscriptionsCountStat` message containing the number of members connected to this channel each time someone subscribes or unsubscribes. Default is `false`.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      // highlight-next-line
+      "subscriptionsCountStat": true
+    }
+  }
+}
+```
+
+:::warning
+Consider the cost of enabling this, particularly for channels with a large number of subscribers. Each subscriber who has this enabled receives a count stat update every time
+:::-->
+
+### `sendMessages` {#sendMessages}
+
+`Object` (optional) - Allows client-initiated messages to be sent directly to the WebSocket on the channel(s) in the object key for the specified events. Other channel members will receive these messages (if authorized).
+
+The following allows this connection to subscribe to the channel "mychannel" and send client-initiated messages with the "isTyping" event name.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      // highlight-next-line
+      "sendMessages": {
+        "isTyping": {}
+      }
+    }
+  }
+}
+```
+
+Wildcards are supported in event names using asterisks (\*). The following allows the connection to send _any_ event on "mychannel".
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      // highlight-next-line
+      "sendMessages": {
+        "*": {}
+      }
+    }
+  }
+}
+```
+
+:::warning
+Be careful with wildcard permissions for client initiated events!
+
+In the following example, since `chat.*` includes `chat.admin`, this connection would be able to publish any event to the `chat.admin` channel, even though they're not able to subscribe to its messages. In this case it would probably be best to name the `chat.admin` channel differently to ensure permissions to it are never expanded unintentionally.
+
+```json
+{
+  "channels": {
+    "chat.admin": {
+      "subscribe": false
+    },
+    "chat.*": {
+      "subscribe": true,
+      "sendMessages": {
+        "*": {}
+      }
+    }
+  }
+}
+```
+
+:::
+
+#### `echo`
+
+`Boolean` (optional) - If [sendMessages](#sendMessages) are permitted for this channel, the `echo` attribute specifies whether or not this connection that is sending these messages will receive a copy on the channel. Default is `false`.
+
+In the following example, a copy of all `chat` client event messages will be sent to all subscribers, including the sender. `isTyping` client event messages will be sent to all other subscribers, but the sender will not receive a copy.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      "sendMessages": {
+        "isTyping": {
+          // highlight-next-line
+          "echo": false
+        },
+        "chat": {
+          // highlight-next-line
+          "echo": true
+        }
+      }
+    }
+  }
+}
+```
+
+#### `emitPubSubEvent` {#emitPubSubEvent}
+
+`Boolean` (optional) - If [client-initiated messages](#sendMessages) are permitted for this channel, the `emitPubSubEvent` attribute specifies whether or not these events will trigger a [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). Default is `false`. Enabling this setting has no effect if both SNS and EventBridge events are disabled globally.
+
+In the following example, `chat` client event messages will trigger server-side pub/sub events. `isTyping` client event messages will not.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      "sendMessages": {
+        "isTyping": {},
+        "chat": {
+          "echo": true,
+          // highlight-next-line
+          "emitPubSubEvent": true
+        }
+      }
+    }
+  }
+}
+```
+
+<!-- #### `store`
+
+`Integer` (optional) - If [client-initiated messages](#sendmessages) are permitted for this channel, the `store` attribute specifies the number of seconds that written messages from this connection are retained in the database after being sent. `0` is the default, which does not save message data. `-1` keeps messages forever.
+
+The following allows sending ephemeral "isTyping" events and stored "message.markAsRead" events to "mychannel", storing each "message.markAsRead" message for 30 days (30 days \* 24 hours \* 60 minutes \* 60 seconds) = 2,592,000 seconds.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "sendMessages": {
+        "isTyping": {},
+        "message.markAsRead": {
+          "store": 2592000
+        }
+      }
+    }
+  }
+}
+```-->
+
+## `connectionId` {#connectionId}
+
+`String` (optional) - If granting additional permissions to an existing connection in a subscribe token, either `connectionId` or `uid` is required. If `connectionId` is specified, the token cannot be used to initiate a new WebSocket connection and can only be used on the existing connection matching the specified connection ID, even if the token has an `connect` scope.
+
+```json
+{
+  "connectionId": "GHrCdeIEoAMCKmQ="
+}
+```
+
+## `exp` - Expiration {#exp}
+
+`NumericDate` (required) - The token expiration must be expressed as a Unix timestamp - the number of seconds since the Unix epoch. It's recommended that this value be set as low as possible, often just seconds in the future. The token must be used before this expiration, but once used it grants up to 2 hours of connection time and use of the WebSocket.
+
+```json
+{
+  "exp": 1686011549
+}
+```
+
+## `iat` - Issued At {#iat}
+
+`NumericDate` (optional) - The issued at claim identifies the time when the JWT was issued, expressed as a Unix timestamp. Hotsock does not rely on this claim for authorization, but it's common for issuers to provide it by default which is why it's mentioned here.
+
+```json
+{
+  "iat": 1686011549
+}
+```
+
+## `iss` - Issuer {#iss}
+
+`String` (optional) - The issuer claim is [optionally set in `TokenIssuerParameter`](./authentication.mdx#update-the-stack) when installing or updating the Hotsock stack. If enabled, every issued token must include it with the value set in the installation settings.
+
+```json
+{
+  "iss": "my-application-issuer"
+}
+```
+
+## `jti` - JWT ID {#jti}
+
+`String` (optional) - The JWT ID claim provides a unique identifier for the JWT. A UUID is often a good fit.
+
+```json
+{
+  "jti": "0188b190-109f-427a-afcb-98efea6348ba"
+}
+```
+
+## `keepAlive` {#keepAlive}
+
+`Boolean` (optional) - The keep-alive claim enables server-initiated `hotsock.keepAlive` messages to be sent to the connection to keep the connection alive as long as possible, preventing server-initiated disconnects when no messages are sent or received for more than 10 minutes. Default is `false`.
+
+```json
+{
+  "keepAlive": true
+}
+```
+
+## `nbf` - Not Before {#nbf}
+
+`NumericDate` (optional) - The not-before claim specifies the earliest time that a token can be used, expressed as a Unix timestamp. This allows you to issue and distribute tokens prior to them being usable.
+
+```json
+{
+  "nbf": 1686011549
+}
+```
+
+## `scope`
+
+`String` (required) - Space-separated list of scopes for when and where the token can be used. `connect` and `subscribe` are currently supported.
+
+To use a token when initiating a WebSocket connection, the `connect` scope is required. When using a token that provides additional channel subscription permissions not included in the connection token to subscribe to a channel, the `subscribe` scope is required.
+
+:::info
+You can [subscribe to channels](./connect-and-subscribe.mdx#subscribe-to-a-channel) authorized by a `connect`-scoped token once you're connected to the WebSocket. The `subscribe` scope is only required if you're issuing a token with _additional_ permissions that were not included in the `connect` token.
+:::
+
+```json
+{
+  "scope": "connect"
+}
+```
+
+You can also specify multiple scopes in a single token.
+
+```json
+{
+  "scope": "connect subscribe"
+}
+```
+
+:::warning
+Although Hotsock supports granting multiple scopes, you likely don't want to authorize both `connect` and `subscribe` in the same token.
+
+Say you issue a token with `{"scope":"connect subscribe","uid":"jim","channels":{...}}` with the purpose of allowing Jim to subscribe to a newly-authorized channel after the WebSocket connection has already been established. Dual scopes here would unnecessarily also allow the issued token to open an additional WebSocket connection alongside the existing one.
+:::
+
+## `singleUse` {#singleUse}
+
+`Boolean` (optional) - Setting to `true` ensures that this JWT is only used for a single connect operation (when used with a `connect` scope) or a single subscribe operation (when used with a `subscribe` scope). Follow-up attempts to use the same JWT results in denied access. Default is `false`.
+
+```json
+{
+  "singleUse": true
+}
+```
+
+## `uid` - User ID {#uid}
+
+`String` (optional) - The user ID claim identifies the connected user in any channels where they subscribe. It is available to all other subscribers when joining presence channels and included in all published messages that are initated by this connection. Must not exceed 128 characters.
+
+The `uid` claim is required (and must not be empty) if you're using a `subscribe` scoped token and are not specifying a `connectionId`. This grants channel subscribe access to _any_ connection with the matching `uid`.
+
+The `uid` claim is required (and must not be empty) when joining a presence channel.
+
+```json
+{
+  "uid": "12345"
+}
+```
+
+## `umd` - User Metadata {#umd}
+
+`JSON` (optional) - The user metadata claim may contain up to 1 KiB of data about this connected user. It is made available to all other members in subscribed presence channels and is included in all published messages that are initiated by this connection. This can be anything that is valid JSON - object, array, string, number, boolean, or `null`. Binary data must be Base64-encoded to a string.
+
+```json
+{
+  "umd": {
+    "name": "Dwight",
+    "title": "Assistant To The Regional Manager"
+  }
+}
+```

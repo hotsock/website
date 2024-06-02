@@ -1,0 +1,86 @@
+---
+slug: hotsock-v1.0
+title: Hotsock v1.0 Released!
+authors: [james]
+tags: []
+---
+
+Real-time functionality is a core expectation in modern applications. Whether you're building complex user interfaces, showing messages and typing indicators for a chat product, keeping player moves up-to-date in a collaborative game, or one of endless other multi-player use cases, **instant feedback is crucial for a great user experience**.
+
+Implementing real-time features often requires integrating with a third-party service and dealing with fixed limits, difficult sales processes, and questionable or unstable SDKs. Plus, you're sending private data out of your systems to external providers that are potentially thousands of miles from you and your customers' geographic locations. And who knows, they might also be using your data to train their latest AI model. 🙄
+
+Starting today, you can install a full-featured, real-time WebSockets service **securely and privately in your own AWS account** in any of the [21 supported commercial AWS regions](/docs/installation/region-support) around the world.
+
+### What's in the box
+
+It includes these features and so much more &mdash;
+
+- [Fine-grained permissions](/docs/connection/claims) for authorizing private channel access using JWTs.
+- [Standard channels](/docs/channels/standard) for updating any number of connected clients with real-time data from your application backend.
+- [Presence channels](/docs/channels/presence) for tracking who's online or what client devices are connected.
+- [Pub/sub events with EventBridge or SNS](/docs/server-api/events) for webhook behavior to notify your application about things happening inside your Hotsock installation.
+- [Custom domains](/docs/installation/custom-domains) for your WebSockets endpoint so you can maintain consistent branding and customer trust.
+- A [web console](/docs/server-api/web-console) for debugging channel subscriptions, messages, and authorization.
+
+With support for regions across the globe, your customers can connect with the low latency they're accustomed to and your business can meet any data residency and compliance requirements.
+
+Hotsock provides powerful, intuitive, and stable APIs for building real-time applications while standing on the shoulders of a giant &mdash; AWS.
+
+### Publish real-time messages
+
+Use the AWS SDK you're already familiar with to [publish messages via AWS Lambda](/docs/server-api/publish-messages#publish-with-lambda) &mdash; in any supported language. Here's a Python example, but you can easily do the same with Go, Ruby, Java, JavaScript, Node.js, .NET, PHP, Rust, C++, the AWS CLI, and more.
+
+```python
+lambda_client.invoke(
+    FunctionName='Hotsock-PublishFunction-AAABBBCCCDDD',
+    Payload=json.dumps({
+        'channel': 'my-channel',
+        'event': 'my-event',
+        'data': '👋'
+    })
+)
+```
+
+You can also [publish via good ol' HTTP](/docs/server-api/publish-messages#publish-with-http-url) if that's your preference.
+
+### Subscribe your clients
+
+For browser-based clients, you can get up and running quickly with [Hotsock JS](https://github.com/hotsock/hotsock-js).
+
+```js
+// Call the handleMessage function when "my-event" events are
+// received on the "my-channel" channel.
+hotsock.on("my-event", handleMessage, {
+  channel: "my-channel",
+})
+
+function handleMessage(messageObj) {
+  console.log("Received", messageObj)
+}
+
+// Received Object {
+//   id: "01HP8BGSHWY952BXW1PE25DSJA",
+//   event: "my-event",
+//   channel: "my-channel",
+//   data: "👋"
+// }
+```
+
+For mobile applications, consider using [URLSessionWebSocketTask](https://developer.apple.com/documentation/foundation/urlsessionwebsockettask) on iOS/macOS and [javax.websocket](https://docs.oracle.com/javaee/7/api/index.html?javax/websocket/package-summary.html) (Java) or [WebSocket](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-web-socket/) from stdlib (Kotlin) on Android. [Hotsock JS](https://github.com/hotsock/hotsock-js) also supports React Native. Official Hotsock client SDKs for iOS/macOS and Android are on the roadmap for the future.
+
+### Combining the best of fully-managed with self-hosted
+
+- If it's fully-managed, isn't the data accessible by another provider? Nope!
+- If I have to self-host it, don't I have to allocate time to manage it? Nope!
+
+**Each installation is backed exclusively by fully-managed AWS services that go to great lenths to keep you data private and encrypted.** These services include API Gateway WebSockets, Lambda, DynamoDB, Simple Queue Service (SQS), EventBridge, Simple Notification Service (SNS), and CloudFormation.
+
+**There are no servers or containers to manage and no scaling knobs to turn.** AWS billing is completely usage-based, so there's no infrastructure cost if the stack is idle and Hotsock will automatically scale to handle production workloads with millions of connections and billions of messages.
+
+**Installation requires just two AWS CLI commands, doesn't require a sign-up, is fully automated with CloudFormation (infrastructure-as-code), and takes less than 20 minutes.** Updates to Hotsock are fully automated, further reducing any ongoing management burden to your staff.
+
+### Licensing
+
+The [Free Tier](/docs/licensing/pricing#free-tier) includes 1 million WebSocket messages per month &mdash; **forever**. Upgrade your installation to the [Paid Tier](/docs/licensing/pricing#paid-tier) for production applications needing more messages, multiple AWS accounts and regions, and dedicated support.
+
+[Give it a try](/docs/installation/initial-setup) today!

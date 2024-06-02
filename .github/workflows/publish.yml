@@ -1,0 +1,35 @@
+name: Publish static site
+on:
+  push:
+    branches: [main]
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+
+    # Permissions are needed for GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::080825576347:role/GitHubActionsHotsockWebsiteDeployRole
+          aws-region: us-west-2
+      - name: Publish site to S3
+        run: |
+          aws s3 sync \
+            build/ \
+            s3://hotsockwebsite-bucket-1b98507gb6g3t \
+            --delete
