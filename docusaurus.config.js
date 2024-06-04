@@ -55,8 +55,8 @@ const config = {
       image: "img/hotshot-social-card.png",
       metadata: [], // https://docusaurus.io/docs/api/themes/configuration#metadata
       algolia: {
-        apiKey: "c02dc22a808d50178b7a3031c52fcbef",
-        appId: "ET5S7YPMLQ",
+        apiKey: "effce19400e6bae01c419d64f036c353",
+        appId: "9I8Q94BXAI",
         indexName:
           process.env.BUILD_ENV === "production"
             ? "production_docs"
