@@ -57,10 +57,7 @@ const config = {
       algolia: {
         apiKey: "effce19400e6bae01c419d64f036c353",
         appId: "9I8Q94BXAI",
-        indexName:
-          process.env.BUILD_ENV === "production"
-            ? "production_docs"
-            : "staging_docs",
+        indexName: "hotsock",
       },
       navbar: {
         logo: {
