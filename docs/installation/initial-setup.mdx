@@ -2,7 +2,7 @@
 sidebar_label: Initial Setup
 ---
 
-# Initial Setup 🪄
+# Initial Installation & Setup 🪄
 
 Assuming you already have an AWS account ready to go, installing and configuring your stack should take less than 20 minutes.
 
@@ -24,7 +24,7 @@ Using a dedicated AWS account provides both **security isolation** and **billing
 
 Before creating the main Hotsock stack, you'll first create a stack that configures roles and a permissions policy that the main stack will use, limiting the permissions that it can have. The main Hotsock stack creates IAM roles, so having this in place puts a permissions boundary around those roles, ensuring that they cannot elevate their own permissions.
 
-This is what's included in the Installer Permissions stack.
+This is what's included in the Installer Permissions stack. You can also [audit its contents yourself](https://github.com/hotsock/installer-permissions/blob/main/installer-permissions.yml).
 
 - **`HotsockInstallerRole`**: IAM role that allows CloudFormation to manage Hotsock installations with appropriate permissions. It grants IAM role and policy management permissions within the `/hotsock/` IAM path and grants permissions in the `HotsockMaximumPermissions` managed policy described below.
 - **`HotsockSupportRole`**: IAM role that can allow Hotsock support staff to access your account to triage issues upon your request. **Access is denied by default** with an expired date condition in the assume role trust relationship, which must be set to a date in the future to grant access.
@@ -113,7 +113,7 @@ Create the main stack using the AWS CLI from [AWS CloudShell](https://docs.aws.a
 1. Sign into your AWS account as an administrator user or role.
 1. Switch to the desired (and [supported](./region-support.mdx)) AWS region using the region switcher in the top navigation.
 1. Click the CloudShell icon in the top navigation bar or footer bar in the AWS Console.
-1. Run the following command. Feel free to change the `--stack-name` value if you have other stack naming conventions, but keep other parameters as they are.
+1. Run the following command. Feel free to change the `--stack-name` value if you have other stack naming conventions (keep the name short though!), but keep other parameters as they are.
 
 ```
 aws cloudformation create-stack \
