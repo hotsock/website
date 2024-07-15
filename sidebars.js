@@ -30,12 +30,12 @@ const sidebars = {
     },
     {
       type: "category",
-      label: "Connection",
+      label: "Connections",
       items: [
-        "connection/authentication",
-        "connection/claims",
-        "connection/connect-and-subscribe",
-        "connection/keep-alive",
+        "connections/authentication",
+        "connections/claims",
+        "connections/connect-and-subscribe",
+        "connections/keep-alive",
       ],
       collapsible: false,
     },

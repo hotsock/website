@@ -15,7 +15,7 @@ Starting today, you can install a full-featured, real-time WebSockets service **
 
 It includes these features and so much more &mdash;
 
-- [Fine-grained permissions](/docs/connection/claims) for authorizing private channel access using JWTs.
+- [Fine-grained permissions](/docs/connections/claims) for authorizing private channel access using JSON Web Tokens (JWTs).
 - [Standard channels](/docs/channels/standard) for updating any number of connected clients with real-time data from your application backend.
 - [Presence channels](/docs/channels/presence) for tracking who's online or what client devices are connected.
 - [Pub/sub events with EventBridge or SNS](/docs/server-api/events) for webhook behavior to notify your application about things happening inside your Hotsock installation.
@@ -50,9 +50,8 @@ For browser-based clients, you can get up and running quickly with [Hotsock JS](
 ```js
 // Call the handleMessage function when "my-event" events are
 // received on the "my-channel" channel.
-hotsock.on("my-event", handleMessage, {
-  channel: "my-channel",
-})
+const channel = hotsock.channels("my-channel")
+channel.bind("my-event", handleMessage)
 
 function handleMessage(messageObj) {
   console.log("Received", messageObj)

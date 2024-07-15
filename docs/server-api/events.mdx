@@ -155,10 +155,10 @@ Object. Currently empty.
 
 - `id` (String): The identifier for this connection. This identifier is guaranteed to be unique across this installation while this connection is active and for an unknown time period afterward, but is not guaranteed to be unique forever. It's possible that sometime in the distant future, a connection ID could be reused.
 - `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
-- `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connection/claims.mdx#keepAlive) is enabled for this connection.
+- `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connections/claims.mdx#keepAlive) is enabled for this connection.
 - `sourceIp` (String | null): The source IP address that was used by the client when the connection was established.
-- `uid` (String | null): The user ID specified in the [`uid` claim](../connection/claims.mdx#uid) for this connection.
-- `umd` (JSON | null): The user metadata specified in the [`umd` claim](../connection/claims.mdx#umd) for this connection.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this connection.
+- `umd` (JSON | null): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this connection.
 - `userAgent` (String | null): The value of the User-Agent header that was used when the client established the connection.
 
 ```json
@@ -197,10 +197,10 @@ This is always `hotsock.disconnected`.
 
 - `id` (String): The identifier for this connection. This identifier is guaranteed to be unique across this installation while this connection is active and for an unknown time period afterward, but is not guaranteed to be unique forever. It's possible that sometime in the distant future, a connection ID could be reused.
 - `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
-- `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connection/claims.mdx#keepAlive) is enabled for this connection.
+- `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connections/claims.mdx#keepAlive) is enabled for this connection.
 - `sourceIp` (String | null): The source IP address that was used by the client when the connection was established.
-- `uid` (String | null): The user ID specified in the [`uid` claim](../connection/claims.mdx#uid) for this connection.
-- `umd` (JSON | null): The user metadata specified in the [`umd` claim](../connection/claims.mdx#umd) for this connection.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this connection.
+- `umd` (JSON | null): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this connection.
 - `userAgent` (String | null): The value of the User-Agent header that was used when the client established the connection.
 
 ```json
@@ -254,7 +254,7 @@ The data object type for this event is `channel`.
 
 ## `hotsock.messagePublished` {#hotsock.messagePublished}
 
-This event is sent whenever a message is published to Hotsock with `emitPubSubEvent` enabled. For server-initiated messages, set [`emitPubSubEvent`](./publish-messages.mdx#message-format--emitPubSubEvent) when publishing. For client-initiated messages, set the [`emitPubSubEvent` claim](../connection/claims.mdx#emitPubSubEvent) to `true` for desired channel events.
+This event is sent whenever a message is published to Hotsock with `emitPubSubEvent` enabled. For server-initiated messages, set [`emitPubSubEvent`](./publish-messages.mdx#message-format--emitPubSubEvent) when publishing. For client-initiated messages, set the [`emitPubSubEvent` claim](../connections/claims.mdx#emitPubSubEvent) to `true` for desired channel events.
 
 ### `type` {#hotsock.messagePublished--type}
 
@@ -323,8 +323,8 @@ The data object type for this event is `subscription`.
 
 - `channel` (String): The name of the channel that was subscribed to.
 - `connectionId` (String): The identifier for the connection that subscribed to the channel.
-- `uid` (String | null): The user ID specified in the [`uid` claim](../connection/claims.mdx#uid) for this subscription.
-- `umd` (JSON): The user metadata specified in the [`umd` claim](../connection/claims.mdx#umd) for this subscription.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this subscription.
+- `umd` (JSON): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this subscription.
 
 ```json
 {
@@ -357,8 +357,8 @@ This is always `hotsock.unsubscribed`.
 
 - `channel` (String): The name of the channel that was unsubscribed from.
 - `connectionId` (String): The identifier for the connection that subscribed to the channel.
-- `uid` (String | null): The user ID specified in the [`uid` claim](../connection/claims.mdx#uid) for this subscription.
-- `umd` (JSON): The user metadata specified in the [`umd` claim](../connection/claims.mdx#umd) for this subscription.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this subscription.
+- `umd` (JSON): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this subscription.
 
 ```json
 {

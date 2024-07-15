@@ -17,25 +17,6 @@ Sending server-side messages to subscribers on Hotsock channels is the most comm
 All AWS SDKs across all available languages can invoke a Lambda function securely, enforcing least-privilege access using [IAM roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) with temporary credentials that are refreshed automatically by your EC2 instance, ECS task, or Lambda function.
 :::
 
-In each language-specific example below, `lambdaClient` or `lambda_client` is assumed to be a client configured to run as an IAM role or user that has permission to invoke your installation's publish function. Copy your function Arn from your installation's [`PublishFunctionArn`](../installation/initial-setup.mdx#PublishFunctionArn) output - the permissions assigned to your IAM role or user should look something like this:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": ["lambda:InvokeFunction"],
-      "Effect": "Allow",
-      "Resource": [
-        "arn:aws:lambda:us-east-1:111111111111:function:Hotsock-PublishFunction-AAABBBCCCDDD"
-      ]
-    }
-  ]
-}
-```
-
-For more complete examples - package imports, configuring the Lambda client, etc., reference the documentation for your preferred SDK.
-
 Using the language of your choice, invoke the function referenced in the [`PublishFunctionArn`](../installation/initial-setup.mdx#PublishFunctionArn) output to publish a message. Copy the Arn from the stack output to the function name argument in your invoke call (either the full Arn or just the function name are supported).
 
 <Tabs>
@@ -164,7 +145,28 @@ aws lambda invoke \
   </TabItem>
 </Tabs>
 
-## Publish via HTTP URL {#publish-with-http-url}
+For more complete examples - package imports, configuring the Lambda client, etc., reference the documentation for your preferred SDK.
+
+#### Permissions to invoke Lambda {#publish-with-lambda-permissions}
+
+In each language-specific example below, `lambdaClient` or `lambda_client` is assumed to be a client configured to run as an IAM role or user that has permission to invoke your installation's publish function. Copy your function Arn from your installation's [`PublishFunctionArn`](../installation/initial-setup.mdx#PublishFunctionArn) output - the permissions assigned to your IAM role or user should look something like this:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["lambda:InvokeFunction"],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:lambda:us-east-1:111111111111:function:Hotsock-PublishFunction-AAABBBCCCDDD"
+      ]
+    }
+  ]
+}
+```
+
+## Publish with HTTP URL {#publish-with-http-url}
 
 :::warning
 
@@ -177,9 +179,39 @@ There are some downsides to using this publish method. It's fully supported, but
 
 :::
 
+#### Access your API keys {#publish-with-http-url-access-api-keys}
+
+A pair of API keys were created alongside your installation. Their values are available by following the URLs in [HttpApiSecretKey1ConsoleUrl](../installation/initial-setup.mdx#HttpApiSecretKey1ConsoleUrl) and [HttpApiSecretKey2ConsoleUrl](../installation/initial-setup.mdx#HttpApiSecretKey2ConsoleUrl).
+
+:::tip
+You can use either key for HTTP-based message publishing. There are two keys to allow for key rotation without downtime - you can change the value of one while continuing to use the other.
+:::
+
+#### Get your publish URL {#publish-with-http-url-get-url}
+
+Your HTTP URL is displayed in the [PublishHttpApiUrl](../installation/initial-setup.mdx#PublishHttpApiUrl) stack output of your installation.
+
+#### Make a publish request {#publish-with-http-url-make-request}
+
+Using any HTTP client in your code, make a `POST` request to your publish URL with the `Authentication` header set to `Bearer YOUR_API_KEY` and a JSON body containing at least an `event` and `channel` to publish to. Refer to the [message format](#message-format) guide below for other available fields.
+
+Here's an example with `curl`.
+
+```
+curl -X "POST" "https://e4zdy87vg9byo4ugvldt3rmn440lflwe.lambda-url.us-east-1.on.aws/publish" \
+     -H 'Authorization: Bearer JAnzQFqRXsBgV0kKvd2DYhJMk77IhL8j9J2sLi5b' \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+  "channel": "my-channel",
+  "event": "my-event"
+}'
+```
+
+You can adapt this for use with any HTTP client library in any programming language.
+
 ## Message format {#message-format}
 
-The shape of a message is the same, whether you're invoking Lambda directly or using the HTTP API. At a minimum all messages must contain a `channel` and an `event`. Additional supported attributes are listed below.
+The shape of a message is the same, whether you're [invoking Lambda directly](#publish-with-lambda) or using the [HTTP API](#publish-with-http-url). At a minimum all messages must contain a `channel` and an `event`. Additional supported attributes are listed below.
 
 ```json
 {

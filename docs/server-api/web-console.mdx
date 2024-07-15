@@ -10,7 +10,7 @@ Open the URL, and you'll see your web console.
 
 ## Connect to the WebSocket
 
-Using the JWT issuer configured for your installation, issue yourself a valid token with the [`connect` scope](../connection/claims.mdx#scope).
+Using the JWT issuer configured for your installation, issue yourself a valid token with the [`connect` scope](../connections/claims.mdx#scope).
 
 Paste the token in the input on top. The token is parsed so you can see what claims were included. The console will automatically attempt to establish a connection using that token. If all goes well, you're connected.
 
@@ -34,7 +34,7 @@ The permissions in the example token allow publishing messages in `my-channel` t
 
 To send a message, click the dropdown menu at the bottom, choose "Send message", enter "my-channel" in the channel name input, enter "my-event" in the event name input, and any value in the data input. Then hit Enter/Return on your keyboard.
 
-You'll see an outgoing WebSocket message that sends the message on the channel. Any other channel subscribers will receive this message, and because the claim has [`echo`](../connection/claims.mdx#echo) enabled for this event, the sending connection also receives a copy of the message.
+You'll see an outgoing WebSocket message that sends the message on the channel. Any other channel subscribers will receive this message, and because the claim has [`echo`](../connections/claims.mdx#echo) enabled for this event, the sending connection also receives a copy of the message.
 
 ![Web console send message](../../static/img/screenshots/web-console-send-message.png)
 
