@@ -8,7 +8,7 @@ Assuming you already have an AWS account ready to go, installing and configuring
 
 The setup process creates two [CloudFormation stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html) in your AWS account.
 
-Each stack can be created using either the AWS CLI (recommended) or the AWS Console. Use whichever you prefer. Although this document is detailed and lengthy, installation requires running just two commands in your account! Want to jump straight to it? [Here's the first](#installer-permissions-stack-cli) and [here's the second](#main-stack-cli).
+Each stack can be created using either the AWS CloudShell CLI (recommended) or manually in the AWS Console. Use whichever you prefer. Although this document is detailed and lengthy, installation requires running just two commands in your account! Want to jump straight to it? [Here's the first](#installer-permissions-stack-cli) and [here's the second](#main-stack-cli).
 
 [Uninstalling](./uninstallation.mdx) is also painless if you change your mind!
 
@@ -46,7 +46,7 @@ Create the Installer Permissions stack using the AWS CLI from [AWS CloudShell](h
 1. Sign into your AWS account as an administrator user or role.
 1. Switch to the desired (and [supported](./region-support.mdx)) AWS region using the region switcher in the top navigation.
 1. Click the CloudShell icon in the top navigation bar or footer bar in the AWS Console.
-1. Run the following command. Feel free to change the `--stack-name` value if you have other stack naming conventions, but keep other parameters as they are.
+1. Copy/paste and run the following command. Feel free to change the `--stack-name` value if you have other stack naming conventions, but keep other parameters as they are.
 
 ```
 aws cloudformation create-stack \
@@ -113,7 +113,7 @@ Create the main stack using the AWS CLI from [AWS CloudShell](https://docs.aws.a
 1. Sign into your AWS account as an administrator user or role.
 1. Switch to the desired (and [supported](./region-support.mdx)) AWS region using the region switcher in the top navigation.
 1. Click the CloudShell icon in the top navigation bar or footer bar in the AWS Console.
-1. Run the following command. Feel free to change the `--stack-name` value if you have other stack naming conventions (keep the name short though!), but keep other parameters as they are.
+1. Copy/paste and run the following command. Feel free to change the `--stack-name` value if you have other stack naming conventions (keep the name short though!), but keep other parameters as they are.
 
 ```
 aws cloudformation create-stack \

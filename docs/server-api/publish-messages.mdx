@@ -170,7 +170,7 @@ In each language-specific example below, `lambdaClient` or `lambda_client` is as
 
 :::warning
 
-There are some downsides to using this publish method. It's fully supported, but the [Lambda](#publish-with-lambda) approach is more secure.
+There are some downsides to using this publish method. It is and will continue to be fully supported, but the [Lambda](#publish-with-lambda) approach is more secure.
 
 - The API keys that can be used for all requests are static and must be used by all of your backend clients. Whether your backend publishers store a copy of this key or request its current value from Parameter Store periodically, having a shared key poses a security risk if the key leaks.
 - Hotsock grabs the current API key values from Parameter Store during each Lambda cold-start. This adds some (though minimal) cold-start latency because of the inline call to another AWS service.
@@ -211,7 +211,7 @@ You can adapt this for use with any HTTP client library in any programming langu
 
 ## Message format {#message-format}
 
-The shape of a message is the same, whether you're [invoking Lambda directly](#publish-with-lambda) or using the [HTTP API](#publish-with-http-url). At a minimum all messages must contain a `channel` and an `event`. Additional supported attributes are listed below.
+The shape of a message is the same whether you're [invoking Lambda directly](#publish-with-lambda) or using the [HTTP API](#publish-with-http-url). At a minimum all messages must contain a `channel` and an `event`. Additional supported attributes are listed below.
 
 ```json
 {
@@ -226,7 +226,7 @@ The shape of a message is the same, whether you're [invoking Lambda directly](#p
 
 ### `deduplicationId` {#message-format--deduplicationId}
 
-`String` (optional) - If supplied and if multiple messages with the same `deduplicationId` value are received within 5 minutes of each other, only the first message will be published. Additional copies will be dropped.
+`String` (optional) - If supplied as a non-empty string and if multiple messages with the same `deduplicationId` value are received within 5 minutes of each other, only the first message will be published. Additional copies will be dropped.
 
 If you're publishing from a source that retries upon failure, set this to a value that is consistent across all attempts to publish that message. This ensures that if Hotsock receives the message but a networking issue prevents your application from receiving the success response, retry attempts will not publish duplicate messages.
 
@@ -236,18 +236,20 @@ Providing a `deduplicationId` while also enabling `eagerIdGeneration` is not rec
 
 ### `eagerIdGeneration` {#message-format--eagerIdGeneration}
 
-`Boolean` (optional) - If you need to store a backend copy of the message ID that is published to the channel for follow-up requests (such as replies or reactions), set this to `true`. Default is `false`.
+`Boolean` (optional) - If you need to store a backend copy of the message ID that is published to the channel for follow-up requests, set this to `true`. Default is `false`.
 
-Enabling this can ever-so-slightly affect message ordering. When this is option is disabled, messages receive an monotonically increasing ID at the time they are processed, ensuring that messages are always processed and identifiable sequentially within a channel. When this option is enabled (`true`), messages receive an ID at publish time prior to being enqueued for processing, which is returned to the publisher. In scenarios where multiple messages are published within a few milliseconds, actual processing order is indeterminate.
+Enabling this can ever-so-slightly affect message ordering. When this is option is disabled, messages receive a monotonically increasing ID at the time they are processed, ensuring that messages are always processed and identifiable sequentially within a channel. When this option is enabled (`true`), messages receive an ID at publish time prior to being enqueued for processing, which is returned to the publisher. In scenarios where multiple messages are published within a few milliseconds, actual processing order is indeterminate.
 
 :::warning
-Enabling `eagerIdGeneration` while also providing a `deduplicationId` is not recommended.
+Enabling `eagerIdGeneration` while also providing a `deduplicationId` **is not recommended**.
 
 Consider the following scenario:
 
 1. A publish request made with `eagerIdGeneration` enabled and `deduplicationId` set to "ECHO". Hotsock received the message and the message ID in its response is `01H62H35Q7JJBDB4EE5XA44CHV`.
 1. Due to unstable network conditions, the requestor did not receive this response.
 1. Since the requestor saw the publish as a failure, they re-publish the message with the same `deduplicationId` set to "ECHO". This time the response message ID is `01H62H8HYRCY1F6ZS85BX24B9R` but since the initial message was already received, this follow-up message will never be processed and no message with the second `01H62H8HYRCY1F6ZS85BX24B9R` ID will ever be processed or sent to channel subscribers.
+
+Deduplication is handled [internally by SQS](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html). Since messages are accepted by SQS successfully even when they are duplicates, there's no way for Hotsock to indicate in the message publishing response that a message is a duplicate.
 
 :::
 
