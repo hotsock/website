@@ -36,9 +36,9 @@ Per the JWT spec, `aud` can also be an array of audiences, where the installatio
 }
 ```
 
-## `channels`
+## `channels` {#channels}
 
-`Object` (optional) - The channels claim specifies the channel permissions that are granted to this connection. Each object key is the name of a channel and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that channel or channel wildcard.
+`Object` (optional) - The `channels` claim specifies the channel permissions that are granted to this connection. Each object key is the name of a channel and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that channel or channel wildcard.
 
 The following grants subscribe access to any channel with the prefix `account.123.` and the channel named `user.456`.
 
@@ -72,9 +72,130 @@ For wildcards that overlap, any explicit `false` is used as the value and cannot
 }
 ```
 
-Each object inside the channels object accepts [`subscribe`](#subscribe) and [`sendMessages`](#sendMessages) attributes.
+Each object inside the channels object accepts [`messages`](#channels.messages) and [`subscribe`](#channels.subscribe) attributes.
 
-### `subscribe`
+### `messages` {#channels.messages}
+
+`Object` (optional) - Manages the permissions and directives for client-initiated messages that are published directly to the WebSocket on the channel(s) for the specified events. Each object key is the name of an event and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that event or event wildcard.
+
+#### `echo` {#channels.messages.echo}
+
+`Boolean` (optional) - If [publish](#channels.messages.publish) is permitted for this channel and event, the `echo` attribute specifies whether or not this connection that is sending these messages will receive a copy of the message on the channel. Default is `false`. Has no effect if `publish` resolves to `false`.
+
+In the following example, a copy of all `chat` client event messages will be sent to all subscribers, including the sender. `isTyping` client event messages will be sent to all other subscribers, but the sender will not receive a copy.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      "messages": {
+        "isTyping": {
+          "publish": true,
+          // highlight-next-line
+          "echo": false
+        },
+        "chat": {
+          "publish": true,
+          // highlight-next-line
+          "echo": true
+        }
+      }
+    }
+  }
+}
+```
+
+#### `emitPubSubEvent` {#channels.messages.emitPubSubEvent}
+
+`Boolean` (optional) - If [client-initiated messages](#channels.messages.publish) are permitted for this channel and event, the `emitPubSubEvent` attribute specifies whether or not these events will trigger a [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). Default is `false`. Has no effect if `publish` resolves to `false`. Also has no effect if both SNS and EventBridge events are disabled globally.
+
+In the following example, `chat` client event messages will trigger server-side pub/sub events. `isTyping` client event messages will not.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      "messages": {
+        "isTyping": {
+          "publish": true
+        },
+        "chat": {
+          "echo": true,
+          // highlight-next-line
+          "emitPubSubEvent": true
+        }
+      }
+    }
+  }
+}
+```
+
+#### `publish` {#channels.messages.publish}
+
+The following allows this connection to subscribe to the channel "mychannel" and publish client-initiated messages with the "isTyping" event name.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      // highlight-next-line
+      "messages": {
+        "isTyping": {
+          "publish": true
+        }
+      }
+    }
+  }
+}
+```
+
+Wildcards are supported in event names using asterisks (\*). The following allows the connection to send _any_ event on "mychannel".
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      // highlight-next-line
+      "messages": {
+        "*": {
+          "publish": true
+        }
+      }
+    }
+  }
+}
+```
+
+:::warning
+Be careful with wildcard permissions for client initiated events!
+
+In the following example, since `chat.*` includes `chat.admin`, this connection would be able to publish any event to the `chat.admin` channel, even though they're not able to subscribe to its messages. In this case it would probably be best to name the `chat.admin` channel differently to ensure permissions to it are never expanded unintentionally.
+
+```json
+{
+  "channels": {
+    "chat.admin": {
+      "subscribe": false
+    },
+    "chat.*": {
+      "subscribe": true,
+      "messages": {
+        "*": {
+          "publish": true
+        }
+      }
+    }
+  }
+}
+```
+
+:::
+
+### `subscribe` {#channels.subscribe}
 
 `Boolean` (optional) - Whether or not to allow the connection to subscribe to the channel(s) specified by the object key. Default is `false`.
 
@@ -123,118 +244,9 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 Consider the cost of enabling this, particularly for channels with a large number of subscribers. Each subscriber who has this enabled receives a count stat update every time
 :::-->
 
-### `sendMessages` {#sendMessages}
-
-`Object` (optional) - Allows client-initiated messages to be sent directly to the WebSocket on the channel(s) in the object key for the specified events. Other channel members will receive these messages (if authorized).
-
-The following allows this connection to subscribe to the channel "mychannel" and send client-initiated messages with the "isTyping" event name.
-
-```json
-{
-  "channels": {
-    "mychannel": {
-      "subscribe": true,
-      // highlight-next-line
-      "sendMessages": {
-        "isTyping": {}
-      }
-    }
-  }
-}
-```
-
-Wildcards are supported in event names using asterisks (\*). The following allows the connection to send _any_ event on "mychannel".
-
-```json
-{
-  "channels": {
-    "mychannel": {
-      "subscribe": true,
-      // highlight-next-line
-      "sendMessages": {
-        "*": {}
-      }
-    }
-  }
-}
-```
-
-:::warning
-Be careful with wildcard permissions for client initiated events!
-
-In the following example, since `chat.*` includes `chat.admin`, this connection would be able to publish any event to the `chat.admin` channel, even though they're not able to subscribe to its messages. In this case it would probably be best to name the `chat.admin` channel differently to ensure permissions to it are never expanded unintentionally.
-
-```json
-{
-  "channels": {
-    "chat.admin": {
-      "subscribe": false
-    },
-    "chat.*": {
-      "subscribe": true,
-      "sendMessages": {
-        "*": {}
-      }
-    }
-  }
-}
-```
-
-:::
-
-#### `echo`
-
-`Boolean` (optional) - If [sendMessages](#sendMessages) are permitted for this channel, the `echo` attribute specifies whether or not this connection that is sending these messages will receive a copy on the channel. Default is `false`.
-
-In the following example, a copy of all `chat` client event messages will be sent to all subscribers, including the sender. `isTyping` client event messages will be sent to all other subscribers, but the sender will not receive a copy.
-
-```json
-{
-  "channels": {
-    "mychannel": {
-      "subscribe": true,
-      "sendMessages": {
-        "isTyping": {
-          // highlight-next-line
-          "echo": false
-        },
-        "chat": {
-          // highlight-next-line
-          "echo": true
-        }
-      }
-    }
-  }
-}
-```
-
-#### `emitPubSubEvent` {#emitPubSubEvent}
-
-`Boolean` (optional) - If [client-initiated messages](#sendMessages) are permitted for this channel, the `emitPubSubEvent` attribute specifies whether or not these events will trigger a [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). Default is `false`. Enabling this setting has no effect if both SNS and EventBridge events are disabled globally.
-
-In the following example, `chat` client event messages will trigger server-side pub/sub events. `isTyping` client event messages will not.
-
-```json
-{
-  "channels": {
-    "mychannel": {
-      "subscribe": true,
-      "sendMessages": {
-        "isTyping": {},
-        "chat": {
-          "echo": true,
-          // highlight-next-line
-          "emitPubSubEvent": true
-        }
-      }
-    }
-  }
-}
-```
-
 <!-- #### `store`
 
-`Integer` (optional) - If [client-initiated messages](#sendmessages) are permitted for this channel, the `store` attribute specifies the number of seconds that written messages from this connection are retained in the database after being sent. `0` is the default, which does not save message data. `-1` keeps messages forever.
+`Integer` (optional) - If [client-initiated messages](#messages) are permitted for this channel, the `store` attribute specifies the number of seconds that written messages from this connection are retained in the database after being sent. `0` is the default, which does not save message data. `-1` keeps messages forever.
 
 The following allows sending ephemeral "isTyping" events and stored "message.markAsRead" events to "mychannel", storing each "message.markAsRead" message for 30 days (30 days \* 24 hours \* 60 minutes \* 60 seconds) = 2,592,000 seconds.
 
@@ -242,8 +254,10 @@ The following allows sending ephemeral "isTyping" events and stored "message.mar
 {
   "channels": {
     "mychannel": {
-      "sendMessages": {
-        "isTyping": {},
+      "messages": {
+        "isTyping": {
+          "publish": true
+        },
         "message.markAsRead": {
           "store": 2592000
         }
