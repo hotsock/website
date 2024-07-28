@@ -7,7 +7,7 @@ toc_max_heading_level: 4
 
 When issuing a JWT, you're allowing the recipient of the token to connect to the WebSocket, access channels and perform operations on the WebSocket, or both. By design, Hotsock has minimal global configuration and allows as much as possible to be specified per-token using signed JWT claims.
 
-At minimum, a token must have an `exp` claim specifying when the token expires and a `scope` claim indicating where the the token can be used. If your installation requires a particular `aud` audience and/or `iss` issuer claim, these must be specified as well. The following minimal token claims allow connecting to the WebSocket (assuming `1686011549` is a Unix timestamp in the future).
+At minimum, a token must have an [`exp`](#exp) claim specifying when the token expires and a [`scope`](#scope) claim indicating where the the token can be used. If your installation requires a particular [`aud`](#aud) audience and/or [`iss`](#iss) issuer claim, these must be specified as well. The following minimal token claims allow connecting to the WebSocket (assuming `1686011549` is a Unix timestamp in the future).
 
 ```json
 {
