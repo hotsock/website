@@ -329,7 +329,7 @@ The following allows sending ephemeral "isTyping" events and stored "message.mar
 
 ## `nbf` - Not Before {#nbf}
 
-`NumericDate` (optional) - The not-before claim specifies the earliest time that a token can be used, expressed as a Unix timestamp. This allows you to issue and distribute tokens prior to them being usable.
+`NumericDate` (optional) - The not-before claim specifies the earliest time that a token can be used, expressed as a Unix timestamp. This allows you to issue and distribute tokens prior to them being usable. If combined with [`singleUse`](#singleUse) and a failed attempt to use the token before it is valid occurs, it does not count as token use.
 
 ```json
 {
