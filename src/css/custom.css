@@ -11,6 +11,7 @@
 /* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #FE337E;
+  --ifm2-color-primary: 338 99% 60%;
   --ifm-color-primary-dark: #FE0B64;
   --ifm-color-primary-darker: #DF0153;
   --ifm-color-primary-darkest: #B70144;
@@ -19,6 +20,18 @@
   --ifm-color-primary-lightest: #FE71A5;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --ring: 24.6 95% 53.1%;
+  --radius: 0.5rem;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -31,4 +44,22 @@
   --ifm-color-primary-lighter: #FE5D98;
   --ifm-color-primary-lightest: #FE71A5;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --ring: 24.6 95% 53.1%;
+  --radius: 0.5rem;
+}
+
+.hero-bg {
+  background-image: url('/img/bg/grid.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
