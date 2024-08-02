@@ -8,7 +8,7 @@ import Certificate from "../../icons/certificate";
 
 function Hero() {
   return (
-    <div className="hero-bg w-full min-h-[80vh] lg:min-h-[90vh] flex text-center flex-col items-center justify-center">
+    <div className="hero-bg w-full py-10  lg:py-16 flex text-center flex-col items-center justify-center">
       <Wrapper>
         <div className="lg:w-9/12  mx-auto">
           <h1 className="lg:text-5xl text-3xl !leading-[44px] lg:!leading-[65px] ">
