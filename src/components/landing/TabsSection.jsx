@@ -74,13 +74,13 @@ function TabsSection() {
               }
             )} ${
               index === 0
-                ? "rounded-l-xl"
+                ? "lg:rounded-l-xl rounded-l-md"
                 : // : index === 3
                 // ? "rounded-tr-xl"
                 // : index === 4
                 // ? "rounded-bl-xl"
                 index === 6
-                ? "rounded-r-xl"
+                ? "lg:rounded-r-xl rounded-r-md"
                 : ""
             }`}
           >
