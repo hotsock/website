@@ -11,8 +11,8 @@ const GROUPS = [
     id: "py",
   },
   {
-    title: "Node",
-    id: "node",
+    title: "JS",
+    id: "js",
   },
   {
     title: "Go",

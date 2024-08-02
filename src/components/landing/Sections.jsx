@@ -3,13 +3,19 @@ import Wrapper from "../global/Wrapper";
 import MDXContent from "@theme/MDXContent";
 import CodeBlock from "./CodeBlock.mdx";
 import TabsSection from "./TabsSection";
+import Install from "../../icons/install";
+import Publish from "../../icons/publish";
+import Subscribe from "../../icons/subscribe";
 
 function Sections() {
   return (
     <Wrapper>
       <div className="w-full lg:grid lg:gap-3 lg:grid-cols-12 ">
         <div className="lg:col-span-4">
-          <h1 className="text-3xl">1. Install</h1>
+          <h1 className="text-3xl flex flex-row items-center">
+            1. Install
+            <Install className="w-10 h-10 ml-3 " />
+          </h1>
           <p className="text-base lg:text-xl">
             Install in just 2 AWS CLI commands.
           </p>
@@ -22,7 +28,10 @@ function Sections() {
       </div>
       <div className="w-full mt-6 lg:mt-12 lg:grid  lg:gap-12 lg:grid-cols-12 ">
         <div className="lg:col-span-5 lg:col-start-8">
-          <h1 className="text-3xl">2. Publish</h1>
+          <h1 className="text-3xl items-center flex flex-row">
+            2. Publish
+            <Publish className="w-11 h-11 ml-3 " />
+          </h1>
           <p className="text-base lg:text-xl">
             Publish messages from your backend in any language with the AWS SDK
             you already use.
@@ -34,7 +43,10 @@ function Sections() {
       </div>
       <div className="w-full lg:grid mt-6 lg:mt-12 lg:gap-3 lg:grid-cols-12 ">
         <div className="lg:col-span-4">
-          <h1 className="text-3xl">3. Subscribe</h1>
+          <h1 className="text-3xl flex flex-row items-center">
+            3. Subscribe
+            <Subscribe className="w-9 h-9 ml-3 " />
+          </h1>
           <p className="text-base lg:text-xl">
             Connect and subscribe to messages using the Hotsock JS library or
             using any WebSockets client.

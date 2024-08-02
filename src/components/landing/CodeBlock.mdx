@@ -21,48 +21,65 @@ aws cloudformation create-stack \\
 
 {/* PUBLISH */}
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "py" ? "flex" : "hidden"}`}>
-```js
-await lambdaClient.Invoke(new InvokeRequest
-  {
-    FunctionName = "Hotsock-PublishFunction-AAABBBCCCDDD",
-    Payload = "{\\"channel\\":\\"my-channel\\",\"event\\":\\"my-event\\",\\"data\\":\\"👋\\"}"
-  }
-  );
+```py
+lambda_client.invoke(
+    FunctionName='Hotsock-PublishFunction-AAABBBCCCDDD',
+    Payload=json.dumps({
+        'channel': 'my-channel',
+        'event': 'my-event',
+        'data': '👋'
+    })
+)
 ```
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "node" ? "flex" : "hidden"}`}>
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "js" ? "flex" : "hidden"}`}>
 ```js
-lambdaClient.Invoke(context.TODO(), &lambda.InvokeInput{
-  FunctionName: aws.String("Hotsock-PublishFunction-AAABBBCCCDDD"),
-  Payload:      []byte(\`{"channel": "my-channel", "event": "my-event", "data": "👋"}\`),
-})
+lambdaClient.send(
+  new InvokeCommand({
+    FunctionName: "Hotsock-PublishFunction-AAABBBCCCDDD",
+    Payload: JSON.stringify({
+      channel: "my-channel",
+      event: "my-event",
+      data: "👋",
+    }),
+  })
+)
 ```
 </div>
 
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "go" ? "flex" : "hidden"}`}>
-```js
-lambdaClient.invoke(new InvokeRequest()
-  .withFunctionName("Hotsock-PublishFunction-AAABBBCCCDDD")
-  .withPayload("{\\"channel\\":\\"my-channel\\",\\"event\\":\\"my-event\\",\\"data\\":\\"👋\\"}"));
+```go
+lambdaClient.Invoke(context.TODO(), &lambda.InvokeInput{
+  FunctionName: aws.String("Hotsock-PublishFunction-AAABBBCCCDDD"),
+  Payload:      []byte(`{"channel": "my-channel", "event": "my-event", "data": "👋"}`),
+})
 ```
 </div>
 
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "java" ? "flex" : "hidden"}`}>
-```js
-lambdaClient.send(new InvokeCommand({
-  FunctionName: "Hotsock-PublishFunction-AAABBBCCCDDD",
-  Payload: JSON.stringify({
-    channel: "my-channel",
-    event: "my-event",
-    data: "👋"
-  })
-}))
+```java
+lambdaClient.invoke(new InvokeRequest()
+  .withFunctionName("Hotsock-PublishFunction-AAABBBCCCDDD")
+  .withPayload("{\"channel\":\"my-channel\",\"event\":\"my-event\",\"data\":\"👋\"}"));
 ```
 </div>
 
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "ruby" ? "flex" : "hidden"}`}>
-```js
+```ruby
+lambda_client.invoke({
+  function_name: 'Hotsock-PublishFunction-AAABBBCCCDDD',
+  payload: {
+    channel: 'my-channel',
+    event: 'my-event',
+    data: '👋'
+  }.to_json
+})
+```
+</div>
+
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "php" ? "flex" : "hidden"}`}>
+```php
 $lambdaClient->invoke([
   'FunctionName' => 'Hotsock-PublishFunction-AAABBBCCCDDD',
   'Payload' => json_encode([
@@ -74,29 +91,13 @@ $lambdaClient->invoke([
 ```
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "php" ? "flex" : "hidden"}`}>
-```js
-lambda_client.invoke(
-  FunctionName='Hotsock-PublishFunction-AAABBBCCCDDD',
-  Payload=json.dumps({
-    'channel': 'my-channel',
-    'event': 'my-event',
-    'data': '👋'
-  })
-)
-```
-</div>
-
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "csharp" ? "flex" : "hidden"}`}>
-```js
-lambda_client.invoke({
-  function_name: 'Hotsock-PublishFunction-AAABBBCCCDDD',
-  payload: {
-    channel: 'my-channel',
-    event: 'my-event',
-    data: '👋'
-  }.to_json
-})
+```csharp
+await lambdaClient.Invoke(new InvokeRequest
+  {
+    FunctionName = "Hotsock-PublishFunction-AAABBBCCCDDD",
+    Payload = "{\"channel\":\"my-channel\",\"event\":\"my-event\",\"data\":\"👋\"}"
+  });
 ```
 </div>
 
