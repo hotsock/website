@@ -26,8 +26,8 @@ function Sections() {
           </MDXContent>
         </div>
       </div>
-      <div className="w-full mt-6 lg:mt-12 lg:grid  lg:gap-12 lg:grid-cols-12 ">
-        <div className="lg:col-span-5 lg:col-start-8">
+      <div className="w-full lg:grid mt-6 lg:mt-12 lg:gap-3 lg:grid-cols-12 ">
+        <div className="lg:col-span-4">
           <h1 className="text-3xl items-center flex flex-row">
             2. Publish
             <Publish className="w-11 h-11 ml-3 " />
@@ -37,7 +37,7 @@ function Sections() {
             you already use.
           </p>
         </div>
-        <div className="w-full lg:col-start-1 lg:row-start-1 lg:col-span-7">
+        <div className="w-full lg:col-span-8">
           <TabsSection />
         </div>
       </div>
