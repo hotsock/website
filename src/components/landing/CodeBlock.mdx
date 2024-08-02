@@ -19,8 +19,8 @@ aws cloudformation create-stack \\
 ```
 </div>
 
-{/* SECOND */}
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 1 ? "flex" : "hidden"}`}>
+{/* PUBLISH */}
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "py" ? "flex" : "hidden"}`}>
 ```js
 await lambdaClient.Invoke(new InvokeRequest
   {
@@ -31,7 +31,7 @@ await lambdaClient.Invoke(new InvokeRequest
 ```
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 1 ? "flex" : "hidden"}`}>
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "node" ? "flex" : "hidden"}`}>
 ```js
 lambdaClient.Invoke(context.TODO(), &lambda.InvokeInput{
   FunctionName: aws.String("Hotsock-PublishFunction-AAABBBCCCDDD"),
@@ -40,7 +40,7 @@ lambdaClient.Invoke(context.TODO(), &lambda.InvokeInput{
 ```
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 1 ? "flex" : "hidden"}`}>
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "go" ? "flex" : "hidden"}`}>
 ```js
 lambdaClient.invoke(new InvokeRequest()
   .withFunctionName("Hotsock-PublishFunction-AAABBBCCCDDD")
@@ -48,7 +48,7 @@ lambdaClient.invoke(new InvokeRequest()
 ```
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 1 ? "flex" : "hidden"}`}>
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "java" ? "flex" : "hidden"}`}>
 ```js
 lambdaClient.send(new InvokeCommand({
   FunctionName: "Hotsock-PublishFunction-AAABBBCCCDDD",
@@ -61,7 +61,7 @@ lambdaClient.send(new InvokeCommand({
 ```
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 1 ? "flex" : "hidden"}`}>
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "ruby" ? "flex" : "hidden"}`}>
 ```js
 $lambdaClient->invoke([
   'FunctionName' => 'Hotsock-PublishFunction-AAABBBCCCDDD',
@@ -74,7 +74,7 @@ $lambdaClient->invoke([
 ```
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 1 ? "flex" : "hidden"}`}>
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "php" ? "flex" : "hidden"}`}>
 ```js
 lambda_client.invoke(
   FunctionName='Hotsock-PublishFunction-AAABBBCCCDDD',
@@ -87,7 +87,7 @@ lambda_client.invoke(
 ```
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 1 ? "flex" : "hidden"}`}>
+<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "csharp" ? "flex" : "hidden"}`}>
 ```js
 lambda_client.invoke({
   function_name: 'Hotsock-PublishFunction-AAABBBCCCDDD',

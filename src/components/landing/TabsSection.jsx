@@ -5,6 +5,37 @@ import { buttonVariants } from "../../lib/utils";
 import MDXContent from "@theme/MDXContent";
 import CodeBlock from "./CodeBlock.mdx";
 
+const GROUPS = [
+  {
+    title: "Python",
+    id: "py",
+  },
+  {
+    title: "Node",
+    id: "node",
+  },
+  {
+    title: "Go",
+    id: "go",
+  },
+  {
+    title: "Java",
+    id: "java",
+  },
+  {
+    title: "Ruby",
+    id: "ruby",
+  },
+  {
+    title: "PHP",
+    id: "php",
+  },
+  {
+    title: "C#",
+    id: "csharp",
+  },
+];
+
 const DATA = [
   {
     title: "First Fct",
@@ -30,53 +61,44 @@ function TabsSection() {
   const handleTabChange = (tabIndex) => {
     setSelectedTab(tabIndex);
   };
+  const [selectedGroup, setSelectedGroup] = React.useState("py");
+  const handleGroupChange = (group) => {
+    setSelectedGroup(group);
+  };
   return (
-    <Wrapper>
-      <div className="bg-accent/30 p-4 rounded-xl">
-        {/* selectors */}
-        <div className="w-full flex flex-row items-center">
+    <div className="bg-accent/30 p-4 rounded-xl">
+      {/* selectors */}
+      <div className="grid grid-cols-4 gap-0 w-full">
+        {GROUPS.map((grp, index) => (
           <span
-            onClick={() => handleTabChange(0)}
-            className={`flex-1 flex cursor-pointer rounded-r-none ${buttonVariants(
+            onClick={() => handleGroupChange(grp.id)}
+            className={`w-full flex cursor-pointer rounded-none ${buttonVariants(
               {
-                variant: selectedTab === 0 ? "outline" : "default",
+                variant: selectedGroup === grp.id ? "outline" : "default",
               }
-            )}`}
+            )} ${
+              index === 0
+                ? "rounded-tl-xl"
+                : index === 3
+                ? "rounded-tr-xl"
+                : index === 4
+                ? "rounded-bl-xl"
+                : index === 6
+                ? "rounded-br-xl"
+                : ""
+            }`}
           >
-            {DATA[0].title}
+            {grp.title}
           </span>
-          <span
-            onClick={() => handleTabChange(1)}
-            className={`flex-1 flex cursor-pointer rounded-none ${buttonVariants(
-              {
-                variant: selectedTab === 1 ? "outline" : "default",
-              }
-            )}`}
-          >
-            {DATA[1].title}
-          </span>
-          <span
-            onClick={() => handleTabChange(2)}
-            className={`flex-1 cursor-pointer flex rounded-l-none ${buttonVariants(
-              {
-                variant: selectedTab === 2 ? "outline" : "default",
-              }
-            )}`}
-          >
-            {DATA[2].title}
-          </span>
-        </div>
-        {/* content */}
-        <div className="mt-3 w-full min-w-full  items-center flex flex-col">
-          <p className="text-sm lg:text-lg lg:py-3">
-            {DATA[selectedTab].description}
-          </p>
-          <MDXContent>
-            <CodeBlock tab={selectedTab} />
-          </MDXContent>
-        </div>
+        ))}
       </div>
-    </Wrapper>
+      {/* content */}
+      <div className="mt-3 w-full min-w-full  items-center flex flex-col">
+        <MDXContent>
+          <CodeBlock tab={selectedGroup} />
+        </MDXContent>
+      </div>
+    </div>
   );
 }
 
