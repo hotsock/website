@@ -37,32 +37,40 @@ function TabsSection() {
         <div className="w-full flex flex-row items-center">
           <span
             onClick={() => handleTabChange(0)}
-            className={`flex-1 flex rounded-r-none ${buttonVariants({
-              variant: selectedTab === 0 ? "outline" : "default",
-            })}`}
+            className={`flex-1 flex cursor-pointer rounded-r-none ${buttonVariants(
+              {
+                variant: selectedTab === 0 ? "outline" : "default",
+              }
+            )}`}
           >
-            First Fct
+            {DATA[0].title}
           </span>
           <span
             onClick={() => handleTabChange(1)}
-            className={`flex-1 flex rounded-none ${buttonVariants({
-              variant: selectedTab === 1 ? "outline" : "default",
-            })}`}
+            className={`flex-1 flex cursor-pointer rounded-none ${buttonVariants(
+              {
+                variant: selectedTab === 1 ? "outline" : "default",
+              }
+            )}`}
           >
-            Second Fct
+            {DATA[1].title}
           </span>
           <span
             onClick={() => handleTabChange(2)}
-            className={`flex-1 flex rounded-l-none ${buttonVariants({
-              variant: selectedTab === 2 ? "outline" : "default",
-            })}`}
+            className={`flex-1 cursor-pointer flex rounded-l-none ${buttonVariants(
+              {
+                variant: selectedTab === 2 ? "outline" : "default",
+              }
+            )}`}
           >
-            Third Fct
+            {DATA[2].title}
           </span>
         </div>
         {/* content */}
         <div className="mt-3 w-full min-w-full  items-center flex flex-col">
-          <p className="text-sm">{DATA[selectedTab].description}</p>
+          <p className="text-sm lg:text-lg lg:py-3">
+            {DATA[selectedTab].description}
+          </p>
           <MDXContent>
             <CodeBlock tab={selectedTab} />
           </MDXContent>
