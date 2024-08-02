@@ -57,10 +57,6 @@ const DATA = [
 ];
 
 function TabsSection() {
-  const [selectedTab, setSelectedTab] = React.useState(0);
-  const handleTabChange = (tabIndex) => {
-    setSelectedTab(tabIndex);
-  };
   const [selectedGroup, setSelectedGroup] = React.useState("py");
   const handleGroupChange = (group) => {
     setSelectedGroup(group);
@@ -68,7 +64,7 @@ function TabsSection() {
   return (
     <div className="bg-accent/30 p-4 rounded-xl">
       {/* selectors */}
-      <div className="grid grid-cols-4 gap-0 w-full">
+      <div className="grid grid-cols-7 gap-0 w-full">
         {GROUPS.map((grp, index) => (
           <span
             onClick={() => handleGroupChange(grp.id)}
@@ -78,13 +74,13 @@ function TabsSection() {
               }
             )} ${
               index === 0
-                ? "rounded-tl-xl"
-                : index === 3
-                ? "rounded-tr-xl"
-                : index === 4
-                ? "rounded-bl-xl"
-                : index === 6
-                ? "rounded-br-xl"
+                ? "rounded-l-xl"
+                : // : index === 3
+                // ? "rounded-tr-xl"
+                // : index === 4
+                // ? "rounded-bl-xl"
+                index === 6
+                ? "rounded-r-xl"
                 : ""
             }`}
           >
