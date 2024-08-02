@@ -10,6 +10,7 @@ import HomepageSubscribe from "@site/src/components/HomepageSubscribe";
 
 import styles from "./index.module.css";
 import Hero from "../components/landing/Hero";
+import TabsSection from "../components/landing/TabsSection";
 
 function HomepageHeroImage({ name }) {
   const { siteConfig } = useDocusaurusContext();
@@ -62,10 +63,11 @@ export default function Home() {
         description="Hotsock is a real-time WebSockets service for your web and mobile applications, fully-managed and self-hosted in your AWS account."
       >
         <Hero />
+        <TabsSection />
         <main>
-          <HomepageInstall />
-          <HomepagePublish />
-          <HomepageSubscribe />
+          {/* <HomepageInstall /> */}
+          {/* <HomepagePublish />
+          <HomepageSubscribe /> */}
           <HomepageFeatures />
         </main>
       </Layout>
