@@ -74,7 +74,7 @@ function TabsSection() {
             onClick={() => handleGroupChange(grp.id)}
             className={`w-full flex cursor-pointer rounded-none ${buttonVariants(
               {
-                variant: selectedGroup === grp.id ? "outline" : "default",
+                variant: selectedGroup === grp.id ? "default" : "outline",
               }
             )} ${
               index === 0

@@ -63,7 +63,7 @@ export default function Home() {
         title={siteConfig.title}
         description="Hotsock is a real-time WebSockets service for your web and mobile applications, fully-managed and self-hosted in your AWS account."
       >
-        <Hero />
+        {/* <Hero /> */}
         <Sections />
         {/* <TabsSection /> */}
         <main>
