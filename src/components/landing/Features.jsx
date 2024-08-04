@@ -44,9 +44,12 @@ const FEATURES = [
 function Features() {
   return (
     <Wrapper>
-      <section className="flex mt-6 flex-col py-6 items-center">
-        <h1 className="text-3xl  lg:text-4xl">Features</h1>
-        <main className="grid gap-4 lg:gap-6 mt-4 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <section className="flex mt-12 flex-col py-6 items-center">
+        <div className="text-center">
+          <h1 className="text-3xl m-0  text-center lg:text-4xl">Features</h1>
+          <p className="mt-4 text-xl mb-8 ">What makes us different</p>
+        </div>
+        <main className="grid gap-4 lg:gap-6  w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature, idx) => (
             <div
               key={idx}

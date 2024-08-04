@@ -40,10 +40,13 @@ const TESTIMONIALS = [
 function Testimonials() {
   return (
     <Wrapper>
-      <section className="my-6">
-        <h1 className="text-3xl  text-center mb-8 lg:text-4xl">
-          What our customers say about us
-        </h1>
+      <section className="my-12">
+        <div className="text-center">
+          <h1 className="text-3xl m-0  text-center lg:text-4xl">
+            Testimonials
+          </h1>
+          <p className="mt-4 text-xl mb-8 ">What our customers say about us</p>
+        </div>
         <main>
           <Swiper
             modules={[Autoplay, Pagination]}
