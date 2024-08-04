@@ -12,6 +12,8 @@ import styles from "./index.module.css";
 import Hero from "../components/landing/Hero";
 import TabsSection from "../components/landing/TabsSection";
 import Sections from "../components/landing/Sections";
+import Features from "../components/landing/Features";
+import Testimonials from "../components/landing/Testimonials";
 
 function HomepageHeroImage({ name }) {
   const { siteConfig } = useDocusaurusContext();
@@ -65,13 +67,11 @@ export default function Home() {
       >
         <Hero />
         <Sections />
-        {/* <TabsSection /> */}
-        <main>
-          {/* <HomepageInstall /> */}
-          {/* <HomepagePublish />
-          <HomepageSubscribe /> */}
-          <HomepageFeatures />
-        </main>
+        {/* features */}
+        <Features />
+        {/* testimonials */}
+        <Testimonials />
+        {/* footer */}
       </Layout>
     </>
   );
