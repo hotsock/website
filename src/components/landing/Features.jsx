@@ -43,7 +43,7 @@ function Features() {
     <Wrapper>
       <section className="flex mt-6 flex-col py-6 items-center">
         <h1 className="text-3xl  lg:text-4xl">Features</h1>
-        <main className="grid gap-4 lg:gap-6 mt-4 w-full grid-cols-1 lg:grid-cols-3">
+        <main className="grid gap-4 lg:gap-6 mt-4 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature, idx) => (
             <div
               key={idx}
