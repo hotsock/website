@@ -1,9 +1,9 @@
 import React from "react";
 
-function Arrow({ props }) {
+function Arrow({ className }) {
   return (
     <svg
-      {...props}
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       width="18"
       height="14"

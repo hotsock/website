@@ -1,5 +1,8 @@
 import React from "react";
 import Wrapper from "../global/Wrapper";
+import Link from "@docusaurus/Link";
+import Arrow from "../../icons/arrow";
+import { buttonVariants } from "../../lib/utils";
 
 const FEATURES = [
   {
@@ -47,19 +50,41 @@ function Features() {
           {FEATURES.map((feature, idx) => (
             <div
               key={idx}
-              className="w-full bg-pink-100/60 dark:bg-slate-800 rounded-xl p-4"
+              className="w-full justify-between flex flex-col bg-pink-100/60 dark:bg-slate-800 rounded-xl p-4"
             >
-              {/* image */}
-              <div className="bg-slate-50/40 p-4 rounded-xl">
-                <img
-                  className="aspect-video"
-                  src={feature.src}
-                  alt={feature.title}
-                />
+              <div>
+                {/* image */}
+                <div className="bg-slate-50/40 p-4 rounded-xl">
+                  <img
+                    className="aspect-video"
+                    src={feature.src}
+                    alt={feature.title}
+                  />
+                </div>
+                <div className="mt-4 flex flex-col ">
+                  <h2 className="text-xl">{feature.title}</h2>
+                  <p>{feature.description}</p>
+                </div>
               </div>
-              <div className="mt-4">
-                <h2 className="text-xl">{feature.title}</h2>
-                <p>{feature.description}</p>
+              <div className="flex flex-1 items-end justify-end   ">
+                <Link
+                  className={` max-lg:w-full flex flex-row items-center group ${buttonVariants(
+                    {
+                      size: "sm",
+                      variant: "link",
+                    }
+                  )}`}
+                  href="/"
+                >
+                  <span
+                    className="mr-3  group-hover:mr-5
+              ease-in-out transition-all duration-200
+              "
+                  >
+                    Learn more
+                  </span>{" "}
+                  <Arrow className="fill-current mt-1 " />
+                </Link>
               </div>
             </div>
           ))}
