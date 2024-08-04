@@ -175,6 +175,7 @@ const config = {
             ],
           },
         ],
+        copyright: "h",
       },
       prism: {
         additionalLanguages: [

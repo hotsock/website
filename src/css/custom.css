@@ -67,3 +67,9 @@
 .swiper-pagination-bullet-active {
   background-color: var(--ifm-color-primary) !important;
 }
+
+@media (max-width: 768px) {
+  .footer__links .footer__col:nth-child(2) {
+    display: none;
+  }
+}
