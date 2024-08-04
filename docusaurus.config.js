@@ -1,9 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const { themes } = require("prism-react-renderer")
-const lightTheme = themes.github
-const darkTheme = themes.dracula
+const { themes } = require("prism-react-renderer");
+const lightTheme = themes.github;
+const darkTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -84,41 +84,97 @@ const config = {
         ],
       },
       footer: {
-        style: "dark",
+        style: "light",
         links: [
           {
-            title: "Docs",
             items: [
               {
-                label: "Get Started",
-                to: "/docs/",
+                html: `
+                    <img src="/img/hotsock-side-by-side.svg" alt="logo" width="114" height="51" />
+                 
+                  <p style="font-size: smaller;">Copyright © ${new Date().getFullYear()} JK Tech, Inc.</p>
+                `,
+              },
+            ],
+          },
+          {},
+
+          {
+            title: "DEVELOPERS",
+            items: [
+              {
+                label: "Docs",
+                to: "/",
+              },
+              {
+                label: "Tutorials",
+                to: "/",
+              },
+              {
+                label: "Status",
+                to: "/",
+              },
+              {
+                label: "Support",
+                to: "/",
+              },
+              {
+                label: "Sessions",
+                to: "/",
               },
             ],
           },
           {
-            title: "Community",
+            title: "COMPANY",
             items: [
               {
-                label: "X",
-                href: "https://x.com/gethotsock",
+                label: "Contact Sales",
+                to: "/",
               },
               {
-                label: "Mastodon",
-                href: "https://mastodon.social/@hotsock",
+                label: "User Stories",
+                to: "/",
+              },
+              {
+                label: "Support",
+                to: "/",
+              },
+              {
+                label: "Blog",
+                to: "/",
+              },
+              {
+                label: "Careers",
+                to: "/",
               },
             ],
           },
           {
-            title: "More",
+            title: "LEGAL",
             items: [
               {
-                label: "GitHub",
-                href: "https://github.com/hotsock",
+                label: "Terms & Conditions",
+                to: "/",
+              },
+              {
+                label: "Cookie Policy",
+                to: "/",
+              },
+              {
+                label: "Privacy Policy",
+                to: "/",
+              },
+              {
+                label: "Quotas",
+                to: "/",
+              },
+              {
+                label: "Security",
+                to: "/",
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} JK Tech, Inc.`,
       },
       prism: {
         additionalLanguages: [
@@ -141,11 +197,11 @@ const config = {
         name: "docusaurus-tailwindcss",
         configurePostCss(postcssOptions) {
           // Appends TailwindCSS and AutoPrefixer.
-          postcssOptions.plugins.push(require("tailwindcss"))
-          postcssOptions.plugins.push(require("autoprefixer"))
-          return postcssOptions
+          postcssOptions.plugins.push(require("tailwindcss"));
+          postcssOptions.plugins.push(require("autoprefixer"));
+          return postcssOptions;
         },
-      }
+      };
     },
   ],
 
@@ -156,6 +212,6 @@ const config = {
       src: "https://cdn.usefathom.com/script.js",
     },
   ],
-}
+};
 
-module.exports = config
+module.exports = config;
