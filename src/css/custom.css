@@ -63,3 +63,7 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
+.swiper-pagination-bullet-active {
+  background-color: var(--ifm-color-primary) !important;
+}
