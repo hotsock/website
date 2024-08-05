@@ -7,7 +7,7 @@ import Wrapper from "../global/Wrapper";
 const FEATURES = [
   {
     title: "Fully private",
-    imageUrl: "/img/undraw_docusaurus_react.svg",
+    imageUrl: "/img/private.png",
     description: (
       <>
         No one wants to learn their data was used for AI training or part of a
@@ -21,7 +21,7 @@ const FEATURES = [
   },
   {
     title: "Unlimited Everything",
-    imageUrl: "/img/undraw_docusaurus_tree.svg",
+    imageUrl: "/img/unlimited.png",
     description: (
       <>
         Design and incorporate{" "}
@@ -35,7 +35,7 @@ const FEATURES = [
   },
   {
     title: "Serverless",
-    imageUrl: "/img/undraw_docusaurus_mountain.svg",
+    imageUrl: "/img/serverless.png",
     description: (
       <>
         Powered by on-demand services such as{" "}
@@ -129,7 +129,7 @@ function ImageSection({ src, idx }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
       <motion.img
-        className="w-2/3 object-contain"
+        className="w-3/4 object-contain"
         src={src}
         alt={src}
         initial={{ opacity: 0, x: idx % 2 === 0 ? -100 : 100 }}
