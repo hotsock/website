@@ -9,7 +9,7 @@ import Subscribe from "../../icons/subscribe";
 
 function Sections() {
   return (
-    <div className="w-full py-12 bg-[rgb(255,230,242)] dark:bg-slate-900">
+    <div className="w-full py-12 bg-pink-50/70 dark:bg-slate-800">
       <Wrapper>
         <div className="w-full lg:grid lg:gap-3 lg:grid-cols-12 ">
           <div className="lg:col-span-4">
