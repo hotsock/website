@@ -9,7 +9,7 @@ import Subscribe from "../../icons/subscribe";
 
 function Sections() {
   return (
-    <div className="w-full py-12 bg-pink-50/70 dark:bg-slate-800">
+    <div className="w-full py-12 bg-[#FDF6FA] dark:bg-slate-800">
       <Wrapper>
         <div className="w-full lg:grid lg:gap-3 lg:grid-cols-12 ">
           <div className="lg:col-span-4">
@@ -21,7 +21,7 @@ function Sections() {
               Install in just 2 AWS CLI commands.
             </p>
           </div>
-          <div className="bg-accent/30 lg:col-span-8  pt-4 px-4 rounded-xl">
+          <div className="bg-[#FEE5EC] lg:col-span-8  pt-4 px-4 rounded-xl">
             <MDXContent>
               <CodeBlock tab={0} />
             </MDXContent>
