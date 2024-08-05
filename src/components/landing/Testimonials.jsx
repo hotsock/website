@@ -82,7 +82,7 @@ function Testimonials() {
 
 const Card = ({ name, title, image, comment }) => {
   return (
-    <div className="w-full bg-pink-50 rounded-xl flex flex-col items-start  text-left pt-8 pb-6 mb-12 cursor-pointer px-6">
+    <div className="w-full bg-pink-50 dark:bg-slate-800 rounded-xl flex flex-col items-start  text-left pt-8 pb-6 mb-12 cursor-pointer px-6">
       <p>{`" ${comment} "`}</p>
       <div className="flex flex-row items-center space-x-4">
         <img src={image} alt={name} className="w-10 h-10 rounded-full" />

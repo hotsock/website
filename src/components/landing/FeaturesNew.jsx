@@ -58,9 +58,9 @@ function NewFeatures() {
       <div className=" space-y-8 my-12">
         <div className="text-center">
           <h1 className="text-3xl m-0  text-center lg:text-4xl">Features</h1>
-          <p className="mt-4 text-xl mb-8 ">
+          {/* <p className="mt-4 text-xl mb-8 ">
             What makes us different from others
-          </p>
+          </p> */}
         </div>
         {FEATURES.map((feature, idx) => (
           <FeatureAnimation key={idx} idx={idx} feature={feature} />
