@@ -21,7 +21,7 @@ function Sections() {
               Install in just 2 AWS CLI commands.
             </p>
           </div>
-          <div className="bg-[#FEE5EC] lg:col-span-8  pt-4 px-4 rounded-xl">
+          <div className="bg-[#FEE5EC] dark:bg-accent/30 lg:col-span-8  pt-4 px-4 rounded-xl">
             <MDXContent>
               <CodeBlock tab={0} />
             </MDXContent>
@@ -53,7 +53,7 @@ function Sections() {
               using any WebSockets client.
             </p>
           </div>
-          <div className="bg-accent/30 lg:col-span-8  pt-4 px-4 rounded-xl">
+          <div className="bg-[#FEE5EC] dark:bg-accent/30  lg:col-span-8  pt-4 px-4 rounded-xl">
             <MDXContent>
               <CodeBlock tab={2} />
             </MDXContent>

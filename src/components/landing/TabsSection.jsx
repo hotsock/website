@@ -62,7 +62,7 @@ function TabsSection() {
     setSelectedGroup(group);
   };
   return (
-    <div className="bg-accent/30 p-4 rounded-xl">
+    <div className="dark:bg-accent/30 bg-[#FEE5EC]  p-4 rounded-xl">
       {/* selectors */}
       <div className="grid grid-cols-7 gap-0 w-full">
         {GROUPS.map((grp, index) => (
