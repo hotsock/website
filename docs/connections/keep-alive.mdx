@@ -5,7 +5,7 @@ Once a connection is established, you may want it to remain connected as long as
 AWS API Gateway WebSockets has [2 built-in timeouts](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#apigateway-execution-service-websocket-limits-table) to govern whether or not a connection is held open.
 
 1. If no messages are sent between the server and client for a 10-minute period, API Gateway closes the connection. (Idle Connection Timeout)
-1. All connections have a maximum duration of two hours. No exceptions. Clients must initiate a new connection ahead of the two hour mark or reconnect after being forcefully disconnected. (Connection duration for WebSocket API)
+1. All connections have a maximum duration of two hours. No exceptions. Clients must initiate a new connection at or ahead of the two hour mark or reconnect after being forcefully disconnected. (Connection duration for WebSocket API)
 
 _Please open tickets with AWS Support requesting that these limits be configurable. It's understandable that connections can't remain open forever, but a hard limit of 8 hours or longer would be swell. #awswishlist_
 

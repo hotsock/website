@@ -4,7 +4,11 @@ sidebar_label: Connect & Subscribe
 
 # Connect & Subscribe
 
-Now that you're able to [sign tokens](./authentication.mdx) with the [correct claims](./claims.mdx), we'll use a token to connect to the WebSocket, subscribe to a channel, and receive messages from the command line.
+Now that you're able to [sign tokens](./authentication.mdx) with the [correct claims](./claims.mdx), we'll use a token to connect to the WebSocket, subscribe to a channel, and publish/receive messages from the command line.
+
+The purpose of this guide is to demonstrate how the pieces fit together - signing, connecting, subscribing, and message publishing.
+
+If you want to try things out with a point-and-click graphical interface instead, check out the [web console](../server-api/web-console.mdx).
 
 ## Sign a token
 
@@ -26,7 +30,7 @@ First, we'll sign a token with an [`exp`](./claims.mdx#exp) claim, a [`scope`](.
 }
 ```
 
-The signed, encoded token value is `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTM5NjM5MDUsImNoYW5uZWxzIjp7ImdldC1zdGFydGVkLXdpdGgtaG90c29jayI6eyJzdWJzY3JpYmUiOnRydWV9fSwic2NvcGUiOiJjb25uZWN0In0.Ls62aNTexRTZGJfp5ei-hUO4XwhEn5hwgxBuUPD77k4`. [Here's an encoded/decoded breakdown](https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTM5NjM5MDUsImNoYW5uZWxzIjp7ImdldC1zdGFydGVkLXdpdGgtaG90c29jayI6eyJzdWJzY3JpYmUiOnRydWV9fSwic2NvcGUiOiJjb25uZWN0In0.Ls62aNTexRTZGJfp5ei-hUO4XwhEn5hwgxBuUPD77k4) of this token.
+The signed, encoded token value is `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTM5NjM5MDUsImNoYW5uZWxzIjp7ImdldC1zdGFydGVkLXdpdGgtaG90c29jayI6eyJzdWJzY3JpYmUiOnRydWV9fSwic2NvcGUiOiJjb25uZWN0In0.Ls62aNTexRTZGJfp5ei-hUO4XwhEn5hwgxBuUPD77k4`. [Here's the encoded/decoded breakdown](https://jwt.io/#debugger-io?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTM5NjM5MDUsImNoYW5uZWxzIjp7ImdldC1zdGFydGVkLXdpdGgtaG90c29jayI6eyJzdWJzY3JpYmUiOnRydWV9fSwic2NvcGUiOiJjb25uZWN0In0.Ls62aNTexRTZGJfp5ei-hUO4XwhEn5hwgxBuUPD77k4) of this token.
 
 In a real application, a signed token is safe to give to client applications. If it is tampered with in any way before being used, its signature will no longer be valid and the system will reject it from being used.
 
@@ -47,7 +51,7 @@ If the token is valid, you'll be connected and will receive an initial `hotsock.
 
 ## Subscribe to a channel
 
-You're connected, but are not subscribed to any channels. Until you subscribe, you won't receive any messages (except for a periodic keep-alive message).
+You're connected, but are not subscribed to any channels. Until you subscribe, you won't receive any messages (except for [periodic keep-alive messages](./keep-alive.mdx), if enabled).
 
 Let's subscribe to the "get-started-with-hotsock" channel authorized in the token. Send a message with the `hotsock.subscribe` event to the `get-started-with-hotsock` channel in JSON format.
 
@@ -77,7 +81,7 @@ aws lambda invoke \
   /dev/stdout
 ```
 
-The expected response to this function invocation is `{"id":null,"channel":"get-started-with-hotsock","event":"welcome"}`. More details on publishing with Lambda as well as request and response attributes in [message publishing](../server-api/publish-messages.mdx).
+The expected response to this function invocation is `{"id":null,"channel":"get-started-with-hotsock","event":"welcome"}`. More details on publishing with Lambda as well as request and response attributes in [message publishing](../server-api/publish-messages.mdx#publish-with-lambda).
 
 Over in your WebSocket connection window, the published message will be received by you, the channel subscriber.
 
@@ -85,7 +89,7 @@ Over in your WebSocket connection window, the published message will be received
 < {"id":"01H2BSNHFJXKF2XDFD8KMM36FF","event":"welcome","channel":"get-started-with-hotsock","data":"\ud83d\udc4b Hello from Hotsock! \u3053\u3093\u306b\u3061\u306f"}
 ```
 
-If you change the event name or the data value in the invoke payload and repeatedly invoke the function, you'll see additional messages received on the WebSocket.
+If you repeatedly invoke the publish function, you'll see additional messages received on the WebSocket.
 
 ### HTTP URL
 
@@ -107,7 +111,7 @@ curl -X "POST" "https://k6rcy6a2leyehqhlphlwkkuppm0xxubn.lambda-url.us-east-1.on
       }'
 ```
 
-The expected response to this request is `{"id":null,"channel":"get-started-with-hotsock","event":"welcome"}` with a `202 Accepted` HTTP response code. More details on publishing with HTTP as well as request and response attributes in [message publishing](../server-api/publish-messages.mdx).
+The expected response to this request is `{"id":null,"channel":"get-started-with-hotsock","event":"welcome"}` with a `202 Accepted` HTTP response code. More details on publishing with HTTP as well as request and response attributes in [message publishing](../server-api/publish-messages.mdx#publish-with-http-url).
 
 Over in your WebSocket connection window, the published message will be received by you, the channel subscriber.
 
