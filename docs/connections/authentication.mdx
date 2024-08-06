@@ -88,17 +88,17 @@ You'll be prompted with the "Prepare template" screen and can keep "Use current 
 
 ![Step 1 - Use current template option](../../static/img/screenshots/authentication-main-stack-update-step-1.png)
 
-1. For the `SigningKey1EncodedParameter`, paste the Base64 encoded value you calculated in the previous step.
+1. For the "Signing Key 1 - Signing method" (`SigningKey1MethodParameter` via CLI) parameter, choose your desired signing method. Ensure that the SHA algorithm (256, 384, or 512) matches what is set by your token issuer. You can verify this by inspecting the `alg` value in the header portion of an issued JWT.
 
-1. If your token issuer sets a `kid` header for this key, set `SigningKey1IDParameter` to this value. Otherwise leave it blank. If specified, JWTs signed with this key must include the `kid` header matching this value.
+1. If your token issuer sets a `kid` header for this key, set "Signing Key 1 - Key ID" (`SigningKey1IDParameter` via CLI) to this value. Otherwise leave it blank. If specified, JWTs signed with this key must include the `kid` header matching this value.
 
-1. For the `SigningKey1MethodParameter`, choose your desired signing method. Ensure that the SHA algorithm (256, 384, or 512) matches what is set by your token issuer. You can verify this by inspecting the `alg` value in the header portion of an issued JWT.
+1. For the "Signing Key 1 - Encoded key" (`SigningKey1EncodedParameter` via CLI) parameter, paste the Base64 encoded value you calculated in the previous step.
 
-1. We recommend setting `TokenAudienceParameter`, but it is not required. `hotsock` or `hotsock-eu-west-1` (your installation's region) are reasonable values here, and if set, all signed JWTs must include the `aud` claim set to the value specified in this parameter. This ensures that valid tokens signed for other services with the same private key cannot be unexpectedly used as a Hotsock token.
+1. We recommend setting "Other Key Settings - Token audience" (`TokenAudienceParameter` via CLI), but it is not required. `hotsock` or `hotsock-eu-west-1` (your installation's region) are reasonable values here, and if set, all signed JWTs must include the `aud` claim set to the value specified in this parameter. This ensures that valid tokens signed for other services with the same private key cannot be unexpectedly used as a Hotsock token.
 
-1. We recommend setting `TokenIssuerParameter`, but it is not required. `my-application-name` (your application) is a reasonable values here, and if set, all signed JWTs must include the `iss` claim set to the value specified in this parameter.
+1. We recommend setting "Other Key Settings - Token issuer" (`TokenIssuerParameter` via CLI), but it is not required. `my-application-name` (your application) is a reasonable values here, and if set, all signed JWTs must include the `iss` claim set to the value specified in this parameter.
 
-Leave all `SigningKey2*` parameters blank for now. Those secondary key parameters are for zero-downtime key rotation.
+You can typically leave all `Signing Key 2*` parameters blank. Those secondary key parameters are for zero-downtime key rotation.
 
 ![Step 2 - CloudFormation stack parameters form](../../static/img/screenshots/authentication-main-stack-update-step-2-part-1.png)
 
@@ -128,6 +128,6 @@ Additional Hotsock libraries for various languages are coming soon.
 
 For development and testing of token signing, [JWT Web Tool](https://dinochiesa.github.io/jwt/) is fantastic and JWT.io has a [comprehensive list of signing libraries](https://jwt.io/libraries) available.
 
-Each installation also includes a handy web console where you can ensure issued tokens work as expected. Grab the URL from the [WebConsoleHttpUrl](../installation/initial-setup.mdx#WebConsoleHttpUrl) stack output and paste a valid token to connect.
+Each installation also includes a handy [web console](../server-api/web-console.mdx) where you can ensure issued tokens work as expected. Grab the URL from the [WebConsoleHttpUrl](../installation/initial-setup.mdx#WebConsoleHttpUrl) stack output and paste a valid token to connect.
 
 Once you're able to sign tokens and have the Hotsock stack configured for your signing method, you'll want to [add some claims](./claims.mdx).
