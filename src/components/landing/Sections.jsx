@@ -21,9 +21,11 @@ function Sections() {
             <p className="text-base lg:text-xl">
               Install in just 2 AWS CLI commands from AWS CloudShell.
             </p>
-            <Link to={"/docs/installation/initial-setup/"}>View full installation docs</Link>
+            <Link to={"/docs/installation/initial-setup/"}>
+              View full installation docs
+            </Link>
           </div>
-          <div className="bg-[#FEE5EC] dark:bg-accent/30 lg:col-span-8  pt-4 px-4 rounded-xl">
+          <div className="bg-[#FEE5EC] max-lg:mt-5 dark:bg-accent/30 lg:col-span-8  pt-4 px-4 rounded-xl">
             <MDXContent>
               <CodeBlock tab={0} />
             </MDXContent>
@@ -39,9 +41,11 @@ function Sections() {
               Publish messages from your backend in any language with the AWS
               SDK you already use.
             </p>
-            <Link to={"/docs/server-api/publish-messages/"}>View publish docs</Link>
+            <Link to={"/docs/server-api/publish-messages/"}>
+              View publish docs
+            </Link>
           </div>
-          <div className="w-full lg:col-span-8">
+          <div className="w-full  max-lg:mt-5  lg:col-span-8">
             <TabsSection />
           </div>
         </div>
@@ -52,12 +56,17 @@ function Sections() {
               <Subscribe className="w-9 h-9 ml-3 " />
             </h1>
             <p className="text-base lg:text-xl">
-              Connect and subscribe to messages using the <Link to={"https://github.com/hotsock/hotsock-js"}>Hotsock JS</Link> library or
-              using any WebSockets client.
+              Connect and subscribe to messages using the{" "}
+              <Link to={"https://github.com/hotsock/hotsock-js"}>
+                Hotsock JS
+              </Link>{" "}
+              library or using any WebSockets client.
             </p>
-            <Link to={"/docs/connections/connect-and-subscribe/"}>View connect and subscribe docs</Link>
+            <Link to={"/docs/connections/connect-and-subscribe/"}>
+              View connect and subscribe docs
+            </Link>
           </div>
-          <div className="bg-[#FEE5EC] dark:bg-accent/30  lg:col-span-8  pt-4 px-4 rounded-xl">
+          <div className="bg-[#FEE5EC]  max-lg:mt-5  dark:bg-accent/30  lg:col-span-8  pt-4 px-4 rounded-xl">
             <MDXContent>
               <CodeBlock tab={2} />
             </MDXContent>
