@@ -1,9 +1,10 @@
-import React from "react"
-import Github from "../../../icons/github"
-import Discord from "../../../icons/discord"
-import Youtube from "../../../icons/youtube"
-import Twitter from "../../../icons/x"
-import Linkedin from "../../../icons/linkedin"
+import React from "react";
+import Github from "../../../icons/github";
+import Discord from "../../../icons/discord";
+import Youtube from "../../../icons/youtube";
+import Twitter from "../../../icons/x";
+import Linkedin from "../../../icons/linkedin";
+import Mastodon from "../../../icons/mastodon";
 export default function FooterCopyright({ copyright }) {
   return (
     <div
@@ -37,6 +38,12 @@ export default function FooterCopyright({ copyright }) {
         >
           <Twitter className="w-8 h-8  hover:!fill-current" />
         </a>
+        <a
+          href="https://x.com/gethotsock"
+          className="fill-black dark:fill-white hover:fill-primary dark:hover:fill-primary"
+        >
+          <Mastodon className="w-8 h-8  hover:!fill-current" />
+        </a>
         {/* <a
           href="/"
           className="fill-black dark:fill-white hover:fill-primary dark:hover:fill-primary"
@@ -45,5 +52,5 @@ export default function FooterCopyright({ copyright }) {
         </a> */}
       </div>
     </div>
-  )
+  );
 }
