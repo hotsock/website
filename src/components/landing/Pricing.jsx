@@ -1,16 +1,22 @@
 import React from "react";
 import Wrapper from "../global/Wrapper";
 import Link from "@docusaurus/Link";
+import { buttonVariants } from "../../lib/utils";
+import Arrow from "../../icons/arrow";
 
 function PricingTable() {
   return (
     <Wrapper className="">
-      <h1 className="text-center w-full py-4 mt-4">Start for free, then pay as you grow.</h1>
+      <h1 className="text-center w-full py-4 mt-4">
+        Start for free, then pay as you grow.
+      </h1>
       <p className="mt-4 text-xl mb-8 ">
-        New installations have <strong className="text-primary">Free Tier access forever</strong>, which includes
-        all features but is capped at 1 million free WebSockets messages per
-        month. Paid Tier options remove these limits and add access to email support!
-        {" "}<Link to={"/docs/licensing/pricing/"}>Learn more</Link>
+        New installations have{" "}
+        <strong className="text-primary">Free Tier access forever</strong>,
+        which includes all features but is capped at 1 million free WebSockets
+        messages per month. Paid Tier options remove these limits and add access
+        to email support!{" "}
+        <Link to={"/docs/licensing/pricing/"}>Learn more</Link>
       </p>
       <div className="w-full max-w-full overflow-x-auto">
         <main className="grid  w-full   py-4 gap-0  grid-cols-12 max-md:grid-cols-10">
@@ -81,6 +87,26 @@ function PricingTable() {
             <div className="table-item !border-b-0  !font-normal">Priority</div>
           </div>
         </main>
+      </div>
+
+      <div className="w-full items-center justify-center flex flex-col">
+        <Link
+          className={`flex my-6  max-lg:w-full flex-row items-center  group ${buttonVariants(
+            {
+              size: "lg",
+            }
+          )}`}
+          href="/docs/installation/initial-setup/"
+        >
+          <span
+            className="mr-3  group-hover:mr-5
+              ease-in-out transition-all duration-200
+              "
+          >
+            Launch your installation
+          </span>{" "}
+          <Arrow className="fill-current " />
+        </Link>
       </div>
     </Wrapper>
   );
