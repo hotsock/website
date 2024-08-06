@@ -15,28 +15,36 @@ function PricingTable() {
             <div className="table-item">$299/month or $3,229/year</div>
             <div className="table-item">$599/month or $6,469/year</div>
             <div className="table-item">$1,299/month or $14,029/year</div>
-            <div className="table-item">$2,799/month or $30,229/year</div>
+            <div className="table-item  !border-b-0 ">
+              $2,799/month or $30,229/year
+            </div>
           </div>
           {/* second column */}
           <div className="w-full flex col-span-4 border-l border-solid border-y-0 border-gray-400 border-r flex-col items-center text-center min-h-fit ">
             <div className="table-title">Included messages per month</div>
             <div className="table-item !font-normal">
-              1 million free messages each month, then pay as you go
+              1 million free messages each month,
+              <br /> then pay as you go
             </div>
             <div className="table-item !font-normal">
-              300 million (~10 million per day) $0.50 per additional million
+              300 million (~10 million per day) <br />
+              $0.50 per additional million
             </div>
             <div className="table-item !font-normal">
-              1.5 billion (~50 million per day) $0.45 per additional million
+              1.5 billion (~50 million per day) <br />
+              $0.45 per additional million
             </div>
             <div className="table-item !font-normal">
-              7.5 billion (~250 million per day) $0.40 per additional million
+              7.5 billion (~250 million per day) <br />
+              $0.40 per additional million
             </div>
             <div className="table-item !font-normal">
-              30 billion (~1 billion per day) $0.35 per additional million
+              30 billion (~1 billion per day) <br />
+              $0.35 per additional million
             </div>
-            <div className="table-item !font-normal">
-              150 billion (~5 billion per day) $0.30 per additional million
+            <div className="table-item !border-b-0  !font-normal">
+              150 billion (~5 billion per day) <br />
+              $0.30 per additional million
             </div>
           </div>
           {/* third column */}
@@ -51,7 +59,7 @@ function PricingTable() {
             <div className="table-item !font-normal">
               100 accounts, all regions
             </div>
-            <div className="table-item !font-normal">
+            <div className="table-item !border-b-0 !font-normal">
               500 accounts, all regions
             </div>
           </div>
@@ -63,7 +71,7 @@ function PricingTable() {
             <div className="table-item !font-normal">Priority</div>
             <div className="table-item !font-normal">Priority</div>
             <div className="table-item !font-normal">Priority</div>
-            <div className="table-item !font-normal">Priority</div>
+            <div className="table-item !border-b-0  !font-normal">Priority</div>
           </div>
         </main>
       </div>

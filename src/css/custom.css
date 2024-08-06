@@ -82,7 +82,7 @@
 }
 
 .table-item {
-  @apply lg:text-lg px-2 md:text-sm items-center justify-center flex text-xs h-24 w-full py-4 font-semibold border-solid !border-b-[1px] border-t-0 border-x-0 border-gray-400 ;
+  @apply lg:text-lg px-2 md:text-sm items-center justify-center flex text-xs h-24 w-full py-4 font-semibold border-solid border-b-[1px] border-t-0 border-x-0 border-gray-400 ;
 }
 .sub-table span {
   @apply h-full flex flex-col items-center justify-center;
