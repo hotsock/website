@@ -4,7 +4,7 @@ Presence channels build on [standard channels](./standard.mdx) by allowing all s
 
 It's great for things like chat rooms and document collaboration, where everyone there can be made aware of who else is present.
 
-Each member in a presence channel has a `uid` field to identify the user and a `umd` field to supply additional user data. These attributes are supplied by authentication or subscription token claims ([`uid`](../connections/claims.mdx#uid) and [`umd`](../connections/claims.mdx#umd)) and shared with all other members of the channel.
+Each member in a presence channel has a `uid` field to identify the user and a `umd` field to supply additional data specific to this user. These attributes are supplied by authentication or subscription token claims ([`uid`](../connections/claims.mdx#uid) and [`umd`](../connections/claims.mdx#umd)) and shared with all other members of the channel.
 
 :::tip
 Presence channel names must have a `presence.` prefix.
