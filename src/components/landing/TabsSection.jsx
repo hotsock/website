@@ -67,6 +67,7 @@ function TabsSection() {
       <div className="grid grid-cols-7 gap-0 w-full">
         {GROUPS.map((grp, index) => (
           <span
+            key={index}
             onClick={() => handleGroupChange(grp.id)}
             className={`w-full flex cursor-pointer rounded-none ${buttonVariants(
               {

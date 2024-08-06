@@ -11,11 +11,11 @@ function Arrow({ className }) {
     >
       <g
         fill="none"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
       >
         <path d="M1 7h16M11 1l6 6-6 6"></path>
       </g>
