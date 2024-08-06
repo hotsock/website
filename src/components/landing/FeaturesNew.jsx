@@ -35,7 +35,7 @@ const FEATURES = [
   // },
   {
     title: "Presence Channels",
-    imageUrl: "",
+    imageUrl: "/img/chat.png",
     description: (
       <>
         Track who's online or what devices are currently subscribed to the same
@@ -43,26 +43,27 @@ const FEATURES = [
         awareness of other active participants.
       </>
     ),
-    target: "/docs/channels/presence/"
+    target: "/docs/channels/presence/",
   },
   {
     title: "Custom Domains",
-    imageUrl: "",
+    imageUrl: "/img/domains.png",
     description: (
       <>
         Maintain consistent branding and customer trust by keeping WebSocket
         connections on your own domain name.
       </>
     ),
-    target: "/docs/installation/custom-domains/"
+    target: "/docs/installation/custom-domains/",
   },
   {
     title: "Web Console",
-    imageUrl: "/assets/images/web-console-connected.png",
+    // imageUrl: "/img/console.png",
+    imageUrl: "/img/console-1.png",
     description: (
       <>
-        Easily debug and test JWT validation, token claims, connections,
-        channel subscriptions, and messages.
+        Easily debug and test JWT validation, token claims, connections, channel
+        subscriptions, and messages.
       </>
     ),
     target: "/docs/server-api/web-console",
@@ -91,7 +92,9 @@ function NewFeatures() {
     <Wrapper>
       <div className="space-y-8 my-12">
         <div className="text-center">
-          <h1 className="text-3xl m-0 text-center lg:text-4xl">Just some of the features...</h1>
+          <h1 className="text-3xl m-0 text-center lg:text-4xl">
+            Just some of the features...
+          </h1>
         </div>
         {FEATURES.map((feature, idx) => (
           <FeatureAnimation key={idx} idx={idx} feature={feature} />
