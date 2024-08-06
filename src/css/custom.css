@@ -71,6 +71,10 @@
   background-color: var(--ifm-color-primary) !important;
 }
 
+[data-theme='dark'] .swiper-pagination-bullet {
+  background-color: var(--ifm-color-primary-light) !important;
+}
+
 @media (max-width: 768px) {
   .footer__links .footer__col:nth-child(2) {
     display: none;
