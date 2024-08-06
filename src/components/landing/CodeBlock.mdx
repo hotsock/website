@@ -1,39 +1,55 @@
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 0 ? "flex" : "hidden"}`}>
-```shell
-aws cloudformation create-stack \\
-    --stack-name HotsockInstallerPermissions \\
-    --template-url https://hotsock-stack-templates-us-west-2.s3.us-west-2.amazonaws.com/installer-permissions.yml \\
-    --capabilities CAPABILITY_NAMED_IAM \\
-    --tags Key=hotsock:service,Value=Hotsock
-```
-</div>
+<div
+  className={`w-full  flex-col icem !max-w-full min-w-full ${
+    props.tab === 0 ? "flex" : "hidden"
+  }`}
+>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 0 ? "flex" : "hidden"}`}>
-```shell
-aws cloudformation create-stack \\
-  --stack-name Hotsock \\
-  --template-url https://hotsock-stack-templates-\${AWS_REGION}.s3.\${AWS_REGION}.amazonaws.com/hotsock-v1.x.yml \\
-  --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \\
-  --role-arn arn:aws:iam::$(aws sts get-caller-identity --query "Account" --output text):role/hotsock/HotsockInstallerRole \\
+```text
+aws cloudformation create-stack \
+  --stack-name HotsockInstallerPermissions \
+  --template-url https://hotsock-stack-templates-us-west-2.s3.us-west-2.amazonaws.com/installer-permissions.yml \
+  --capabilities CAPABILITY_NAMED_IAM \
   --tags Key=hotsock:service,Value=Hotsock
 ```
+
+</div>
+
+<div
+  className={`w-full  flex-col icem !max-w-full min-w-full ${
+    props.tab === 0 ? "flex" : "hidden"
+  }`}
+>
+
+```text
+aws cloudformation create-stack \
+  --stack-name Hotsock \
+  --template-url https://hotsock-stack-templates-${AWS_REGION}.s3.${AWS_REGION}.amazonaws.com/hotsock-v1.x.yml \
+  --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
+  --role-arn arn:aws:iam::$(aws sts get-caller-identity --query "Account" --output text):role/hotsock/HotsockInstallerRole \
+  --tags Key=hotsock:service,Value=Hotsock
+```
+
 </div>
 
 {/* PUBLISH */}
+
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "py" ? "flex" : "hidden"}`}>
+
 ```py
 lambda_client.invoke(
-    FunctionName='Hotsock-PublishFunction-AAABBBCCCDDD',
-    Payload=json.dumps({
-        'channel': 'my-channel',
-        'event': 'my-event',
-        'data': '👋'
-    })
+  FunctionName='Hotsock-PublishFunction-AAABBBCCCDDD',
+  Payload=json.dumps({
+    'channel': 'my-channel',
+    'event': 'my-event',
+    'data': '👋'
+  })
 )
 ```
+
 </div>
 
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "js" ? "flex" : "hidden"}`}>
+
 ```js
 lambdaClient.send(
   new InvokeCommand({
@@ -46,26 +62,32 @@ lambdaClient.send(
   })
 )
 ```
+
 </div>
 
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "go" ? "flex" : "hidden"}`}>
+
 ```go
 lambdaClient.Invoke(context.TODO(), &lambda.InvokeInput{
   FunctionName: aws.String("Hotsock-PublishFunction-AAABBBCCCDDD"),
   Payload:      []byte(`{"channel": "my-channel", "event": "my-event", "data": "👋"}`),
 })
 ```
+
 </div>
 
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "java" ? "flex" : "hidden"}`}>
+
 ```java
 lambdaClient.invoke(new InvokeRequest()
   .withFunctionName("Hotsock-PublishFunction-AAABBBCCCDDD")
   .withPayload("{\"channel\":\"my-channel\",\"event\":\"my-event\",\"data\":\"👋\"}"));
 ```
+
 </div>
 
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "ruby" ? "flex" : "hidden"}`}>
+
 ```ruby
 lambda_client.invoke({
   function_name: 'Hotsock-PublishFunction-AAABBBCCCDDD',
@@ -76,9 +98,15 @@ lambda_client.invoke({
   }.to_json
 })
 ```
+
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "php" ? "flex" : "hidden"}`}>
+<div
+  className={`w-full  flex-col icem !max-w-full min-w-full ${
+    props.tab === "php" ? "flex" : "hidden"
+  }`}
+>
+
 ```php
 $lambdaClient->invoke([
   'FunctionName' => 'Hotsock-PublishFunction-AAABBBCCCDDD',
@@ -89,9 +117,15 @@ $lambdaClient->invoke([
   ]),
 ]);
 ```
+
 </div>
 
-<div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === "csharp" ? "flex" : "hidden"}`}>
+<div
+  className={`w-full  flex-col icem !max-w-full min-w-full ${
+    props.tab === "csharp" ? "flex" : "hidden"
+  }`}
+>
+
 ```csharp
 await lambdaClient.Invoke(new InvokeRequest
   {
@@ -99,16 +133,16 @@ await lambdaClient.Invoke(new InvokeRequest
     Payload = "{\"channel\":\"my-channel\",\"event\":\"my-event\",\"data\":\"👋\"}"
   });
 ```
+
 </div>
 
 <div className={`w-full  flex-col icem !max-w-full min-w-full ${props.tab === 2 ? "flex" : "hidden"}`}>
+
 ```js
-const hotsock = new HotsockClient(
-  "wss://996iaxdp6g.execute-api.us-east-1.amazonaws.com/v1",
-  {
-    connectTokenFn: () =>
-      "eyJhbGciOiJFUzI1NiIsIm...",
-  }
-)
+const hotsock = new HotsockClient("wss://real-time.example.com", {
+  connectTokenFn: () => "eyJhbGciOiJFUzI1NiIsIm...",
+})
+hotsock.channels("my-channel").bind("my-event", myEventFn)
 ```
+
 </div>

@@ -1,9 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const { themes } = require("prism-react-renderer");
-const lightTheme = themes.github;
-const darkTheme = themes.dracula;
+const { themes } = require("prism-react-renderer")
+const lightTheme = themes.github
+const darkTheme = themes.dracula
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -90,8 +90,7 @@ const config = {
             items: [
               {
                 html: `
-                    <img src="/img/hotsock-side-by-side.svg" alt="logo" width="114" height="51" />
-                 
+                  <img src="/img/hotsock-side-by-side.svg" alt="logo" width="114" height="51" />
                   <p style="font-size: smaller;">Copyright © ${new Date().getFullYear()} JK Tech, Inc.</p>
                 `,
               },
@@ -104,23 +103,11 @@ const config = {
             items: [
               {
                 label: "Docs",
-                to: "/",
-              },
-              {
-                label: "Tutorials",
-                to: "/",
-              },
-              {
-                label: "Status",
-                to: "/",
+                to: "/docs/",
               },
               {
                 label: "Support",
-                to: "/",
-              },
-              {
-                label: "Sessions",
-                to: "/",
+                to: "mailto:support@hotsock.io",
               },
             ],
           },
@@ -128,24 +115,8 @@ const config = {
             title: "COMPANY",
             items: [
               {
-                label: "Contact Sales",
-                to: "/",
-              },
-              {
-                label: "User Stories",
-                to: "/",
-              },
-              {
-                label: "Support",
-                to: "/",
-              },
-              {
                 label: "Blog",
-                to: "/",
-              },
-              {
-                label: "Careers",
-                to: "/",
+                to: "/blog/",
               },
             ],
           },
@@ -157,19 +128,7 @@ const config = {
                 to: "/",
               },
               {
-                label: "Cookie Policy",
-                to: "/",
-              },
-              {
                 label: "Privacy Policy",
-                to: "/",
-              },
-              {
-                label: "Quotas",
-                to: "/",
-              },
-              {
-                label: "Security",
                 to: "/",
               },
             ],
@@ -198,11 +157,11 @@ const config = {
         name: "docusaurus-tailwindcss",
         configurePostCss(postcssOptions) {
           // Appends TailwindCSS and AutoPrefixer.
-          postcssOptions.plugins.push(require("tailwindcss"));
-          postcssOptions.plugins.push(require("autoprefixer"));
-          return postcssOptions;
+          postcssOptions.plugins.push(require("tailwindcss"))
+          postcssOptions.plugins.push(require("autoprefixer"))
+          return postcssOptions
         },
-      };
+      }
     },
   ],
 
@@ -213,6 +172,6 @@ const config = {
       src: "https://cdn.usefathom.com/script.js",
     },
   ],
-};
+}
 
-module.exports = config;
+module.exports = config

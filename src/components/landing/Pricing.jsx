@@ -1,10 +1,17 @@
 import React from "react";
 import Wrapper from "../global/Wrapper";
+import Link from "@docusaurus/Link";
 
 function PricingTable() {
   return (
     <Wrapper className="">
-      <h1 className="text-center w-full py-4 mt-4">Pricing Plans</h1>
+      <h1 className="text-center w-full py-4 mt-4">Start for free, then pay as you grow.</h1>
+      <p className="mt-4 text-xl mb-8 ">
+        New installations have <strong className="text-primary">Free Tier access forever</strong>, which includes
+        all features but is capped at 1 million free WebSockets messages per
+        month. Paid Tier options remove these limits and add access to email support!
+        {" "}<Link to={"/docs/licensing/pricing/"}>Learn more</Link>
+      </p>
       <div className="w-full max-w-full overflow-x-auto">
         <main className="grid  w-full   py-4 gap-0  grid-cols-12 max-md:grid-cols-10">
           {/* first column */}

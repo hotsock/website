@@ -28,14 +28,14 @@ function Hero() {
                   size: "lg",
                 }
               )}`}
-              href="/"
+              href="/docs/installation/initial-setup/"
             >
               <span
                 className="mr-3  group-hover:mr-5
               ease-in-out transition-all duration-200
               "
               >
-                Start building
+                Launch your installation
               </span>{" "}
               <Arrow className="fill-current " />
             </Link>
@@ -49,23 +49,21 @@ function Hero() {
               href="/"
             >
               <span
-                className="mr-3  group-hover:mr-5
-              ease-in-out transition-all duration-200
+                className="mr-3
               "
               >
-                Get a demo
-              </span>{" "}
-              <Arrow className="fill-current " />
+                See a demo
+              </span>
             </Link>
           </div>
           <div className="flex flex-col lg:flex-row items-center justify-center max-lg:space-y-2 lg:space-x-6 mt-6">
             <p className="max-lg:m-0 flex flex-row items-center space-x-2">
               <Chart />
-              <span>99.99% call success rate</span>
+              <span>Automatically scales to your workload</span>
             </p>
             <p className="flex flex-row items-center space-x-2">
               <Certificate />
-              <span>SOC2 and GDPR compliant</span>
+              <span>Supported in 22 regions around the world</span>
             </p>
           </div>
         </div>

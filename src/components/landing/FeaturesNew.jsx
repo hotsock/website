@@ -6,7 +6,7 @@ import Wrapper from "../global/Wrapper";
 
 const FEATURES = [
   {
-    title: "Fully private",
+    title: "Security on your terms",
     imageUrl: "/img/private.png",
     description: (
       <>
@@ -19,19 +19,53 @@ const FEATURES = [
     ),
     target: "",
   },
+  // {
+  //   title: "Unlimited Everything",
+  //   imageUrl: "/img/unlimited.png",
+  //   description: (
+  //     <>
+  //       Design and incorporate{" "}
+  //       <strong className="text-primary">real-time messaging</strong> the way
+  //       that makes the most sense for your applications with{" "}
+  //       <strong className="text-primary">unlimited</strong> connections,
+  //       channels, and messages.
+  //     </>
+  //   ),
+  //   target: "",
+  // },
   {
-    title: "Unlimited Everything",
-    imageUrl: "/img/unlimited.png",
+    title: "Presence Channels",
+    imageUrl: "",
     description: (
       <>
-        Design and incorporate{" "}
-        <strong className="text-primary">real-time messaging</strong> the way
-        that makes the most sense for your applications with{" "}
-        <strong className="text-primary">unlimited</strong> connections,
-        channels, and messages.
+        Track who's online or what devices are currently subscribed to the same
+        channel. Great for chat rooms and document collaboration where you need
+        awareness of other active participants.
       </>
     ),
-    target: "",
+    target: "/docs/channels/presence/"
+  },
+  {
+    title: "Custom Domains",
+    imageUrl: "",
+    description: (
+      <>
+        Maintain consistent branding and customer trust by keeping WebSocket
+        connections on your own domain name.
+      </>
+    ),
+    target: "/docs/installation/custom-domains/"
+  },
+  {
+    title: "Web Console",
+    imageUrl: "/assets/images/web-console-connected.png",
+    description: (
+      <>
+        Easily debug and test JWT validation, token claims, connections,
+        channel subscriptions, and messages.
+      </>
+    ),
+    target: "/docs/server-api/web-console",
   },
   {
     title: "Serverless",
@@ -55,12 +89,9 @@ const FEATURES = [
 function NewFeatures() {
   return (
     <Wrapper>
-      <div className=" space-y-8 my-12">
+      <div className="space-y-8 my-12">
         <div className="text-center">
-          <h1 className="text-3xl m-0  text-center lg:text-4xl">Features</h1>
-          {/* <p className="mt-4 text-xl mb-8 ">
-            What makes us different from others
-          </p> */}
+          <h1 className="text-3xl m-0 text-center lg:text-4xl">Just some of the features...</h1>
         </div>
         {FEATURES.map((feature, idx) => (
           <FeatureAnimation key={idx} idx={idx} feature={feature} />
