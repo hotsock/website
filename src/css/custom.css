@@ -63,6 +63,9 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+[data-theme='dark'] .hero-bg {
+  background-image: url('/img/bg/grid-black.svg');
+}
 
 .swiper-pagination-bullet-active {
   background-color: var(--ifm-color-primary) !important;
