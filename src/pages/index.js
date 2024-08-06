@@ -5,6 +5,7 @@ import Hero from "../components/landing/Hero";
 import Sections from "../components/landing/Sections";
 import Testimonials from "../components/landing/Testimonials";
 import FeaturesNew from "../components/landing/FeaturesNew";
+import PricingTable from "../components/landing/Pricing";
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
@@ -21,6 +22,7 @@ export default function Home() {
         <FeaturesNew />
         {/* testimonials */}
         <Testimonials />
+        <PricingTable />
       </Layout>
     </>
   );
