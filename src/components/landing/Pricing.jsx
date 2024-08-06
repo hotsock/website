@@ -20,34 +20,40 @@ function PricingTable() {
           {/* second column */}
           <div className="w-full flex col-span-4 border-l border-solid border-y-0 border-gray-400 border-r flex-col items-center text-center min-h-fit ">
             <div className="table-title">Included messages per month</div>
-            <div className="table-item">
+            <div className="table-item !font-normal">
               1 million free messages each month, then pay as you go
             </div>
-            <div className="table-item">
+            <div className="table-item !font-normal">
               300 million (~10 million per day) $0.50 per additional million
             </div>
-            <div className="table-item">
+            <div className="table-item !font-normal">
               1.5 billion (~50 million per day) $0.45 per additional million
             </div>
-            <div className="table-item">
+            <div className="table-item !font-normal">
               7.5 billion (~250 million per day) $0.40 per additional million
             </div>
-            <div className="table-item">
+            <div className="table-item !font-normal">
               30 billion (~1 billion per day) $0.35 per additional million
             </div>
-            <div className="table-item">
+            <div className="table-item !font-normal">
               150 billion (~5 billion per day) $0.30 per additional million
             </div>
           </div>
           {/* third column */}
           <div className="w-full bg-pink-50/70  border-solid border-y-0 border-l-0  dark:bg-gray-800 flex col-span-4  flex-col items-center text-center border-r border-gray-400 min-h-fit ">
             <div className="table-title">AWS Configuration</div>
-            <div className="table-item">1 account, 1 region</div>
-            <div className="table-item">1 account, 1 region</div>
-            <div className="table-item">5 accounts, 2 regions</div>
-            <div className="table-item">25 accounts, 5 regions</div>
-            <div className="table-item">100 accounts, all regions</div>
-            <div className="table-item">500 accounts, all regions</div>
+            <div className="table-item !font-normal">1 account, 1 region</div>
+            <div className="table-item !font-normal">1 account, 1 region</div>
+            <div className="table-item !font-normal">5 accounts, 2 regions</div>
+            <div className="table-item !font-normal">
+              25 accounts, 5 regions
+            </div>
+            <div className="table-item !font-normal">
+              100 accounts, all regions
+            </div>
+            <div className="table-item !font-normal">
+              500 accounts, all regions
+            </div>
           </div>
           {/* fourth */}
           <div className="w-full flex col-span-2  flex-col items-center text-center h-fit  ">
