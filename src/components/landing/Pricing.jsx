@@ -6,9 +6,9 @@ function PricingTable() {
     <Wrapper className="">
       <h1 className="text-center w-full py-4 mt-4">Pricing Plans</h1>
       <div className="w-full max-w-full overflow-x-auto">
-        <main className="grid  w-full max-md:w-[150vw]  py-4 gap-0  grid-cols-12">
+        <main className="grid  w-full   py-4 gap-0  grid-cols-12 max-md:grid-cols-10">
           {/* first column */}
-          <div className="w-full bg-pink-50/70 dark:bg-gray-800  flex col-span-2  flex-col items-center text-center h-fit  ">
+          <div className="w-full bg-pink-50/70 dark:bg-gray-800  flex col-span-2   flex-col items-center text-center h-fit  ">
             <div className="table-title">Price</div>
             <div className="table-item">$1.25 per million messages</div>
             <div className="table-item">$99/month or $1,069/year</div>
@@ -20,7 +20,7 @@ function PricingTable() {
             </div>
           </div>
           {/* second column */}
-          <div className="w-full flex col-span-4 border-l border-solid border-y-0 border-gray-400 border-r flex-col items-center text-center min-h-fit ">
+          <div className="w-full flex col-span-4 max-md:col-span-3 border-l border-solid border-y-0 border-gray-400 border-r flex-col items-center text-center min-h-fit ">
             <div className="table-title">Included messages per month</div>
             <div className="table-item !font-normal">
               1 million free messages each month,
@@ -48,7 +48,7 @@ function PricingTable() {
             </div>
           </div>
           {/* third column */}
-          <div className="w-full bg-pink-50/70  border-solid border-y-0 border-l-0  dark:bg-gray-800 flex col-span-4  flex-col items-center text-center border-r border-gray-400 min-h-fit ">
+          <div className="w-full bg-pink-50/70  border-solid border-y-0 border-l-0  dark:bg-gray-800 flex col-span-4 max-md:col-span-3  flex-col items-center text-center border-r border-gray-400 min-h-fit ">
             <div className="table-title">AWS Configuration</div>
             <div className="table-item !font-normal">1 account, 1 region</div>
             <div className="table-item !font-normal">1 account, 1 region</div>
