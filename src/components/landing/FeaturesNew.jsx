@@ -58,8 +58,7 @@ const FEATURES = [
   },
   {
     title: "Web Console",
-    // imageUrl: "/img/console.png",
-    imageUrl: "/img/console-1.png",
+    imageUrl: "/img/console.png",
     description: (
       <>
         Easily debug and test JWT validation, token claims, connections, channel
