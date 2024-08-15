@@ -1,7 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
   darkMode: ["class", '[data-theme="dark"]'],
-  content: ["./src/**/*.{js,jsx,ts,tsx,md,mdx}", "./docs/**/*.{md,mdx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx,md,mdx}",
+    "./examples/**/*.{js,jsx}",
+    "./docs/**/*.{md,mdx}",
+  ],
   prefix: "",
   corePlugins: {
     preflight: false,
@@ -56,6 +60,6 @@ const config = {
   },
   plugins: [],
   blocklist: ["container"],
-};
+}
 
-export default config;
+export default config
