@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Arrow({ className }) {
   return (
@@ -20,7 +20,7 @@ function Arrow({ className }) {
         <path d="M1 7h16M11 1l6 6-6 6"></path>
       </g>
     </svg>
-  );
+  )
 }
 
-export default Arrow;
+export default Arrow

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Chart({ props }) {
   return (
@@ -15,7 +15,7 @@ function Chart({ props }) {
         fill="currentColor"
       ></path>
     </svg>
-  );
+  )
 }
 
-export default Chart;
+export default Chart

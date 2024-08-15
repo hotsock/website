@@ -1,7 +1,7 @@
-import * as React from "react";
-import { motion, useAnimation } from "framer-motion";
-import clsx from "clsx";
-import Wrapper from "../global/Wrapper";
+import * as React from "react"
+import { motion, useAnimation } from "framer-motion"
+import clsx from "clsx"
+import Wrapper from "../global/Wrapper"
 // import { useInView } from "react-intersection-observer";
 
 const FEATURES = [
@@ -84,7 +84,7 @@ const FEATURES = [
     ),
     target: "",
   },
-];
+]
 
 function NewFeatures() {
   return (
@@ -100,7 +100,7 @@ function NewFeatures() {
         ))}
       </div>
     </Wrapper>
-  );
+  )
 }
 
 function FeatureAnimation({ idx, feature }) {
@@ -123,7 +123,7 @@ function FeatureAnimation({ idx, feature }) {
       />
       <ImageSection src={feature.imageUrl} idx={idx} />
     </motion.div>
-  );
+  )
 }
 
 function DescriptionSection({ title, description, target, idx }) {
@@ -155,7 +155,7 @@ function DescriptionSection({ title, description, target, idx }) {
         Learn More
       </motion.a>
     </motion.div>
-  );
+  )
 }
 
 function ImageSection({ src, idx }) {
@@ -170,7 +170,7 @@ function ImageSection({ src, idx }) {
         transition={{ duration: 0.5 }}
       />
     </div>
-  );
+  )
 }
 
-export default NewFeatures;
+export default NewFeatures

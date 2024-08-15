@@ -1,8 +1,8 @@
-import React from "react";
-import Wrapper from "../global/Wrapper";
-import Link from "@docusaurus/Link";
-import Arrow from "../../icons/arrow";
-import { buttonVariants } from "../../lib/utils";
+import React from "react"
+import Wrapper from "../global/Wrapper"
+import Link from "@docusaurus/Link"
+import Arrow from "../../icons/arrow"
+import { buttonVariants } from "../../lib/utils"
 
 const FEATURES = [
   {
@@ -39,7 +39,7 @@ const FEATURES = [
       </>
     ),
   },
-];
+]
 
 function Features() {
   return (
@@ -94,7 +94,7 @@ function Features() {
         </main>
       </section>
     </Wrapper>
-  );
+  )
 }
 
-export default Features;
+export default Features

@@ -1,12 +1,12 @@
-import React from "react";
-import Wrapper from "../global/Wrapper";
-import MDXContent from "@theme/MDXContent";
-import CodeBlock from "./CodeBlock.mdx";
-import TabsSection from "./TabsSection";
-import Install from "../../icons/install";
-import Publish from "../../icons/publish";
-import Subscribe from "../../icons/subscribe";
-import Link from "@docusaurus/Link";
+import React from "react"
+import Wrapper from "../global/Wrapper"
+import MDXContent from "@theme/MDXContent"
+import CodeBlock from "./CodeBlock.mdx"
+import TabsSection from "./TabsSection"
+import Install from "../../icons/install"
+import Publish from "../../icons/publish"
+import Subscribe from "../../icons/subscribe"
+import Link from "@docusaurus/Link"
 
 function Sections() {
   return (
@@ -74,7 +74,7 @@ function Sections() {
         </div>
       </Wrapper>
     </div>
-  );
+  )
 }
 
-export default Sections;
+export default Sections

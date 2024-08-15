@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Subscribe({ className }) {
   return (
@@ -30,7 +30,7 @@ function Subscribe({ className }) {
         </clipPath>
       </defs>
     </svg>
-  );
+  )
 }
 
-export default Subscribe;
+export default Subscribe

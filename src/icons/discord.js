@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Discord({ className }) {
   return (
@@ -20,7 +20,7 @@ function Discord({ className }) {
 		C72.834,60.054,69.171,64.043,64.531,64.043z"
       ></path>
     </svg>
-  );
+  )
 }
 
-export default Discord;
+export default Discord

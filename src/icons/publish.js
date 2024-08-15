@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Publish({ className }) {
   return (
@@ -25,7 +25,7 @@ function Publish({ className }) {
         d="M29 57L29 55C29 41.7452 39.7452 31 53 31L75 31C88.2548 31 99 41.7452 99 55L99 57"
       ></path>
     </svg>
-  );
+  )
 }
 
-export default Publish;
+export default Publish

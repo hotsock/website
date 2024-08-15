@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Certificate({ props }) {
   return (
@@ -15,7 +15,7 @@ function Certificate({ props }) {
         fill="currentColor"
       ></path>
     </svg>
-  );
+  )
 }
 
-export default Certificate;
+export default Certificate

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Twitter({ className }) {
   return (
@@ -19,7 +19,7 @@ function Twitter({ className }) {
         clipRule="evenodd"
       ></path>
     </svg>
-  );
+  )
 }
 
-export default Twitter;
+export default Twitter

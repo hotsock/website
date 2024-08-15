@@ -1,10 +1,10 @@
-import React from "react";
-import Wrapper from "../global/Wrapper";
-import Link from "@docusaurus/Link";
-import { buttonVariants } from "../../lib/utils";
-import Arrow from "../../icons/arrow";
-import Chart from "../../icons/chart";
-import Certificate from "../../icons/certificate";
+import React from "react"
+import Wrapper from "../global/Wrapper"
+import Link from "@docusaurus/Link"
+import { buttonVariants } from "../../lib/utils"
+import Arrow from "../../icons/arrow"
+import Chart from "../../icons/chart"
+import Certificate from "../../icons/certificate"
 
 function Hero() {
   return (
@@ -69,7 +69,7 @@ function Hero() {
         </div>
       </Wrapper>
     </div>
-  );
+  )
 }
 
-export default Hero;
+export default Hero

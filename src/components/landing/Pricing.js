@@ -1,8 +1,8 @@
-import React from "react";
-import Wrapper from "../global/Wrapper";
-import Link from "@docusaurus/Link";
-import { buttonVariants } from "../../lib/utils";
-import Arrow from "../../icons/arrow";
+import React from "react"
+import Wrapper from "../global/Wrapper"
+import Link from "@docusaurus/Link"
+import { buttonVariants } from "../../lib/utils"
+import Arrow from "../../icons/arrow"
 
 function PricingTable() {
   return (
@@ -109,10 +109,10 @@ function PricingTable() {
         </Link>
       </div>
     </Wrapper>
-  );
+  )
 }
 
-export default PricingTable;
+export default PricingTable
 
 // old table with splitted columns
 // function PricingTable() {

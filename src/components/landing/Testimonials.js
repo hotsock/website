@@ -1,10 +1,10 @@
-import React from "react";
-import Wrapper from "../global/Wrapper";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Scrollbar, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/autoplay";
-import "swiper/css/pagination";
+import React from "react"
+import Wrapper from "../global/Wrapper"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Navigation, Pagination, Scrollbar, Autoplay } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/autoplay"
+import "swiper/css/pagination"
 
 const TESTIMONIALS = [
   {
@@ -35,7 +35,7 @@ const TESTIMONIALS = [
     comment:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.",
   },
-];
+]
 
 function Testimonials() {
   return (
@@ -77,7 +77,7 @@ function Testimonials() {
         </main>
       </section>
     </Wrapper>
-  );
+  )
 }
 
 const Card = ({ name, title, image, comment }) => {
@@ -92,7 +92,7 @@ const Card = ({ name, title, image, comment }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Testimonials;
+export default Testimonials

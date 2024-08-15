@@ -1,9 +1,9 @@
-import React from "react";
-import Wrapper from "../global/Wrapper";
-import Link from "@docusaurus/Link";
-import { buttonVariants } from "../../lib/utils";
-import MDXContent from "@theme/MDXContent";
-import CodeBlock from "./CodeBlock.mdx";
+import React from "react"
+import Wrapper from "../global/Wrapper"
+import Link from "@docusaurus/Link"
+import { buttonVariants } from "../../lib/utils"
+import MDXContent from "@theme/MDXContent"
+import CodeBlock from "./CodeBlock.mdx"
 
 const GROUPS = [
   {
@@ -34,7 +34,7 @@ const GROUPS = [
     title: "C#",
     id: "csharp",
   },
-];
+]
 
 const DATA = [
   {
@@ -54,13 +54,13 @@ const DATA = [
       "Connect and subscribe to messages using the Hotsock JS library or using any WebSockets client.",
     tab: 2,
   },
-];
+]
 
 function TabsSection() {
-  const [selectedGroup, setSelectedGroup] = React.useState("py");
+  const [selectedGroup, setSelectedGroup] = React.useState("py")
   const handleGroupChange = (group) => {
-    setSelectedGroup(group);
-  };
+    setSelectedGroup(group)
+  }
   return (
     <div className="dark:bg-accent/30 bg-[#FEE5EC]  p-4 rounded-xl">
       {/* selectors */}
@@ -96,7 +96,7 @@ function TabsSection() {
         </MDXContent>
       </div>
     </div>
-  );
+  )
 }
 
-export default TabsSection;
+export default TabsSection

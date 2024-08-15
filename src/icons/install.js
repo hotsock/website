@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Install({ className }) {
   return (
@@ -25,7 +25,7 @@ function Install({ className }) {
         d="M48 98H80M108.941 49.1985L100.456 57.6838C95.7696 62.3701 88.1716 62.3701 83.4853 57.6838L75 49.1985M92.2271 58.479L92.227 37.9999"
       ></path>
     </svg>
-  );
+  )
 }
 
-export default Install;
+export default Install
