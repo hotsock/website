@@ -5,12 +5,12 @@ const sidebars = {
       label: "Overview",
       id: "overview",
     },
-    // {
-    //   type: "category",
-    //   label: "Demo",
-    //   collapsible: false,
-    //   items: ["realtime-chat"],
-    // },
+    {
+      type: "category",
+      label: "Examples",
+      collapsible: false,
+      items: ["real-time-chat"],
+    },
   ],
 }
 

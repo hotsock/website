@@ -1,0 +1,108 @@
+/* grid grid-cols-1 lg:grid-cols-2 w-full gap-8 */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+  padding: 24px;
+}
+/* border-slate-400 border-solid border-2 rounded-xl */
+.box {
+  border: 2px solid #778899;
+  /* border-radius: 0.5rem; */
+  width: 100%;
+
+}
+/* h-12 px-5 border-solid border-t-0 border-x-0 border-b-2 border-slate-400 flex flex-row items-center justify-between mb-4 */
+.box-header {
+  height: 3rem;
+  padding: 0.625rem 1.25rem;
+  border-bottom: 2px solid #778899;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+/* font-semibold */
+.box-header-title {
+  font-weight: 600;
+}
+/* className={clsx("h-3 w-3 rounded-full ", {
+            "bg-green-500": isOnline,
+            "bg-red-500": !isOnline,
+          })} */
+.box-header-status {
+  height: 0.75rem;
+  width: 0.75rem;
+  border-radius: 50%;
+  background-color: red;
+}
+.box-header-status.online {
+  background-color: green;
+}
+/* "min-h-64 flex flex-col justify-end px-5 py-2" */
+.box-main {
+  min-height: 24rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.9rem 1.25rem;
+  background-color: #f7f7f7;
+}
+/* clsx("py-2", {
+              "text-right": message.sender === name,
+              "text-left": message.sender !== name,
+            }) */
+.box-message-container {
+  padding-top: 0.5rem;
+  text-align: right;
+}
+.box-message-container.left {
+  text-align: left;
+}
+/* clsx("px-2 py-1.5 rounded-xl", {
+                "bg-slate-800": message.sender === name,
+                "bg-pink-600": message.sender !== name,
+              }) */
+.box-message-content {
+  padding: 0.375rem 0.5rem;
+  /* border-radius: 0.25rem; */
+}
+.box-message-content.right {
+  background-color: #fbd3e3;
+}
+.box-message-content.left {
+  background-color: #f294c5;
+}
+/* "text-sm  text-slate-400" */
+.box-typing {
+  font-size: 0.8rem;
+  color: #778899;
+  margin-top: 12px;
+}
+/* "h-12 " */
+.box-footer {
+  height: 3rem;
+  position: relative;
+}
+/* "w-full h-12 px-5 rounded-b-xl bg-transparent focus:outline-pink-500 " */
+.box-footer input {
+  width: 100%;
+  height: 3rem;
+  padding: 0.625rem 1.25rem;
+  /* border-radius: 0 0 0.5rem 0.5rem; */
+  background-color: transparent;
+  outline: none;
+  border: 1px solid #778899;
+  padding-right: 3rem;
+}
+.box-footer img {
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.box-footer img.disabled {
+  opacity: 0.3;
+}

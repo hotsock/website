@@ -42,6 +42,7 @@ const config = {
           editUrl: "https://github.com/hotsock/website/tree/main",
         },
         blog: {
+          blogSidebarTitle: "All our posts",
           showReadingTime: true,
         },
         theme: {
@@ -193,13 +194,11 @@ const config = {
       "@docusaurus/plugin-content-docs",
       {
         id: "examples",
-        path: "./examples",
+        path: "./src/examples",
         routeBasePath: "examples",
         sidebarPath: resolve("./src/sidebar-examples.js"),
         breadcrumbs: false,
-        // docItemComponent: resolve(
-        // "./src/components/example/doc-item-component.jsx"
-        // ),
+        docItemComponent: resolve("./src/components/ExamplesDocItem.js"),
       },
     ],
     async function tailwindPlugin(_context, _options) {

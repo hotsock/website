@@ -1,0 +1,8 @@
+import BrowserOnly from "@docusaurus/BrowserOnly"
+import App from "website-examples/real-time-chat/src/app"
+
+# Real-Time Chat
+
+The two windows below allow chatting with one another. Although they are on the same screen for the purposes of the demo, they each have their own isolated Hotsock connection over WebSockets and all messages are routed through the Hotsock installation before showing in the other window.
+
+<BrowserOnly>{() => <App />}</BrowserOnly>
