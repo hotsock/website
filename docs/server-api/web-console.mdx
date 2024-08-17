@@ -34,7 +34,7 @@ The permissions in the example token allow publishing messages in `my-channel` t
 
 To send a message, click the dropdown menu at the bottom, choose "Send message", enter "my-channel" in the channel name input, enter "my-event" in the event name input, and any value in the data input. Then hit Enter/Return on your keyboard.
 
-You'll see an outgoing WebSocket message that sends the message on the channel. Any other channel subscribers will receive this message, and because the claim has [`echo`](../connections/claims.mdx#echo) enabled for this event, the sending connection also receives a copy of the message.
+You'll see an outgoing WebSocket message that sends the message on the channel. Any other channel subscribers will receive this message, and because the claim has [`echo`](../connections/claims.mdx#channels.messages.echo) enabled for this event, the sending connection also receives a copy of the message.
 
 ![Web console send message](../../static/img/screenshots/web-console-send-message.png)
 
