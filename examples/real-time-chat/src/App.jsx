@@ -59,19 +59,15 @@ function App() {
     <section className={styles.container}>
       <Box
         hotsockClient={jimClient}
-        isRecieving={true}
-        isOnline={false}
       />
       <Box
         hotsockClient={pamClient}
-        isOnline={true}
-        isRecieving={false}
       />
     </section>
   )
 }
 
-function Box({ hotsockClient, isOnline }) {
+function Box({ hotsockClient }) {
   const [name, setName] = useState(null)
   const [isTyping, setIsTyping] = useState("")
   const [messages, setMessages] = useState([])
