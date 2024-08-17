@@ -5,69 +5,85 @@ import { HotsockClient } from "@hotsock/hotsock-js"
 import { useEffect, useRef, useState } from "react"
 
 const wssUrl = "wss://975x5pgn0h.execute-api.us-east-1.amazonaws.com/v1"
-const channelName = window.crypto.randomUUID()
 
-const createConnectTokenFn = (uid) => {
-  return async () => {
-    const body = {
-      ttl: 10,
-      claims: {
-        scope: "connect",
-        keepAlive: true,
-        uid,
-        channels: {
-          ["presence." + channelName]: {
-            subscribe: true,
-            messages: {
-              chat: {
-                publish: true,
-                echo: true,
-              },
-              "is-typing": {
-                publish: true,
-              },
-            },
-          },
-        },
-      },
-    }
-    const resp = await fetch(
-      "https://b3wey6obkxzce42z6vmpzhsyqa0iajpg.lambda-url.us-east-1.on.aws/",
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }
-    )
-    const data = await resp.json()
-    return data.token
+let cachedResponse = null
+let lastFetchTime = 0
+let fetchPromise = null
+
+const connectTokenFn = async () => {
+  const now = Date.now()
+
+  if (cachedResponse && now - lastFetchTime < 10000) {
+    // Return the cached response if it's within 10 seconds
+    return cachedResponse
   }
+
+  if (fetchPromise) {
+    // If a fetch is already in progress, wait for it to resolve
+    return await fetchPromise
+  }
+
+  fetchPromise = fetch(
+    "https://ehyijpehufsgcpikp3pdjiznqe0gulim.lambda-url.us-east-1.on.aws/real-time-chat",
+    {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }
+  )
+    .then((resp) => resp.json())
+    .then((data) => {
+      cachedResponse = data
+      lastFetchTime = Date.now()
+      fetchPromise = null // Clear the fetchPromise once it's resolved
+      return data
+    })
+    .catch((error) => {
+      fetchPromise = null // Clear the fetchPromise in case of an error
+      throw error
+    })
+
+  return await fetchPromise
+}
+
+const jimConnectTokenFn = async () => {
+  const data = await connectTokenFn()
+  return data.jim.token
+}
+
+const pamConnectTokenFn = async () => {
+  const data = await connectTokenFn()
+  return data.pam.token
 }
 
 function App() {
+  const [channelName, setChannelName] = useState(null)
+
+  useEffect(() => {
+    connectTokenFn().then((data) => {
+      setChannelName(data.channel)
+    })
+  }, [])
+
   const jimClient = new HotsockClient(wssUrl, {
-    connectTokenFn: createConnectTokenFn("Jim"),
+    connectTokenFn: jimConnectTokenFn,
     logLevel: "debug",
   })
   const pamClient = new HotsockClient(wssUrl, {
-    connectTokenFn: createConnectTokenFn("Pam"),
+    connectTokenFn: pamConnectTokenFn,
     logLevel: "debug",
   })
   return (
     <section className={styles.container}>
-      <Box
-        hotsockClient={jimClient}
-      />
-      <Box
-        hotsockClient={pamClient}
-      />
+      <Box hotsockClient={jimClient} channelName={channelName} />
+      <Box hotsockClient={pamClient} channelName={channelName} />
     </section>
   )
 }
 
-function Box({ hotsockClient }) {
+function Box({ hotsockClient, channelName }) {
   const [name, setName] = useState(null)
   const [isTyping, setIsTyping] = useState("")
   const [messages, setMessages] = useState([])
@@ -77,10 +93,10 @@ function Box({ hotsockClient }) {
   const lastSentTime = useRef(0)
 
   useEffect(() => {
-    if (wasCalled.current) return
+    if (!channelName || wasCalled.current) return
     wasCalled.current = true
 
-    channel.current = hotsockClient.channels("presence." + channelName)
+    channel.current = hotsockClient.channels(channelName)
     channel.current.bind("hotsock.subscribed", () => {
       setName(channel.current.uid)
     })
@@ -97,7 +113,7 @@ function Box({ hotsockClient }) {
         setIsTyping("")
       }, 2000)
     })
-  }, [])
+  }, [channelName])
 
   const handleTyping = () => {
     const now = Date.now()
@@ -120,9 +136,7 @@ function Box({ hotsockClient }) {
       <header className={styles["box-header"]}>
         <span className={styles["box-header-title"]}>{name}</span>
         <span
-          className={`${styles["box-header-status"]} ${
-            name && styles.online
-          }`}
+          className={`${styles["box-header-status"]} ${name && styles.online}`}
         />
       </header>
       <main className={styles["box-main"]}>
