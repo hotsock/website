@@ -60,25 +60,39 @@ const pamConnectTokenFn = async () => {
 
 function App() {
   const [channelName, setChannelName] = useState(null)
+  const jimClientRef = useRef(null)
+  const pamClientRef = useRef(null)
+
+  if (!jimClientRef.current) {
+    jimClientRef.current = new HotsockClient(wssUrl, {
+      connectTokenFn: jimConnectTokenFn,
+      logLevel: "debug",
+    })
+  }
+
+  if (!pamClientRef.current) {
+    pamClientRef.current = new HotsockClient(wssUrl, {
+      connectTokenFn: pamConnectTokenFn,
+      logLevel: "debug",
+    })
+  }
 
   useEffect(() => {
     connectTokenFn().then((data) => {
       setChannelName(data.channel)
     })
+
+    return () => {
+      jimClientRef.current.terminate()
+      pamClientRef.current.terminate()
+    }
   }, [])
 
-  const jimClient = new HotsockClient(wssUrl, {
-    connectTokenFn: jimConnectTokenFn,
-    logLevel: "debug",
-  })
-  const pamClient = new HotsockClient(wssUrl, {
-    connectTokenFn: pamConnectTokenFn,
-    logLevel: "debug",
-  })
+
   return (
     <section className={styles.container}>
-      <Box hotsockClient={jimClient} channelName={channelName} />
-      <Box hotsockClient={pamClient} channelName={channelName} />
+      <Box hotsockClient={jimClientRef.current} channelName={channelName} />
+      <Box hotsockClient={pamClientRef.current} channelName={channelName} />
     </section>
   )
 }
