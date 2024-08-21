@@ -19,17 +19,17 @@
     "@docusaurus/preset-classic": "^3.5.2",
     "@docusaurus/theme-search-algolia": "^3.5.2",
     "@mdx-js/react": "^3.0.1",
-    "algoliasearch": "^3.32.1",
-    "autoprefixer": "^10.4.19",
+    "algoliasearch": "^3.35.1",
+    "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^1.2.1",
-    "framer-motion": "^11.3.21",
-    "postcss": "^8.4.38",
+    "framer-motion": "^11.3.29",
+    "postcss": "^8.4.41",
     "prism-react-renderer": "^2.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "swiper": "^11.1.9",
-    "tailwindcss": "^3.4.4"
+    "swiper": "^11.1.10",
+    "tailwindcss": "^3.4.10"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.5.2",
