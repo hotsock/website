@@ -33,7 +33,7 @@ export default function Home() {
     <Layout>
       <main>
         <div className="container mt-8">
-          <h1>Hotsock launches August 19, 2024, check back then! 🚀</h1>
+          <h1>Hotsock launches August 26, 2024, check back then! 🚀</h1>
         </div>
       </main>
     </Layout>
