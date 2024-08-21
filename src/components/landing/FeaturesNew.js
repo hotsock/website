@@ -2,6 +2,7 @@ import * as React from "react"
 import { motion, useAnimation } from "framer-motion"
 import clsx from "clsx"
 import Wrapper from "../global/Wrapper"
+import Link from "@docusaurus/Link"
 // import { useInView } from "react-intersection-observer";
 
 const FEATURES = [
@@ -145,15 +146,21 @@ function DescriptionSection({ title, description, target, idx }) {
       >
         {description}
       </motion.p>
-      <motion.a
-        href={target}
+      <motion.div
         className="text-cusprimary underline underline-offset-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: idx * 0.1 + 0.7 }}
       >
-        Learn More
-      </motion.a>
+        <Link
+          to={target}
+          style={{
+            color: "inherit",
+          }}
+        >
+          Learn More
+        </Link>
+      </motion.div>
     </motion.div>
   )
 }
