@@ -1,6 +1,7 @@
-name: Publish static site
+name: Build and publish static site
 on:
-  push:
+  push: {}
+  pull_request:
     branches: [main]
 jobs:
   publish:
@@ -23,11 +24,14 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - name: Assume AWS Role
+        uses: aws-actions/configure-aws-credentials@v4
+        if: github.ref == 'refs/heads/main'
         with:
           role-to-assume: arn:aws:iam::080825576347:role/GitHubActionsHotsockWebsiteDeployRole
           aws-region: us-west-2
       - name: Publish site to S3
+        if: github.ref == 'refs/heads/main'
         run: |
           aws s3 sync \
             build/ \
