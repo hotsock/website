@@ -1,4 +1,3 @@
-import styles from "./app.module.css"
 import { createRoot } from "react-dom/client"
 // import SendIcon from "./assets/send.svg";
 import { HotsockClient } from "@hotsock/hotsock-js"
@@ -88,9 +87,8 @@ function App() {
     }
   }, [])
 
-
   return (
-    <section className={styles.container}>
+    <section className="grid grid-cols-2 lg:gap-8 md:gap-6 gap-4 w-full p-6">
       <Box hotsockClient={jimClientRef.current} channelName={channelName} />
       <Box hotsockClient={pamClientRef.current} channelName={channelName} />
     </section>
@@ -146,45 +144,50 @@ function Box({ hotsockClient, channelName }) {
   }
 
   return (
-    <div className={styles.box}>
-      <header className={styles["box-header"]}>
-        <span className={styles["box-header-title"]}>{name}</span>
+    <div className="border-solid border-[2px] border-[#778899] w-full">
+      <header className="h-12 flex flex-row items-center justify-between py-2 px-5 border-solid border-[2px] border-[#778899] border-x-0 border-t-0">
+        <span className="font-semibold">{name}</span>
         <span
-          className={`${styles["box-header-status"]} ${name && styles.online}`}
+          className={`h-3 w-3 rounded-full  ${
+            name ? "bg-green-500" : "bg-red-500"
+          }`}
         />
       </header>
-      <main className={styles["box-main"]}>
+      <main className="min-h-96 max-h-96 h-96 space-y-4 overflow-y-scroll relative flex  flex-col py-4 px-5 dark:bg-slate-900 bg-[#f7f7f7]">
+        <div className="flex-grow"></div>
         {messages.map((message, index) => (
           <div
             key={index}
-            className={` ${styles["box-message-container"]} ${
-              message.sender === name && styles.left
+            className={`  ${
+              message.sender === name ? "text-left" : "text-right"
             }`}
           >
             <span
-              className={`${styles["box-message-content"]} ${
-                message.sender === name ? styles.right : styles.left
+              className={` py-2 px-3 ${
+                message.sender === name
+                  ? "bg-[#fbd3e3] dark:bg-[#fbd3e327]"
+                  : "bg-[#f294c5] dark:bg-[#f294c527]"
               }`}
             >
               {message.sender}: {message.content}
             </span>
           </div>
         ))}
-        <div className="h-6 flex flex-row items-start">
+        <div className="h-6 flex flex-row sticky bottom-0 left-0 w-full items-start">
           {isTyping !== "" && (
-            <span className={styles["box-typing"]}>{isTyping}</span>
+            <span className="text-sm text-slate-400 mt-3">{isTyping}</span>
           )}
         </div>
       </main>
-      <footer className={styles["box-footer"]}>
+      <footer className="h-12 relative">
         <input
+          className="w-full h-12 outline-none border border-solid border-slate-400 pr-12 px-5 bg-transparent"
           type="text"
           placeholder="Type..."
           onKeyUp={handleTyping}
           onKeyDown={handleSendMessage}
         />
       </footer>
-      {/* <img src={SendIcon} alt="" className="bg-red-400 " /> */}
     </div>
   )
 }
