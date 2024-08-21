@@ -156,9 +156,11 @@ function Box({ hotsockClient, channelName }) {
             </span>
           </div>
         ))}
-        {isTyping !== "" && (
-          <span className={styles["box-typing"]}>{isTyping}</span>
-        )}
+        <div className="h-6 flex flex-row items-start">
+          {isTyping !== "" && (
+            <span className={styles["box-typing"]}>{isTyping}</span>
+          )}
+        </div>
       </main>
       <footer className={styles["box-footer"]}>
         <input
