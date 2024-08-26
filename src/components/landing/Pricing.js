@@ -81,10 +81,10 @@ function PricingTable() {
             <div className="table-title">Support</div>
             <div className="table-item !font-normal">Standard</div>
             <div className="table-item !font-normal">Standard</div>
-            <div className="table-item !font-normal">Priority</div>
-            <div className="table-item !font-normal">Priority</div>
-            <div className="table-item !font-normal">Priority</div>
-            <div className="table-item !border-b-0  !font-normal">Priority</div>
+            <div className="table-item !font-normal">Premium</div>
+            <div className="table-item !font-normal">Premium</div>
+            <div className="table-item !font-normal">Premium</div>
+            <div className="table-item !border-b-0  !font-normal">Premium</div>
           </div>
         </main>
       </div>
