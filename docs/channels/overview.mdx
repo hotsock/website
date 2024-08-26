@@ -1,0 +1,55 @@
+---
+sidebar_label: Overview
+---
+
+# Channels Overview
+
+Your applications can have one or more channels and each of your clients can choose which channels to subscribe to. If a client is subscribed to a particular channel, they will receive all messages sent on that channel.
+
+**Each channel subscription _must_ be authorized by a claim in the token**. This allows you to use channels to control access to different streams of information.
+
+For example, you may have a "leaderboard" channel that publishes messages that everyone in the application can see. At the same time, you may have a "game.123" channel that publishes all the events that occur in game ID 123, where only people playing or viewing that particular game can see those messages.
+
+There is no limit to the number of channels your application can have and channels do not need to be declared ahead of time. When any message is published to a channel, any currently subscribed listeners receive a copy of that message.
+
+Channel names can be any string between 1 to 128 characters and must not contain asterisks (`*`), hashes (`#`), commas (`,`), spaces, or newline characters.
+
+## Events
+
+**Each message published to a channel _must_ contain an event name**. Events allow for logically grouping types of messages sent to the same channel.
+
+For example, if you have a "game.123" channel, perhaps you'd have "move" and "chat" events. In your handler code for these events, different events on the same channel allow you to maintain predictable message shape for different circumstances in the same context.
+
+In the end, messages received by a subscriber look something like this. The message `id` is Hotsock-generated.
+
+```json
+{
+  "channel": "game.123",
+  "event": "move",
+  "id": "01H2BSNHFJXKF2XDFD8KMM36FF",
+  "data": { "player": "Jack", "from": "B1", "to": "C3" }
+}
+```
+
+```json
+{
+  "channel": "game.123",
+  "event": "chat",
+  "id": "01H2C4Z3PFFJR6RG5D6A12HM92",
+  "data": "Jack: Good game!"
+}
+```
+
+Your application will receive these messages on the same channel, but can handle "chat" messages differently from "move" messages without a separate channel subscription.
+
+:::tip When should you use a different channel instead of a different event?
+Use channels to filter the data a client needs. All events published to a channel are received by each subscriber, regardless of whether or not the client cares about every event.
+
+Avoid scenarios where you're sending lots of events to clients where most clients are ignoring those events.
+
+In these cases, it may be best to move those events to a separate channel and have clients that care about those events subscribe an additional channel.
+:::
+
+## Channel Types
+
+There are 2 types of channels: [standard](./standard.mdx) and [presence](./presence.mdx).

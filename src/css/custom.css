@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #FE337E;
+  --ifm2-color-primary: 338 99% 60%;
+  --ifm-color-primary-dark: #FE0B64;
+  --ifm-color-primary-darker: #DF0153;
+  --ifm-color-primary-darkest: #B70144;
+  --ifm-color-primary-light: #FE488B;
+  --ifm-color-primary-lighter: #FE5D98;
+  --ifm-color-primary-lightest: #FE71A5;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --ring: 24.6 95% 53.1%;
+  --radius: 0.5rem;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #FE337E;
+  --ifm-color-primary-dark: #FE0B64;
+  --ifm-color-primary-darker: #DF0153;
+  --ifm-color-primary-darkest: #B70144;
+  --ifm-color-primary-light: #FE488B;
+  --ifm-color-primary-lighter: #FE5D98;
+  --ifm-color-primary-lightest: #FE71A5;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --ring: 24.6 95% 53.1%;
+  --radius: 0.5rem;
+}
+
+.hero-bg {
+  background-image: url('/img/bg/grid.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+[data-theme='dark'] .hero-bg {
+  background-image: url('/img/bg/grid-black.svg');
+}
+
+.swiper-pagination-bullet-active {
+  background-color: var(--ifm-color-primary) !important;
+}
+
+[data-theme='dark'] .swiper-pagination-bullet {
+  background-color: var(--ifm-color-primary-light) !important;
+}
+
+@media (max-width: 768px) {
+  .footer__links .footer__col:nth-child(2) {
+    display: none;
+  }
+}
+
+.table-title{
+  @apply lg:text-lg md:text-base text-sm w-full py-4  h-20 items-center justify-center flex  font-semibold border-solid !border-b-[1px] border-t-0 border-x-0 border-gray-400 ;
+}
+.sub-table {
+  @apply lg:text-lg md:text-sm grid grid-cols-2 text-xs w-full h-12  flex-col items-center font-semibold border-solid !border-b-[1px] border-t-0 border-x-0 border-gray-400 ;
+}
+
+.table-item {
+  @apply lg:text-lg px-2 md:text-sm items-center justify-center flex text-xs h-24 w-full py-4 font-semibold border-solid border-b-[1px] border-t-0 border-x-0 border-gray-400 ;
+}
+.sub-table span {
+  @apply h-full flex flex-col items-center justify-center;
+}
+.sub-table span:nth-child(2) {
+  @apply border-l border-gray-400 border-solid border-r-0 border-y-0 ;
+}

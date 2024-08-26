@@ -1,0 +1,70 @@
+# Keep Alive
+
+Once a connection is established, you may want it to remain connected as long as possible. At the same time, you don't want to send messages to connections that have disconnected.
+
+AWS API Gateway WebSockets has [2 built-in timeouts](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#apigateway-execution-service-websocket-limits-table) to govern whether or not a connection is held open.
+
+1. If no messages are sent between the server and client for a 10-minute period, API Gateway closes the connection. (Idle Connection Timeout)
+1. All connections have a maximum duration of two hours. No exceptions. Clients must initiate a new connection at or ahead of the two hour mark or reconnect after being forcefully disconnected. (Connection duration for WebSocket API)
+
+_Please open tickets with AWS Support requesting that these limits be configurable. It's understandable that connections can't remain open forever, but a hard limit of 8 hours or longer would be swell. #awswishlist_
+
+## Receive `hotsock.keepAlive`
+
+To keep connections alive beyond the 10-minute timeout in cases where message sending may be infrequent, set the [`keepAlive` claim](./claims.mdx#keepAlive) to `true` and Hotsock will automatically send a `hotsock.keepAlive` message to the connection every 9 minutes and 30 seconds (or so).
+
+If you establish a connection with `keepAlive` enabled and leave it open without sending or receiving messages, you'll see periodic `hotsock.keepAlive` events followed by a forced disconnect at the 2-hour mark.
+
+```
+➜  ~ time wscat -c "wss://1ycut2oy9h.execute-api.us-east-1.amazonaws.com/v1?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJob3Rzb2NrIiwic2NvcGUiOiJhdXRoIiwidWlkIjoiamFtZXMiLCJleHAiOjE2ODUxMzk3ODYsImNoYW5uZWxSdWxlcyI6eyJob3QqIjp7fSwic3BlY2lmaWMiOnt9fX0.aCYTDYNKUvcRss_zlKeSx-RwuXj9A-YJ81tYUDt_EiA"
+Connected (press CTRL+C to quit)
+< {"event":"hotsock.connected","data":{"connectionId":"JC1dgf9yoAMCK-g="}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+< {"event":"hotsock.keepAlive","data":{}}
+Disconnected (code: 1001, reason: "Going away")
+wscat -c   0.20s user 0.07s system 0% cpu 2:00:00.46 total
+```
+
+Clients should not reply to server-initiated `hotsock.keepAlive` events.
+
+<!-- ## Send `hotsock.heartbeat`
+
+Like other TCP-based protocols, WebSockets will happily assume that connections are still alive until proven otherwise or until they are explicitly closed. There are many circumstances, however, where the connection is dead but one side doesn't know it yet. Unexpected network disconnects and computers going to sleep are some examples of where this can happen.
+
+Both [standard](../channels/standard) and [presence](../channels/presence) channels support optional [connection heartbeats](./claims.mdx).
+
+This is particularly useful for [presence channels](../channels/presence) when accuracy of connected members is critical and your application cannot withstand a delay in detecting dropped connections.
+
+If enabled, the client _must_ send a `hotsock.heartbeat` event on the WebSocket at least as often as specified in the `clientHeartbeatInterval` claim.
+
+The backend records receipt of this message, but does not send a reply. Avoid over-sending heartbeats, as each heartbeat incurs a database write and a billable API Gateway message.
+
+```
+> {"event":"hotsock.heartbeat"}
+>
+```
+
+If the server does not receive a heartbeat message from the client within the timeframe specified by the `clientHeartbeatInterval` claim, that connection is forcefully closed by the server.-->
+
+## `hotsock.ping` and `hotsock.pong`
+
+Clients can send a `hotsock.ping` event to test whether or not the connection is still alive. If the connection is still alive, `hotsock.pong` event will be returned.
+
+```
+> {"event":"hotsock.ping"}
+< {"event":"hotsock.pong","data":"{}"}
+```
+
+:::tip
+If your client implements periodic `hotsock.ping` / `hotsock.pong` checks to test the connection, you likely don't need to also enable [`keepAlive`](#receive-hotsockkeepalive). As long as your client sends a `hotsock.ping` once every 10 minutes, the connection will be kept alive.
+:::

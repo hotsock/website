@@ -1,0 +1,374 @@
+# Pub/Sub Events
+
+While some applications simply send messages to connected clients, other applications need to be notified about events as they occur inside Hotsock. The following events can be published in real-time to either SNS or EventBridge and subscribed to by your applications.
+
+By default, events are not published. If you know nothing is listening, there's no reason to pay the [SNS publishing costs](https://aws.amazon.com/sns/pricing/) or [EventBridge publishing costs](https://aws.amazon.com/eventbridge/pricing/) for those messages. You can [enable one or both](#eventbridge-sns-enable-disable) without affecting Hotsock performance and can [disable event publishing](#eventbridge-sns-enable-disable) at any time.
+
+:::danger
+**The Hotsock event bus and SNS topics must be considered read-only.** They should only ever be used for subscribing and consuming events. Do not publish custom events or attempt to replay past events directly into the Hotsock pub/sub topic or event bus. Bad things will happen. Always use the public APIs for writing/publishing to Hotsock.
+:::
+
+## Event format
+
+Published events use the same shape for both EventBridge and SNS, where the payload is JSON on the `detail` object in [EventBridge events](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events-structure.html) and a JSON string in the `Message` attribute for [SNS messages](https://docs.aws.amazon.com/sns/latest/dg/sns-message-and-json-formats.html#http-notification-json). Both support filtering subscribed events based on content of this message body. SNS also includes `source`, `type`, `dataType`, and the keys/values in `metadata` as `MessageAttributes` to give flexibility in your [SNS filter policies](https://docs.aws.amazon.com/sns/latest/dg/sns-subscription-filter-policies.html).
+
+```json
+{
+  "source": "hotsock.v1",
+  "type": "hotsock.connected",
+  "metadata": {},
+  "data": {
+    "id": "IDnAdd9kIAMCEsQ=",
+    "connectedAt": "2024-05-31T15:47:45.231141792Z",
+    "keepAlive": true,
+    "sourceIp": "155.186.123.137",
+    "uid": null,
+    "umd": null,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+  },
+  "dataType": "connection"
+}
+```
+
+### `source`
+
+This indicates where the event originated and is set to "hotsock.v1" for all events.
+
+:::note
+Events intended for consumption by your applications (the events listed below) set `source` to "hotsock.v1".
+
+Hotsock-internal events are published to a separate SNS topic. Nothing stops you from subscribing to Hotsock-internal events on that topic. Just know that they're not guaranteed to be API-stable across installation versions.
+:::
+
+### `type`
+
+`String` - This is the type of the event, indicating what action was taken that triggered the event. `hotsock.connected`, `hotsock.disconnected`, `hotsock.subscribed`, etc.
+
+### `metadata`
+
+`Object` - Metadata is an attribute that contains additional information about the event, data that may or may not also be contained in `data`. For example, any event that has anything to do with a channel has a `channel` property set in metadata. See each event type below to know which metadata attributes are included, if any. All metadata items have `String` keys and `String` values.
+
+### `data`
+
+`Object` - Data is the event payload. Items in this object are detailed below in the listing of event types. All items have `String` keys and varying value types.
+
+### `dataType`
+
+`String` - This attribute indicates the kind of object that will be found in the `data` attribute. For example, `connection` objects have a different shape than `subscription` objects, so this hints at the expected object shape.
+
+## Compatibility
+
+New event types may be added to the "hotsock.v1" source namespace in minor version updates (1.x). Configure SNS filter policies or EventBridge rules for specific events to avoid unexpectedly receiving new events.
+
+Additionally, new attributes may be added to existing event `metadata` and `data` objects for existing types in minor version updates. Any reasonable JSON parser should have no trouble with this.
+
+## Enable/disable EventBridge or SNS events {#eventbridge-sns-enable-disable}
+
+1. Sign into your AWS account as a principal with administrative permissions and open the CloudFormation console. Find the root Hotsock stack and click on it. There are many Hotsock stacks marked as "nested", you'll want to ignore those and find the root stack that is _not_ marked as nested.
+1. In the upper-right, click the "Update" button. Conveniently, if you accidentally try and update a nested stack, it will suggest that you instead go to the root stack.
+1. On the "Prepare template" screen, choose "Use current template" option.
+1. On the "Specify stack details" screen, set `PublishEventsToEventBridgeParameter` to `enabled` to enable EventBridge events. Set to `disabled` to disable EventBridge events. Set `PublishEventsToSNSParameter` to `enabled` to enable SNS events. Set to `disabled` to disable SNS events.
+1. Scroll to the bottom and click "Next".
+1. Scroll to the bottom of the "Configure stack options" screen and click "Next".
+1. Scroll to the bottom of the "Review Hotsock" screen, check all the boxes in the "Capabilities and transforms" section and click "Submit".
+
+The setting is applied immediately and messages begin publishing as soon as the stack update completes.
+
+## EventBridge
+
+If enabled, all events are published to a Hotsock-specific event bus in your account. The Arn of the event bus is available in your installation's [stack outputs](../installation/initial-setup.mdx#PubSubBusArn).
+
+```json
+{
+  "version": "0",
+  "id": "f1b73bbb-b1f9-acd7-3b4c-4cf40db7328e",
+  "detail-type": "connection",
+  "source": "hotsock.v1",
+  "account": "111111111111",
+  "time": "2023-07-14T14:05:05Z",
+  "region": "us-east-1",
+  "resources": [],
+  "detail": {
+    "source": "hotsock.v1",
+    "type": "hotsock.connected",
+    "metadata": {},
+    "data": {
+      "id": "IDnAdd9kIAMCEsQ=",
+      "connectedAt": "2024-05-31T15:47:45.231141792Z",
+      "keepAlive": true,
+      "sourceIp": "155.186.123.137",
+      "uid": null,
+      "umd": null,
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+    },
+    "dataType": "connection"
+  }
+}
+```
+
+### Configure an EventBridge rule
+
+## SNS
+
+If enabled, all messages are published to a Hotsock-specific SNS topic in your account. The Arn of the topic is available in your installation's [stack outputs](../installation/initial-setup.mdx#PubSubTopicArn).
+
+The following is a sample SNS message for a newly established connection. Most of the attributes may just look like noise, but the `Message` attribute contains the event, which is always published as stringified JSON. Additionally, some properties are duplicated into `MessageAttributes` for common SNS filter policy needs.
+
+```json
+{
+  "Type": "Notification",
+  "MessageId": "4360060f-c95a-58d5-8a7c-58dbecd688ed",
+  "TopicArn": "arn:aws:sns:us-east-1:111111111111:Hotsock-PubSub-EOLFPNQLL8CW-Topic-AZXpBXfkywWc",
+  "Message": "{\"source\":\"hotsock.v1\",\"type\":\"hotsock.connected\",\"metadata\":{},\"data\":{\"id\":\"YppzrdWfoAMCJBQ=\",\"umd\":null,\"connectedAt\":\"2024-05-31T19:21:47.747616027Z\",\"keepAlive\":true,\"uid\":null,\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0\",\"sourceIp\":\"155.186.123.137\"},\"dataType\":\"connection\"}",
+  "Timestamp": "2024-05-31T19:21:48.428Z",
+  "SignatureVersion": "1",
+  "Signature": "PSnfnie3xEi4XDiJtcDBJGnQbZS5rvRut+ZAngBnQS7GqA/SC4fZuRFNf5d3pjoOuWM8idp5qyS+SppkBEt2a32cxEIeCMbV7MVeCR1A5FVuKKwZpqmmhyKIVfEvn30htjAgyy7V/OOvvzecoR0rHdG1KcyOze2XQILY6e8AAz8o/3mwpYx+KO7N1Ifs3+zavbjS/nuZbVyPVSxAWn2J9fcOGje/QhPi3wYvnrhsIotxPrLefIOWiRY3ayB5kvdkTTbRW1DADv/daCB9o7wpi9JNFQqklNkVOURNE2pjW/A5m9P1Ah14I437sS7xGHFeAfyBJhf4GwANS7r4Lyb/HQ==",
+  "SigningCertURL": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-60eadc530605d63b8e62a523676ef735.pem",
+  "UnsubscribeURL": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:111111111111:Hotsock-PubSub-EOLFPNQLL8CW-Topic-AZXpBXfkywWc:2d31db7b-db2c-49ce-a9b8-9e70efcec5f1",
+  "MessageAttributes": {
+    "dataType": { "Type": "String", "Value": "connection" },
+    "source": { "Type": "String", "Value": "hotsock.v1" },
+    "type": { "Type": "String", "Value": "hotsock.connected" }
+  }
+}
+```
+
+### Configure an SNS subscription
+
+## `hotsock.connected` {#hotsock.connected}
+
+This event is sent whenever a client successfully connects to the WebSocket.
+
+### `type` {#hotsock.connected--type}
+
+This is always `hotsock.connected`.
+
+### `metadata` {#hotsock.connected--metadata}
+
+Object. Currently empty.
+
+```json
+{}
+```
+
+### `data` {#hotsock.connected--data}
+
+- `id` (String): The identifier for this connection. This identifier is guaranteed to be unique across this installation while this connection is active and for an unknown time period afterward, but is not guaranteed to be unique forever. It's possible that sometime in the distant future, a connection ID could be reused.
+- `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
+- `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connections/claims.mdx#keepAlive) is enabled for this connection.
+- `sourceIp` (String | null): The source IP address that was used by the client when the connection was established.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this connection.
+- `umd` (JSON | null): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this connection.
+- `userAgent` (String | null): The value of the User-Agent header that was used when the client established the connection.
+
+```json
+{
+  "id": "IDnAdd9kIAMCEsQ=",
+  "connectedAt": "2024-05-31T15:47:45.231141792Z",
+  "keepAlive": true,
+  "sourceIp": "155.186.123.137",
+  "uid": null,
+  "umd": null,
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+}
+```
+
+### `dataType` {#hotsock.connected--dataType}
+
+The data object type for this event is `connection`.
+
+## `hotsock.disconnected` {#hotsock.disconnected}
+
+This event is sent whenever a connected client disconnects from the WebSocket.
+
+### `type` {#hotsock.disconnected--type}
+
+This is always `hotsock.disconnected`.
+
+### `metadata` {#hotsock.disconnected--metadata}
+
+- `event`: The name of this event: (always hotsock.disconnected).
+
+```json
+{}
+```
+
+### `data` {#hotsock.disconnected--data}
+
+- `id` (String): The identifier for this connection. This identifier is guaranteed to be unique across this installation while this connection is active and for an unknown time period afterward, but is not guaranteed to be unique forever. It's possible that sometime in the distant future, a connection ID could be reused.
+- `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
+- `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connections/claims.mdx#keepAlive) is enabled for this connection.
+- `sourceIp` (String | null): The source IP address that was used by the client when the connection was established.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this connection.
+- `umd` (JSON | null): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this connection.
+- `userAgent` (String | null): The value of the User-Agent header that was used when the client established the connection.
+
+```json
+{
+  "id": "IDnAdd9kIAMCEsQ=",
+  "connectedAt": "2024-05-31T15:47:45.231141792Z",
+  "keepAlive": true,
+  "sourceIp": "155.186.123.137",
+  "uid": null,
+  "umd": null,
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+}
+```
+
+### `dataType` {#hotsock.disconnected--dataType}
+
+The data object type for this event is `connection`.
+
+## `hotsock.channelUpdated` {#hotsock.channelUpdated}
+
+This event is sent whenever metadata about a channel changes, such as the number of members in the channel.
+
+### `type` {#hotsock.channelUpdated--type}
+
+This is always `hotsock.channelUpdated`.
+
+### `metadata` {#hotsock.channelUpdated--metadata}
+
+- `channel`: The name of the channel that was updated.
+
+```json
+{
+  "channel": "my-channel"
+}
+```
+
+### `data` {#hotsock.channelUpdated--data}
+
+- `name` (String): The name of the channel.
+
+```json
+{
+  "name": "my-channel",
+  "subscriptionsCount": 1
+}
+```
+
+### `dataType` {#hotsock.channelUpdated--dataType}
+
+The data object type for this event is `channel`.
+
+## `hotsock.messagePublished` {#hotsock.messagePublished}
+
+This event is sent whenever a message is published to Hotsock with `emitPubSubEvent` enabled. For server-initiated messages, set [`emitPubSubEvent`](./publish-messages.mdx#message-format--emitPubSubEvent) when publishing. For client-initiated messages, set the [`emitPubSubEvent` claim](../connections/claims.mdx#channels.messages.emitPubSubEvent) to `true` for desired channel events.
+
+### `type` {#hotsock.messagePublished--type}
+
+This is always `hotsock.messagePublished`.
+
+### `metadata` {#hotsock.messagePublished--metadata}
+
+- `channel` (String): The name of the channel where this message was published to.
+- `event` (String): The name of the event published.
+- `connectionId` (String): The identifier for the connection that subscribed to the channel. This field is only present for messages that were published by a WebSocket client.
+- `requestId` (String): The request ID for the Lambda invocation that originally accepted the message.
+
+```json
+{
+  "channel": "my-channel",
+  "event": "my-event",
+  "connectionId": "IDnAdd9kIAMCEsQ=",
+  "requestId": "9d1d380a-0152-4962-bbbb-6e721b81db52"
+}
+```
+
+### `dataType` {#hotsock.messagePublished--dataType}
+
+The data object type for this event is `message`.
+
+### `data` {#hotsock.messagePublished--data}
+
+- `channel` (String): The name of the channel where this message was published to.
+- `event` (String): The name of the event published.
+- `id` (String): The unique ID of this message ([ULID](https://github.com/ulid/spec)).
+- `data` (JSON): The message data.
+- `meta` (Object): This field is only present for messages that were published by a WebSocket client that include a `uid` and/or `umd`.
+
+```json
+{
+  "channel": "my-channel",
+  "event": "my-event",
+  "id": "01HZAD885RZ308CJM4YK825G65",
+  "data": null
+}
+```
+
+## `hotsock.subscribed` {#hotsock.subscribed}
+
+This event is sent whenever someone subscribes to a channel.
+
+### `type` {#hotsock.subscribed--type}
+
+This is always `hotsock.subscribed`.
+
+### `metadata` {#hotsock.subscribed--metadata}
+
+- `channel`: The name of the channel that was subscribed to.
+
+```json
+{
+  "channel": "my-channel"
+}
+```
+
+### `dataType` {#hotsock.subscribed--dataType}
+
+The data object type for this event is `subscription`.
+
+### `data` {#hotsock.subscribed--data}
+
+- `channel` (String): The name of the channel that was subscribed to.
+- `connectionId` (String): The identifier for the connection that subscribed to the channel.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this subscription.
+- `umd` (JSON): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this subscription.
+
+```json
+{
+  "channel": "my-channel",
+  "connectionId": "IDnAdd9kIAMCEsQ=",
+  "uid": null,
+  "umd": null
+}
+```
+
+## `hotsock.unsubscribed` {#hotsock.unsubscribed}
+
+This event is sent whenever someone unsubscribes from a channel.
+
+### `type` {#hotsock.unsubscribed--type}
+
+This is always `hotsock.unsubscribed`.
+
+### `metadata` {#hotsock.unsubscribed--metadata}
+
+- `channel`: The name of the channel that was unsubscribed from.
+
+```json
+{
+  "channel": "my-channel"
+}
+```
+
+### `data` {#hotsock.unsubscribed--data}
+
+- `channel` (String): The name of the channel that was unsubscribed from.
+- `connectionId` (String): The identifier for the connection that subscribed to the channel.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this subscription.
+- `umd` (JSON): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this subscription.
+
+```json
+{
+  "channel": "my-channel",
+  "connectionId": "IDnAdd9kIAMCEsQ=",
+  "uid": null,
+  "umd": null
+}
+```
+
+### `dataType` {#hotsock.unsubscribed--dataType}
+
+The data object type for this event is `subscription`.

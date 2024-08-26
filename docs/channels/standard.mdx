@@ -1,0 +1,39 @@
+# Standard Channels
+
+Standard channels allow an unlimited number of subscribers to join to receive and exchange messages. This channel type can be used for the majority of situations, where clients or devices receiving real-time updates need the data but not the awareness of one another. For that awareness, take a look at [presence channels](./presence.mdx).
+
+## Subscribe
+
+Once connected to the WebSocket with a token authorizing subscribe on the `live-updates` channel, subscribe by sending a message on the WebSocket.
+
+```
+> {"event":"hotsock.subscribe", "channel":"live-updates"}
+```
+
+You'll immediately receive confirmation of the subscription with a `hotsock.subscribed` message.
+
+```
+> {"event":"hotsock.subscribed","channel":"live-updates","data":{},"meta":{"uid":null,"umd":null}}
+```
+
+At that point, any updates published by your systems to this channel will be received by this and any other clients subscribed to this channel.
+
+```
+< {"id":"01J66BCPSDHYZQ38BW5M357YX5","event":"ticker-values","channel":"live-updates","data":{"AAPL":"226.84","MSFT":"416.79"}}
+```
+
+If you're subscribing and responding to messages using client-side JS, take a look at [hotsock-js](https://www.github.com/hotsock/hotsock-js) where all of the above is handled by the library.
+
+## Unsubscribe
+
+To unsubscribe from a channel, send a `hotsock.unsubscribe` message on the WebSocket.
+
+```
+> {"event":"hotsock.unsubscribe", "channel":"live-updates"}
+```
+
+You'll receive a confirmation message and will immediately stop receiving messages from this channel.
+
+```
+< {"event":"hotsock.unsubscribed","channel":"live-updates","data":{}}
+```

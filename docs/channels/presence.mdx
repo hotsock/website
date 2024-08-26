@@ -1,0 +1,65 @@
+# Presence Channels
+
+Presence channels build on [standard channels](./standard.mdx) by allowing all subscribers to know information (ID and a custom data payload) about all other subscribers as they join and leave the channel.
+
+It's great for things like chat rooms and document collaboration, where everyone there can be made aware of who else is present.
+
+Each member in a presence channel has a `uid` field to identify the user and a `umd` field to supply additional data specific to this user. These attributes are supplied by authentication or subscription token claims ([`uid`](../connections/claims.mdx#uid) and [`umd`](../connections/claims.mdx#umd)) and shared with all other members of the channel.
+
+:::tip
+Presence channel names must have a `presence.` prefix.
+:::
+
+## Limits
+
+Whenever someone leaves or joins a presence channel, all members of the channel receive a message containing the `uid` and `umd` of all other members.
+
+**There is no fixed user count limit on presence channels, but the sum total size of all subscribed member payloads (`{"uid":"...","umd":"..."}`) must not exceed 100KB.** Attempting to subscribe to a presence channel that would put the subscriber over this limit will fail with a `PRESENCE_CHANNEL_CAPACITY_REACHED` WebSocket error.
+
+For example, a presence channel could hold ~100 users with 1KB of user data each or ~800 users with 200 bytes of user data each.
+
+## Subscribe
+
+Once connected to the WebSocket with a token authorizing subscribe on the `presence.live-chat` channel, subscribe by sending a message on the WebSocket.
+
+```
+> {"event":"hotsock.subscribe", "channel":"presence.live-chat"}
+```
+
+You'll immediately receive confirmation of the subscription with a `hotsock.subscribed` message. The `data` attribute will indicate that you're the only subscriber.
+
+```
+< {"event":"hotsock.subscribed","channel":"presence.live-chat","data":{"members":[{"uid":"Jim","umd":null}]},"meta":{"uid":"Jim","umd":null}}
+```
+
+Let's say Dwight joins the channel from another connection. Dwight will receive a `hotsock.subscribed` message similar to the one you received above, but it will indicate that both you and him are present in the channel.
+
+You will receive a `hotsock.memberAdded` message. The `data` attribute contains the `member` who was just added (Dwight) and a list (array) of all current members (you and Dwight).
+
+```
+< {"event":"hotsock.memberAdded","channel":"presence.live-chat","data":{"member":{"uid":"Dwight","umd":null},"members":[{"uid":"Jim","umd":null},{"uid":"Dwight","umd":null}]}}
+```
+
+Here the `member` who was added was Dwight and `members` now contains both of you.
+
+If Dwight unsubscribes from the channel, you'll receive a `hotsock.memberRemoved` message.
+
+```
+{"event":"hotsock.memberRemoved","channel":"presence.live-chat","data":{"member":{"uid":"Dwight","umd":null},"members":[{"uid":"Jim","umd":null}]}}
+```
+
+Here the `member` who was removed was Dwight and `members` no longer includes him.
+
+If you're subscribing and responding to messages using client-side JS, take a look at [hotsock-js](https://www.github.com/hotsock/hotsock-js) where all of the above is handled by the library.
+
+## Unsubscribe
+
+To unsubscribe from a channel, send a `hotsock.unsubscribe` message on the WebSocket.
+
+```
+> {"event":"hotsock.unsubscribe", "channel":"presence.live-chat"}
+```
+
+Other members of the presence channel will receive a `hotsock.memberRemoved` message indicating that you left, if anyone else is still present.
+
+When disconnecting the WebSocket connection, `hotsock.unsubscribe` is called automatically on your behalf for any subscribed channels, notifying anyone still present that you've left.

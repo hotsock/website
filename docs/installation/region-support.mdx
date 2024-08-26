@@ -1,0 +1,53 @@
+---
+sidebar_label: Region Support
+---
+
+# Region Support 🌎
+
+Choose a nearby AWS region. All of your server-initiated messages will be routed through endpoints in this region and all clients will connect to a WebSocket endpoint in this region.
+
+For the lowest possible latency, we recommend choosing the same region as or the closest region to your application infrastructure. You can create installations in multiple regions if your application spans multiple regions.
+
+## Supported Regions
+
+The following commercial AWS regions are fully supported for a Hotsock installation.
+
+- US East (N. Virginia) - us-east-1
+- US East (Ohio) - us-east-2
+- US West (N. California) - us-west-1
+- US West (Oregon) - us-west-2
+- Africa (Cape Town) - af-south-1
+- Asia Pacific (Hong Kong) - ap-east-1
+- Asia Pacific (Jakarta) - ap-southeast-3
+- Asia Pacific (Mumbai) - ap-south-1
+- Asia Pacific (Osaka) - ap-northeast-3
+- Asia Pacific (Seoul) - ap-northeast-2
+- Asia Pacific (Singapore) - ap-southeast-1
+- Asia Pacific (Sydney) - ap-southest-2
+- Asia Pacific (Tokyo) - ap-northeast-1
+- Canada (Central) - ca-central-1
+- Europe (Frankfurt) - eu-central-1
+- Europe (Ireland) - eu-west-1
+- Europe (London) - eu-west-2
+- Europe (Milan) - eu-south-1
+- Europe (Paris) - eu-west-3
+- Europe (Stockholm) - eu-north-1
+- Middle East (Bahrain) - me-south-1
+- South America (São Paulo) - sa-east-1
+
+## Unsupported Regions
+
+The following regions are _not_ supported. Please reach out to AWS Support or to your rep to request adding the missing service features in unsupported regions!
+
+- Asia Pacific (Hyderabad) - ap-south-2: Missing Lambda function URLs
+- Asia Pacific (Melbourne) - ap-southeast-4: Missing Lambda function URLs
+- Canada (Calgary) - ca-west-1: Missing Lambda function URLs
+- Europe (Spain) - eu-south-2: Missing Lambda function URLs
+- Europe (Zurich) - eu-central-2: Missing Lambda function URLs
+- Israel (Tel Aviv) - il-central-1: Missing Lambda function URLs
+- Middle East (UAE) - me-central-1: Missing Lambda function URLs
+
+The following [GovCloud](https://aws.amazon.com/govcloud-us/) AWS regions are currently unsupported as well. Both regions are [missing required AWS Lambda features](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/govcloud-lambda.html#govcloud-lambda-diffs) - Lambda function URLs and `provided.al2023` (Amazon Linux 2023) runtime support.
+
+- US East - us-gov-east-1
+- US West - us-gov-west-1

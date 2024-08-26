@@ -1,0 +1,21 @@
+# Security
+
+A foundational principle of Hotsock is its focus on privacy and data security. Your data is yours alone. By design, it's private to you.
+
+## Access
+
+You decide who has access to your data. Data moves through various AWS services in your account, but Hotsock staff cannot access it.
+
+All Hotsock-created roles use the principle of least-privilege, ensuring only a particular service can assume that role and the role only has permissions to do the specific things it needs and nothing more.
+
+For licensing purposes, Hotsock systems can assume the `HotsockLicensingRole` in your account, which only has permissions to invoke licensing-specific Lambda functions and to gather usage statistics.
+
+For support purposes, you can request that Hotsock staff assume the `HotsockSupport` role in your account to help with issues. In this case, we would be able to access your data. **However, our ability to assume this role is disabled by default** and only you can explicity grant it. [Learn more](../licensing/support.mdx)
+
+## Encryption
+
+As data moves between AWS services and out to the Internet from your Hotsock installation, all data is encrypted in transit and at rest.
+
+AWS provides service-level encryption options with service-managed encryption, KMS keys managed by AWS, or KMS keys managed by customers.
+
+At this time, Hotsock uses either service-managed or AWS-managed KMS keys. Customer Managed Keys (CMKs) are not currently supported, though this is on our roadmap for the future.

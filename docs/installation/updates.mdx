@@ -1,0 +1,27 @@
+---
+sidebar_label: Updates
+---
+
+# Update Your Installation ⬆️
+
+You can update your existing Hotsock CloudFormation stack to the latest Hotsock version in-place at any time without affecting currently-connected clients. You can generally [expect full compatibility](./versioning.mdx) with your existing applications, but consider testing updates against an isolated pre-production installation to ensure there aren't any issues for critical systems.
+
+Updates typically take 5 minutes or less.
+
+## Automatic updates
+
+By default, installations auto-update daily sometime between 08:00-08:59 UTC. This can be configured by setting the CloudFormation "Automatically update installation" (`AutoUpdateInstallationParameter` via CLI) to `enabled` or `disabled`.
+
+To change the time of day that updates run, set the CloudFormation "Auto-update hour of each day (UTC)" (`AutoUpdateUTCHourParameter` via CLI) to the desired hour. Although the performance impact of applying updates is minimal, it's best to choose a low-traffic time of day.
+
+If there are no new releases since the last update, the update operation does not make any changes and there is zero performance impact.
+
+## Manually update installation
+
+If [automatic updates](#automatic-updates) are disabled, you can update your installation to the latest version by invoking the "Hotsock Installation Updater" Lambda function manually.
+
+Sign into your AWS account as a principal with administrative permissions and open the Lambda console and open "Functions" in the left sidebar.
+
+Use the filter/search bar to find "Hotsock Installation Updater". Click the updater function for the installation you'd like to update.
+
+Select the "Test" tab then click the "Test" button to trigger a manual stack update. If the test is successful, the update was initiated and will complete within 2-3 minutes. You can follow the stack update in the CloudFormation console.

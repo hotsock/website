@@ -1,0 +1,56 @@
+# Client Messages
+
+In addition to publishing messages [server-side](../server-api/publish-messages.mdx), connected WebSocket clients can also publish messages if they're authorized to do so.
+
+## Publish Permissions
+
+A connected client can publish messages, but only if they have explicit [`publish`](../connections/claims.mdx#channels.messages.publish) permissions to do so for a given event in a particular channel.
+
+Let's take a chat room example. Assume each person in the `room.123` channel need to send two types of events - one to indicate to other subscribers that they are typing and another to pass each sent chat message.
+
+Your token must authorize [`subscribe`](../connections/claims.mdx#channels.subscribe) access to the channel and grant [`publish`](../connections/claims.mdx#channels.messages.publish) access to both the `is-typing` and `chat` events. Setting [`echo`](../connections/claims.mdx#channels.messages.echo) to `true` on `chat` events allows the sender to receive a copy of those messages despite also being the sender. There's no need for the sender to also know that they are typing, so `is-typing` is not echoed.
+
+```json
+{
+  "channels": {
+    "room.123": {
+      "subscribe": true,
+      "messages": {
+        "is-typing": {
+          "publish": true
+        },
+        "chat": {
+          "publish": true,
+          "echo": true
+        }
+      }
+    }
+  }
+}
+```
+
+On the WebSocket, the client can now send a message when they begin typing.
+
+```
+> {"channel":"room.123","event":"is-typing"}
+```
+
+Other members of the channel will receive a copy. All client-initiated messages include the sender `uid` and `umd` in the `meta` attribute.
+
+```
+< {"id":"01J663WM0781SKS3FDWVV0G884","event":"is-typing","channel":"room.123","data":null,"meta":{"uid":"Jim","umd":null}}
+```
+
+Similarly the client can publish `chat` messages on the WebSocket.
+
+```
+> {"channel":"room.123","event":"chat","data":"Hello! I just wanted to say hi ❤️"}
+```
+
+All channel subscribers will receive a copy of this message. But this one will also send a copy to the sender (because of the [`echo`](../connections/claims.mdx#channels.messages.echo) directive).
+
+```
+< {"id":"01J664PF9MFZPADFA0N5AJB42R","event":"chat","channel":"room.123","data":"Hello! I just wanted to say hi ❤️","meta":{"uid":"Jim","umd":null}}
+```
+
+You can see this chat example in action in the [Real-Time Chat](/examples/real-time-chat/) demo.
