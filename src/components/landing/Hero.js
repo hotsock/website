@@ -62,7 +62,7 @@ function Hero() {
             </p>
             <p className="flex flex-row items-center space-x-2">
               <Certificate />
-              <span>Supported in 21 regions around the world</span>
+              <span>Supported in 22 regions around the world</span>
             </p>
           </div>
         </div>
