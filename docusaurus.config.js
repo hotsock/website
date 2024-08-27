@@ -55,7 +55,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: "img/hotshot-social-card.png",
+      image: "img/og-default.png",
       metadata: [], // https://docusaurus.io/docs/api/themes/configuration#metadata
       algolia: {
         apiKey: "effce19400e6bae01c419d64f036c353",
