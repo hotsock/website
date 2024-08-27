@@ -13,7 +13,7 @@ export default function Home() {
     <>
       <HomepageBanner />
       <Layout
-        title={siteConfig.title}
+        title="Private, self-hosted, and fully managed real-time messaging service"
         description="Hotsock is a real-time WebSockets service for your web and mobile applications, fully-managed and self-hosted in your AWS account."
       >
         <Hero />
