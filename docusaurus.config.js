@@ -226,7 +226,8 @@ const config = {
   scripts: [
     {
       defer: true,
-      site: "QJMVJIST",
+      "data-site": "QJMVJIST",
+      "data-spa": "auto",
       src: "https://cdn.usefathom.com/script.js",
     },
   ],
