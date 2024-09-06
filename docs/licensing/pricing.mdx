@@ -21,14 +21,14 @@ To ensure your installations operate uninterrupted and scale beyond the Free Tie
 
 Paid Tier pricing scales with your usage. Both pay-as-you-go and baseline allowance licensing is available. See the pricing table below for details.
 
-|                Price                 |                       Included messages per month                       |     AWS Configuration     |            Support            |
-| :----------------------------------: | :---------------------------------------------------------------------: | :-----------------------: | :---------------------------: |
-|    **$1.25 per million messages**    |         1 million free messages each month, then pay as you go          |    1 account, 1 region    | [Standard](#standard-support) |
-|   **$99/month** or **$1,069/year**   | 300 million (~10 million per day) <br/> _$0.50 per additional million_  |    1 account, 1 region    | [Standard](#standard-support) |
-|  **$299/month** or **$3,229/year**   | 1.5 billion (~50 million per day) <br/> _$0.45 per additional million_  |   5 accounts, 2 regions   |  [Premium](#premium-support)  |
-|  **$599/month** or **$6,469/year**   | 7.5 billion (~250 million per day) <br/> _$0.40 per additional million_ |  25 accounts, 5 regions   |  [Premium](#premium-support)  |
-| **$1,299/month** or **$14,029/year** |  30 billion (~1 billion per day) <br/> _$0.35 per additional million_   | 100 accounts, all regions |  [Premium](#premium-support)  |
-| **$2,799/month** or **$30,229/year** |  150 billion (~5 billion per day) <br/> _$0.30 per additional million_  | 500 accounts, all regions |  [Premium](#premium-support)  |
+|             Price              |                       Included messages per month                       |     AWS Configuration     |            Support            |
+| :----------------------------: | :---------------------------------------------------------------------: | :-----------------------: | :---------------------------: |
+| **$1.25 per million messages** |         1 million free messages each month, then pay as you go          |    1 account, 1 region    | [Standard](#standard-support) |
+|         **$99/month**          | 300 million (~10 million per day) <br/> _$0.50 per additional million_  |    1 account, 1 region    | [Standard](#standard-support) |
+|         **$299/month**         | 1.5 billion (~50 million per day) <br/> _$0.45 per additional million_  |   5 accounts, 2 regions   |  [Premium](#premium-support)  |
+|         **$599/month**         | 7.5 billion (~250 million per day) <br/> _$0.40 per additional million_ |  25 accounts, 5 regions   |  [Premium](#premium-support)  |
+|        **$1,299/month**        |  30 billion (~1 billion per day) <br/> _$0.35 per additional million_   | 100 accounts, all regions |  [Premium](#premium-support)  |
+|        **$2,799/month**        |  150 billion (~5 billion per day) <br/> _$0.30 per additional million_  | 500 accounts, all regions |  [Premium](#premium-support)  |
 
 Need to send more messages, have a unique situation, or have questions about billing? Email support@hotsock.io.
 
@@ -62,8 +62,10 @@ Paid Tier plans have a baseline monthly allocation as well as an overage price b
 
 There are **never any hard license-imposed limits** that will suddenly or unexpectedly affect your application as long as you have a valid Paid Tier license tied to an account in good standing.
 
-Free Tier installations stop functioning once they use 1 million messages in a given month. Service is restored at the beginning of the next billing cycle. [Upgrade to pay-as-you-go](./paid-tier-upgrade.mdx) to remove this hard limit.
+Free Tier installations stop functioning once they use 1 million messages in a calendar month. Service is restored at the beginning of the next calendar month. [Upgrade to pay-as-you-go](./paid-tier-upgrade.mdx) to remove this hard limit.
 
 ### Can I distribute Hotsock to my customers?
 
-Each license allows for use across a specific number of AWS accounts. You can configure Hotsock installations in your customers' AWS accounts or in AWS accounts you maintain on behalf of your customers as long as **each installation in your customer accounts are only used as part of your application. You may not resell Hotsock as a standalone service.**
+Each license allows for use across a specific number of AWS accounts. You can configure Hotsock installations in your customers' AWS accounts or in AWS accounts you maintain on behalf of your customers as long as **each installation in your customer accounts is only used as part of your product or application. You may not resell Hotsock as a standalone service.**
+
+For example, if you sell a product that is hosted in your customer's AWS account that incorporates real-time features backed by Hotsock, your license can cover your customer's Hotsock usage.
