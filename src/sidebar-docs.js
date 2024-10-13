@@ -35,6 +35,7 @@ const sidebars = {
       items: [
         "connections/authentication",
         "connections/claims",
+        "connections/client-http-api",
         "connections/connect-and-subscribe",
         "connections/keep-alive",
       ],

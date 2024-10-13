@@ -74,6 +74,26 @@ For wildcards that overlap, any explicit `false` is used as the value and cannot
 
 Each object inside the channels object accepts [`messages`](#channels.messages) and [`subscribe`](#channels.subscribe) attributes.
 
+### `historyStart` {#channels.historyStart}
+
+`NumericDate` (optional) - Allows the connection to make HTTP API requests to load past messages stored on the channel prior to the time when the current connection's channel subscription was created, where the specified time is the oldest retrievable message. If supplied, the history start time must be expressed as a Unix timestamp - the number of seconds since the Unix epoch. By default, stored message retreval is limited to messages that were published during the lifetime of the active channel subscription.
+
+The following allows retieving stored messages going back to `2024-10-11 00:00:00 UTC`, which is `1728604800` as a Unix timestamp.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      // highlight-next-line
+      "historyStart": 1728604800,
+      "subscribe": true
+    }
+  }
+}
+```
+
+If you wanted to allow access to the entire message history of a channel without specifying a particular time, setting `historyStart` to `0` will do the trick.
+
 ### `messages` {#channels.messages}
 
 `Object` (optional) - Manages the permissions and directives for client-initiated messages that are published directly to the WebSocket on the channel(s) for the specified events. Each object key is the name of an event and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that event or event wildcard.
@@ -134,16 +154,16 @@ In the following example, `chat` client event messages will trigger server-side 
 
 #### `publish` {#channels.messages.publish}
 
-The following allows this connection to subscribe to the channel "mychannel" and publish client-initiated messages with the "is-typing" event name.
+`Boolean` (optional) - The following allows this connection to subscribe to the channel "mychannel" and publish client-initiated messages with the "is-typing" event name.
 
 ```json
 {
   "channels": {
     "mychannel": {
       "subscribe": true,
-      // highlight-next-line
       "messages": {
         "is-typing": {
+          // highlight-next-line
           "publish": true
         }
       }
@@ -159,9 +179,9 @@ Wildcards are supported in event names using asterisks (\*). The following allow
   "channels": {
     "mychannel": {
       "subscribe": true,
-      // highlight-next-line
       "messages": {
         "*": {
+          // highlight-next-line
           "publish": true
         }
       }
@@ -195,6 +215,31 @@ In the following example, since `chat.*` includes `chat.admin`, this connection 
 
 :::
 
+#### `store` {#channels.messages.store}
+
+`Integer` (optional) - If [client-initiated message publishing](#channels.messages.publish) are permitted for this channel, the `store` attribute specifies the number of seconds that written messages from this connection are retained in the database after being sent. `0` is the default if unspecified, which does not store the message. `-1` keeps messages forever. The highest number you can specify here is `3155695200`, roughly 100 years.
+
+The following allows sending ephemeral "is-typing" events and saved "chat" events to "mychannel", storing each "chat" message for about 1 year (365 days \* 24 hours \* 60 minutes \* 60 seconds) = 31,536,000 seconds.
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "messages": {
+        "is-typing": {
+          "publish": true
+        },
+        "chat": {
+          "publish": true,
+          // highlight-next-line
+          "store": 31536000
+        }
+      }
+    }
+  }
+}
+```
+
 ### `subscribe` {#channels.subscribe}
 
 `Boolean` (optional) - Whether or not to allow the connection to subscribe to the channel(s) specified by the object key. Default is `false`.
@@ -224,48 +269,6 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
   }
 }
 ```
-
-<!--### `subscriptionsCountStat`
-
-`Boolean` (optional) - If set to `true`, this connection will receive a `hotsock.subscriptionsCountStat` message containing the number of members connected to this channel each time someone subscribes or unsubscribes. Default is `false`.
-
-```json
-{
-  "channels": {
-    "mychannel": {
-      // highlight-next-line
-      "subscriptionsCountStat": true
-    }
-  }
-}
-```
-
-:::warning
-Consider the cost of enabling this, particularly for channels with a large number of subscribers. Each subscriber who has this enabled receives a count stat update every time
-:::-->
-
-<!-- #### `store`
-
-`Integer` (optional) - If [client-initiated messages](#messages) are permitted for this channel, the `store` attribute specifies the number of seconds that written messages from this connection are retained in the database after being sent. `0` is the default, which does not save message data. `-1` keeps messages forever.
-
-The following allows sending ephemeral "is-typing" events and stored "message.markAsRead" events to "mychannel", storing each "message.markAsRead" message for 30 days (30 days \* 24 hours \* 60 minutes \* 60 seconds) = 2,592,000 seconds.
-
-```json
-{
-  "channels": {
-    "mychannel": {
-      "messages": {
-        "is-typing": {
-          "publish": true
-        },
-        "message.markAsRead": {
-          "store": 2592000
-        }
-      }
-    }
-  }
-}
-```-->
 
 ## `connectionId` {#connectionId}
 

@@ -1,0 +1,209 @@
+---
+sidebar_label: Client HTTP API
+toc_max_heading_level: 4
+---
+
+# Client HTTP API
+
+In addition to WebSocket interactions, connected clients can also make use of an HTTP API for publishing messages and listing message history for channels. All requests **_must_ be `POST` requests** and **_must_ have URL-encoded `connectionId` and `connectionSecret`** query parameters set.
+
+## Determine your API URL
+
+Your installation's HTTP API URL can be found in your CloudFormation stack outputs screen under [`HttpApiUrl`](../installation/initial-setup.mdx#HttpApiUrl). Example: `https://r6zcm2.lambda-url.us-east-1.on.aws/`
+
+:::note
+Custom Domains are not currently supported for HTTP API endpoints.
+:::
+
+## Authentication
+
+In the `hotsock.connected` message received when a WebSocket connection is established, the `data` payload contains the `connectionId` and `connectionSecret`, which can be used to authenticate HTTP API requests.
+
+```json
+{
+  "event": "hotsock.connected",
+  "data": {
+    // highlight-next-line
+    "connectionId": "JCnTZd_KoAMCF-A=",
+    "connectionExpiresAt": "2024-10-13T19:09:23Z",
+    // highlight-next-line
+    "connectionSecret": "1FfpK4PHV1B7ZryUSCsN"
+  },
+  "meta": { "uid": null, "umd": null }
+}
+```
+
+Using the `connectionId` and `connectionSecret` from this message, you can now construct authenticated API calls by setting these as query parameters to all HTTP API requests.
+
+For example, the URL with required query parameters for publishing a message would be:
+
+```
+https://r6zcm2.lambda-url.us-east-1.on.aws/connection/publishMessage?connectionId=JCnTZd_KoAMCF-A%3d&connectionSecret=1FfpK4PHV1B7ZryUSCsN
+```
+
+:::tip
+Notice the **%3d** in `JCnTZd_KoAMCF-A%3d`, replacing the **=** in the original connection ID `JCnTZd_KoAMCF-A=`. Connection IDs typically have an equals sign as their suffix, so this value must be URL encoded for the URL to be parsed correctly.
+:::
+
+## `connection/listMessages` {#listMessages}
+
+List the message history for a channel. By default, a connection can only list messages for channels that they are subscribed to, limited to messages that were published during the timeframe of the active subscription on the current WebSocket connection. If you subscribed to a channel 2 minutes ago, you'll only be able to list message history on that channel for the past 2 minutes.
+
+When issuing a connect or subscribe token, specify the [`historyStart`](./claims.mdx#channels.historyStart) claim to expand visibility to message history beyond the lifetime of the active subscription.
+
+This endpoint will return up to 100 messages or up to 1MB of data, whichever comes first. Fetch subsequent pages using `before` or `after`, depending on your use case.
+
+#### `after` {#listMessages.after}
+
+String (optional) - Load messages after (newer than) the message with the ID specified here. Has no effect if `reverse` is `true`.
+
+Message IDs are [ULIDs](https://github.com/ulid/spec), making them time-sortable by their value. If you receive a response containing 100 messages and have `reverse` set to `false` (default), you can get the next 100 messages by setting `after` to the last message ID you received.
+
+Example: `01JA3HVNF6E89HDT1ABRFWJ8C8`
+
+#### `before` {#listMessages.before}
+
+String (optional) - Load messages before (older than) the message with the ID specified here. Has no effect if `reverse` is `false` (which is the default).
+
+Message IDs are [ULIDs](https://github.com/ulid/spec), making them time-sortable by their value. If you receive a response containing 100 messages and have `reverse` set to `true`, you can get the next 100 older messages by setting `before` to the last message ID you received.
+
+Example: `01JA3HVNF6E89HDT1ABRFWJ8C8`
+
+#### `channel` {#listMessages.channel}
+
+String (required) - The name of the channel to query message history.
+
+#### `reverse` {#listMessages.reverse}
+
+Boolean (optional) - If set to `true`, lists messages from newest to oldest. Default is `false`.
+
+### Example
+
+The following will load up to 100 of the most recent messages from the `my-channel` channel.
+
+#### Request
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/listMessages?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({ channel: "my-channel", reverse: true }),
+  }
+)
+```
+
+#### Response
+
+```json
+{
+  "messages": [
+    {
+      "id": "01JA3S0TNEC2QBYMZRBMCEXGNW",
+      "event": "my-event",
+      "channel": "my-channel",
+      "data": "Nope.",
+      "meta": {
+        "uid": "Pam",
+        "umd": null
+      }
+    },
+    {
+      "id": "01JA3S0P7FB7WVYS67X316M32S",
+      "event": "my-event",
+      "channel": "my-channel",
+      "data": "Wow. Can we make it a different moment?",
+      "meta": {
+        "uid": "Jim",
+        "umd": null
+      }
+    },
+    {
+      "id": "01JA3S0GB6S3WNTV2S1RJ421TH",
+      "event": "my-event",
+      "channel": "my-channel",
+      "data": "Yup.",
+      "meta": {
+        "uid": "Pam",
+        "umd": null
+      }
+    },
+    {
+      "id": "01JA3S0BR0H7HD4CZ54KA99PAQ",
+      "event": "my-event",
+      "channel": "my-channel",
+      "data": "That was the moment that you liked me?",
+      "meta": {
+        "uid": "Jim",
+        "umd": null
+      }
+    },
+    {
+      "id": "01JA3S05K6024HXRJN2Q9W0YMB",
+      "event": "my-event",
+      "channel": "my-channel",
+      "data": "You came up to my desk and said, 'This may sound weird, and there's no reason for me to know this, but that mixed berry yogurt you're about to eat has expired.'",
+      "meta": {
+        "uid": "Pam",
+        "umd": null
+      }
+    }
+  ]
+}
+```
+
+## `connection/publishMessage` {#publishMessage}
+
+Publish a message to a channel. For `publishMessage` requests to succeed, the connection must already be subscribed to the channel and must have [`publish`](./claims.mdx#channels.messages.publish) permissions granted to the client.
+
+:::tip
+You might wonder when it's appropriate to send a message [via the WebSocket](https://github.com/hotsock/hotsock-js?tab=readme-ov-file#publish-messages-to-a-channel) or via this HTTP API. Sending via the WebSocket is extremely low-overhead and fast because the connection is already established, but it's also fire-and-forget - neither receipt nor a response are guaranteed and unless [`echo`](./claims.mdx#channels.messages.echo) is enabled, you have no indication that the message was sent successfully.
+
+HTTP API calls give you the control of a full HTTP request/response. If you receive a `202 Accepted` response, you can be certain that the message was received by the server.
+:::
+
+#### `channel`
+
+`String` (required) - The name of the channel where this message will be published. This can be any string up to 128 characters, but must not contain any asterisk (`*`), number sign (`#`), comma (`,`), or whitespace/newline characters.
+
+#### `data`
+
+`JSON` (optional) - Up to 32KiB of custom data specific to your application. This can be anything that is valid JSON - object, array, string, number, boolean, or `null`. Binary data must be Base64-encoded to a string.
+
+#### `eagerIdGeneration`
+
+`Boolean` (optional) - If you need to store a copy of the message ID that is published to the channel for follow-up requests, set this to `true`. Default is `false`. [Learn more](../server-api/publish-messages.mdx#message-format.eagerIdGeneration)
+
+#### `event`
+
+`String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` and must not contain any asterisk (`*`) characters.
+
+### Example
+
+The following will publish a message to the `my-channel` channel.
+
+#### Request
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/publishMessage?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({
+      channel: "my-channel",
+      event: "my-event",
+      data: "Hi 👋",
+    }),
+  }
+)
+```
+
+#### Response
+
+```json
+{
+  "id": null,
+  "channel": "my-channel",
+  "event": "my-event"
+}
+```

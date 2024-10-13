@@ -220,25 +220,25 @@ The shape of a message is the same whether you're [invoking Lambda directly](#pu
 }
 ```
 
-### `channel` {#message-format--channel}
+### `channel` {#message-format.channel}
 
 `String` (required) - The name of the channel where this message will be published. This can be any string up to 128 characters, but must not contain any asterisk (`*`), number sign (`#`), comma (`,`), or whitespace/newline characters.
 
-### `data` {#message-format--data}
+### `data` {#message-format.data}
 
 `JSON` (optional) - Up to 32KiB of custom data specific to your application. This can be anything that is valid JSON - object, array, string, number, boolean, or `null`. Binary data must be Base64-encoded to a string.
 
-### `deduplicationId` {#message-format--deduplicationId}
+### `deduplicationId` {#message-format.deduplicationId}
 
 `String` (optional) - If supplied as a non-empty string and if multiple messages with the same `deduplicationId` value are received within 5 minutes of each other, only the first message will be published. Additional copies will be dropped.
 
 If you're publishing from a source that retries upon failure, set this to a value that is consistent across all attempts to publish that message. This ensures that if Hotsock receives the message but a networking issue prevents your application from receiving the success response, retry attempts will not publish duplicate messages.
 
 :::warning
-Providing a `deduplicationId` while also enabling `eagerIdGeneration` is not recommended. See [below](#message-format--eagerIdGeneration) for details.
+Providing a `deduplicationId` while also enabling `eagerIdGeneration` is not recommended. See [below](#message-format.eagerIdGeneration) for details.
 :::
 
-### `eagerIdGeneration` {#message-format--eagerIdGeneration}
+### `eagerIdGeneration` {#message-format.eagerIdGeneration}
 
 `Boolean` (optional) - If you need to store a backend copy of the message ID that is published to the channel for follow-up requests, set this to `true`. Default is `false`.
 
@@ -257,14 +257,14 @@ Deduplication is handled [internally by SQS](https://docs.aws.amazon.com/AWSSimp
 
 :::
 
-### `emitPubSubEvent` {#message-format--emitPubSubEvent}
+### `emitPubSubEvent` {#message-format.emitPubSubEvent}
 
 `Boolean` (optional) - Whether or not this message will trigger a [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). This setting has no effect if both SNS and EventBridge events are disabled globally. Default is `false`.
 
-### `event` {#message-format--event}
+### `event` {#message-format.event}
 
 `String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` and must not contain any asterisk (`*`) characters.
 
-<!-- ### `store`
+### `store` {#message-format.store}
 
-`Integer` (optional) - The message retention duration in seconds. `0` (default) does not store the message. `-1` stores the message forever. For example, setting this to `2592000` (60 \* 60 \* 24 \* 30) would store the message for 30 days.-->
+`Integer` (optional) - The message retention duration in seconds. `0` is the default if unspecified, which does not save message data. `-1` keeps the message forever. The highest number you can specify here is `3155695200`, roughly 100 years. For example, setting this to `2592000` (60 seconds \* 60 minutes \* 24 hours \* 30 days) would store the message for 30 days.
