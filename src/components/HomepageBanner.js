@@ -7,16 +7,18 @@ export default function HomepageBanner() {
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center flex-1">
             <p className="mb-0 ml-3 font-medium text-white truncate">
-              <span className="md:hidden">Hotsock v1.0 is here!</span>
+              <span className="md:hidden">
+                Just released: message storage and a client HTTP API!
+              </span>
               <span className="hidden md:inline">
-                Big news! We're excited to announce that Hotsock v1.0 is
-                released!
+                New in Hotsock v1.3 - flexible message storage and a client HTTP
+                API!
               </span>
             </p>
           </div>
           <div className="flex-shrink-0 order-3 w-full mt-2 sm:order-2 sm:mt-0 sm:w-auto">
             <Link
-              to="/blog/hotsock-v1.0/"
+              to="/blog/message-storage-and-client-http-api/"
               className="flex items-center justify-center px-4 py-2 text-sm font-medium bg-white border border-transparent rounded-sm shadow-sm text-pink-600 hover:bg-indigo-50"
             >
               Learn more
