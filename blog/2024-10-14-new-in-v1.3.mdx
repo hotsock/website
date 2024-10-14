@@ -1,0 +1,153 @@
+---
+slug: message-storage-and-client-http-api
+title: Message storage and client HTTP API now available
+authors: [james]
+tags: []
+---
+
+I'm excited to share the latest Hotsock release, which supports **storing messages for any duration you specify** alongside a **client HTTP API for querying message history** in your channels.
+
+{/* truncate */}
+
+### Storing messages
+
+In the just-released Hotsock v1.3, you can now choose to store published messages on a per-message basis and your connected clients can retrieve the history of messages on the channels where they are subscribed.
+
+Take a chat app as an example, where you have the actual chat content between your users as well as typing indicators published as messages to a channel. You'd like to save all the chat messages, but it would be wasteful to store all the typing indicator messages.
+
+When publishing server-side messages, you can now (optionally) specify a [`store`](/docs/server-api/publish-messages/#message-format.store) attribute, where the value is the number of seconds to retain the message. **Whether you want to store a message for 30 seconds, 30 days, or 30 years, it's up to you!**
+
+Here's an example payload that will keep this message for 30 days (60 seconds \* 60 minutes \* 24 hours \* 30 days = 2592000) before it expires and is automatically deleted.
+
+```json
+{
+  "channel": "my-channel",
+  "event": "my-event",
+  // highlight-next-line
+  "store": 2592000
+}
+```
+
+Similarly for client-initiated messages, you can now specify a [`store`](/docs/connections/claims/#channels.messages.store) claim, where any message sent from a channel subscription will be stored according to the number of seconds specified in that claim.
+
+Here are example claims for the chat app example above, where typing indicators are not stored, but chat messages are stored for about 1 year (365 days \* 24 hours \* 60 minutes \* 60 seconds) or 31,536,000 seconds.
+
+```json
+{
+  "channels": {
+    "my-channel": {
+      "messages": {
+        "is-typing": {
+          "publish": true
+        },
+        "chat": {
+          "publish": true,
+          // highlight-next-line
+          "store": 31536000
+        }
+      }
+    }
+  }
+}
+```
+
+### Query channel message history
+
+Using the new [client HTTP API](/docs/connections/client-http-api/), you can make HTTP requests from your client applications to fetch message history of stored messages, authorized by using the `connectionId` and `connectionSecret` returned in the `hotsock.connected` WebSocket message received when a connection is established.
+
+#### Request
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/listMessages?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({ channel: "my-channel" }),
+  }
+)
+```
+
+#### Response
+
+```json
+{
+  "messages": [
+    {
+      "id": "01JA3S0TNEC2QBYMZRBMCEXGNW",
+      "event": "my-event",
+      "channel": "my-channel",
+      "data": "👋 Hello!",
+      "meta": {
+        "uid": null,
+        "umd": null
+      }
+    }
+  ]
+}
+```
+
+Additional details and options for this endpoint are available [in the docs](/docs/connections/client-http-api/#connection/listMessages).
+
+### Expand visibility with the `historyStart` claim
+
+By default, connections can view message history **for channels where they are currently subscribed, but are limited to viewing messages that were published and stored during the lifetime of the current WebSocket connection's subscription.**
+
+On its face, this may not seem useful - if I can only fetch messages that I've already received while subscribed to a channel, why would I want to load another copy of those same messages? To keep existing behavior unchanged and to not unexpectedly grant subscribers access to old channel messages that they should not be able to see, this is the _default_ behavior.
+
+The [`historyStart`](/docs/connections/claims/#channels.historyStart) claim allows you to modify this behavior, expanding the timeframe of retrievable messages on a channel. This claim accepts a Unix timestamp, which represents the timestamp of the oldest visible message.
+
+The following grants authorization to retrieve all stored messages since July 1, 2024 00:00:00 UTC (`1719792000`) using the `listMessages` API.
+
+```json
+{
+  "channels": {
+    "my-channel": {
+      // highlight-next-line
+      "historyStart": 1719792000,
+      "messages": {
+        "is-typing": {
+          "publish": true
+        },
+        "chat": {
+          "publish": true,
+          "store": 31536000
+        }
+      }
+    }
+  }
+}
+```
+
+With this claim in force, this client can obtain the history of the channel back to July 1, 2024, but cannot view anything before that.
+
+### Publish client messages with HTTP
+
+In addition to listing messages via the HTTP API, **you can also publish messages to subscribed channels with a standard `POST` request**. HTTP-based client message publishing uses the same [`publish`](/docs/connections/claims/#channels.messages.publish) claim as WebSocket-based publishing, but adds the full request/response cycle of an HTTP request and making it easier to keep track of success/failure of message delivery.
+
+#### Request
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/publishMessage?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({ channel: "my-channel", event: "my-event" }),
+  }
+)
+```
+
+#### Response
+
+```json
+{
+  "id": null,
+  "event": "my-event",
+  "channel": "my-channel"
+}
+```
+
+Additional details and options for this endpoint are available [in the docs](/docs/connections/client-http-api/#connection/publishMessage).
+
+### Wrapping up
+
+Existing installations with auto-update enabled are already running v1.3 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time.

@@ -45,7 +45,7 @@ https://r6zcm2.lambda-url.us-east-1.on.aws/connection/publishMessage?connectionI
 Notice the **%3d** in `JCnTZd_KoAMCF-A%3d`, replacing the **=** in the original connection ID `JCnTZd_KoAMCF-A=`. Connection IDs typically have an equals sign as their suffix, so this value must be URL encoded for the URL to be parsed correctly.
 :::
 
-## `connection/listMessages` {#listMessages}
+## `connection/listMessages` {#connection/listMessages}
 
 List the message history for a channel. By default, a connection can only list messages for channels that they are subscribed to, limited to messages that were published during the timeframe of the active subscription on the current WebSocket connection. If you subscribed to a channel 2 minutes ago, you'll only be able to list message history on that channel for the past 2 minutes.
 
@@ -53,7 +53,7 @@ When issuing a connect or subscribe token, specify the [`historyStart`](./claims
 
 This endpoint will return up to 100 messages or up to 1MB of data, whichever comes first. Fetch subsequent pages using `before` or `after`, depending on your use case.
 
-#### `after` {#listMessages.after}
+#### `after` {#connection/listMessages.after}
 
 String (optional) - Load messages after (newer than) the message with the ID specified here. Has no effect if `reverse` is `true`.
 
@@ -61,7 +61,7 @@ Message IDs are [ULIDs](https://github.com/ulid/spec), making them time-sortable
 
 Example: `01JA3HVNF6E89HDT1ABRFWJ8C8`
 
-#### `before` {#listMessages.before}
+#### `before` {#connection/listMessages.before}
 
 String (optional) - Load messages before (older than) the message with the ID specified here. Has no effect if `reverse` is `false` (which is the default).
 
@@ -69,19 +69,19 @@ Message IDs are [ULIDs](https://github.com/ulid/spec), making them time-sortable
 
 Example: `01JA3HVNF6E89HDT1ABRFWJ8C8`
 
-#### `channel` {#listMessages.channel}
+#### `channel` {#connection/listMessages.channel}
 
 String (required) - The name of the channel to query message history.
 
-#### `reverse` {#listMessages.reverse}
+#### `reverse` {#connection/listMessages.reverse}
 
 Boolean (optional) - If set to `true`, lists messages from newest to oldest. Default is `false`.
 
-### Example
+### Example {#connection/listMessages--example}
 
 The following will load up to 100 of the most recent messages from the `my-channel` channel.
 
-#### Request
+#### Request {#connection/listMessages--example-request}
 
 ```javascript
 fetch(
@@ -93,7 +93,7 @@ fetch(
 )
 ```
 
-#### Response
+#### Response {#connection/listMessages--example-response}
 
 ```json
 {
@@ -152,7 +152,7 @@ fetch(
 }
 ```
 
-## `connection/publishMessage` {#publishMessage}
+## `connection/publishMessage` {#connection/publishMessage}
 
 Publish a message to a channel. For `publishMessage` requests to succeed, the connection must already be subscribed to the channel and must have [`publish`](./claims.mdx#channels.messages.publish) permissions granted to the client.
 
@@ -162,27 +162,27 @@ You might wonder when it's appropriate to send a message [via the WebSocket](htt
 HTTP API calls give you the control of a full HTTP request/response. If you receive a `202 Accepted` response, you can be certain that the message was received by the server.
 :::
 
-#### `channel`
+#### `channel` {#connection/publishMessage.channel}
 
 `String` (required) - The name of the channel where this message will be published. This can be any string up to 128 characters, but must not contain any asterisk (`*`), number sign (`#`), comma (`,`), or whitespace/newline characters.
 
-#### `data`
+#### `data` {#connection/publishMessage.data}
 
 `JSON` (optional) - Up to 32KiB of custom data specific to your application. This can be anything that is valid JSON - object, array, string, number, boolean, or `null`. Binary data must be Base64-encoded to a string.
 
-#### `eagerIdGeneration`
+#### `eagerIdGeneration` {#connection/publishMessage.eagerIdGeneration}
 
 `Boolean` (optional) - If you need to store a copy of the message ID that is published to the channel for follow-up requests, set this to `true`. Default is `false`. [Learn more](../server-api/publish-messages.mdx#message-format.eagerIdGeneration)
 
-#### `event`
+#### `event` {#connection/publishMessage.event}
 
 `String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` and must not contain any asterisk (`*`) characters.
 
-### Example
+### Example {#connection/publishMessage--example}
 
 The following will publish a message to the `my-channel` channel.
 
-#### Request
+#### Request {#connection/publishMessage--example-request}
 
 ```javascript
 fetch(
@@ -198,7 +198,9 @@ fetch(
 )
 ```
 
-#### Response
+#### Response {#connection/publishMessage--example-response}
+
+Expect a `202 Accepted` status code for successful publishes.
 
 ```json
 {
