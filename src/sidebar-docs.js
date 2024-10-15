@@ -24,6 +24,7 @@ const sidebars = {
         "installation/updates",
         "installation/custom-domains",
         "installation/security",
+        "installation/changelog",
         "installation/versioning",
         "installation/uninstallation",
       ],

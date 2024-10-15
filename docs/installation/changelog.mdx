@@ -1,0 +1,30 @@
+# Changelog
+
+## v1.3.0 - October 14, 2024 {#v1.3.0}
+
+- Add long-term message storage. Set the [`store`](../server-api/publish-messages.mdx#message-format.store) parameter for server-initiated message publishes or set the [`store`](../connections/claims.mdx#channels.messages.store) claim for client-initiated messages to an integer number in seconds to specify how long messages should be retained.
+- Include `connectionSecret` in `hotsock.connected` message, which when combined with the connection ID is an API key that can make HTTP requests to the HTTP API to list and publish messages for a channel.
+- Add [`historyStart`](../connections/claims.mdx#channels.historyStart) claim to specify the timestamp of how far back a connection can query for past messages using the HTTP API.
+- Reduce the HTTP API timeout from 10 seconds to 5 seconds.
+- Add CORS support to the HTTP API.
+- Improve performance of the `hotsock.connected` message. Where this message was previously received 300-600ms after the connection was established, it is now received within 30-60ms.
+- Switch the DynamoDB Streams `FilterCriteria` patterns to use the object type (`T`) attribute value to determine if it should be consumed by the stream processor instead of using arbitrary key prefixes/suffixes.
+- Improve log redaction of API keys and connection secrets.
+- Add stream processor metrics that are published from logs using CloudWatch Embedded Metric Format (EMF).
+
+## v1.2.0 - September 23, 2024 {#v1.2.0}
+
+- Switch from AWS Managed KMS Key to AWS Owned Key for DynamoDB table encryption to avoid cost issues with concurrent UpdateItem calls trigging tons of `kms:Decrypt` operations. A future release can offer KMS/CMK as an explicit opt-in where such costs are acceptable.
+- Change the main table batch size for DynamoDB Stream processing from 100 to 1000 and add a filter pattern so only specific keys are processed.
+- Always use SNS `PublishBatch()` instead of single `Publish()` calls to maximize throughput.
+
+## v1.1.0 - August 29, 2024 {#v1.1.0}
+
+- Add a "Pre-warm environment" (`PreWarmEnvironmentParameter`) CloudFormation option to keep all time-sensitive, user-facing Lambda functions warm using a one-per-minute scheduled invocation. Designed for staging or demo environments where traffic often drops to zero, but where you don't want noticeable cold starts when usage resumes.
+- Set `MemorySize: 1769` for the main table stream processor to give it a full vCPU.
+
+## v1.0.0 - August 27, 2024 {#v1.0.0}
+
+Initial public release! 🎉
+
+Read the [launch blog post](/blog/hotsock-v1.0/) to learn more.
