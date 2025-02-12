@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.1 - February 12, 2025 {#v1.3.1}
+
+- Fix an issue where the `connectedAt` timestamp on a stored `ConnectionItem` did not match API Gateway's connection timestamp - it was off by a few milliseconds. These values are now synchronized.
+- Build with Go 1.24.0.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions.
+
 ## v1.3.0 - October 14, 2024 {#v1.3.0}
 
 - Add long-term message storage. Set the [`store`](../server-api/publish-messages.mdx#message-format.store) parameter for server-initiated message publishes or set the [`store`](../connections/claims.mdx#channels.messages.store) claim for client-initiated messages to an integer number in seconds to specify how long messages should be retained.
