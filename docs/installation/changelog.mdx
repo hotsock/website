@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.2 - April 2, 2025 {#v1.3.2}
+
+- Work around known bug in API Gateway where `GoneException` is occasionally returned when a connection is still alive.
+- Build with Go 1.24.2.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-04-02](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-04-02)).
+
 ## v1.3.1 - February 12, 2025 {#v1.3.1}
 
 - Fix an issue where the `connectedAt` timestamp on a stored `ConnectionItem` did not match API Gateway's connection timestamp - it was off by a few milliseconds. These values are now synchronized.
