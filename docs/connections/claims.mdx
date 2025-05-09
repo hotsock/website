@@ -38,7 +38,7 @@ Per the JWT spec, `aud` can also be an array of audiences, where the installatio
 
 ## `channels` {#channels}
 
-`Object` (optional) - The `channels` claim specifies the channel permissions that are granted to this connection. Each object key is the name of a channel and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that channel or channel wildcard.
+`Object` (optional) - The `channels` claim specifies the channel permissions granted and channel directives assigned to this connection. Each object key is the name of a channel and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that channel or channel wildcard.
 
 The following grants subscribe access to any channel with the prefix `account.123.` and the channel named `user.456`.
 
@@ -239,6 +239,28 @@ The following allows sending ephemeral "is-typing" events and saved "chat" event
   }
 }
 ```
+
+### `omitFromSubCount` {#channels.omitFromSubCount}
+
+`Boolean` (optional) - By default, subscribing to a channel increments an attribute that tracks the number of connections subscribed to a channel, and unsubscribing decrements that number. Those increment/decrement operations also publish [hotsock.channelUpdated](../server-api/events.mdx#hotsock.channelUpdated) pub/sub events. Many use cases have no need for tracking subscriber counts on a channel, so you can set `omitFromSubCount` to `true` to reduces costs and contention for DynamoDB writes, Lambda invocations for DynamoDB Stream processing, and SNS/EventBridge events. Default is `false`.
+
+The following sets `omitFromSubCount` to `true` on "mychannel".
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      // highlight-next-line
+      "omitFromSubCount": true
+    }
+  }
+}
+```
+
+:::info
+Setting `omitFromSubCount` to `true` _does not_ prevent [`hotsock.memberAdded`](../channels/presence.mdx#subscribe) or [`hotsock.memberRemoved`](../channels/presence.mdx#unsubscribe) events from firing on presence channels. It also does not prevent [`hotsock.subscribed`](../server-api/events.mdx#hotsock.subscribed) or [`hotsock.unsubscribed`](../server-api/events.mdx#hotsock.unsubscribed) pub/sub events from firing.
+:::
 
 ### `subscribe` {#channels.subscribe}
 
