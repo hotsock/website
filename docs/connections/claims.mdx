@@ -262,6 +262,10 @@ The following sets `omitFromSubCount` to `true` on "mychannel".
 Setting `omitFromSubCount` to `true` _does not_ prevent [`hotsock.memberAdded`](../channels/presence.mdx#subscribe) or [`hotsock.memberRemoved`](../channels/presence.mdx#unsubscribe) events from firing on presence channels. It also does not prevent [`hotsock.subscribed`](../server-api/events.mdx#hotsock.subscribed) or [`hotsock.unsubscribed`](../server-api/events.mdx#hotsock.unsubscribed) pub/sub events from firing.
 :::
 
+:::warning
+When mixed usage of this claim occurs on a given channel (some connections omit counts, others don't), channel subscription counts become inconsistent with actual connection counts.
+:::
+
 ### `subscribe` {#channels.subscribe}
 
 `Boolean` (optional) - Whether or not to allow the connection to subscribe to the channel(s) specified by the object key. Default is `false`.

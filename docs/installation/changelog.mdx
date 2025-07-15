@@ -1,11 +1,12 @@
 # Changelog
 
-## v1.4.0 - July 13, 2025 {#v1.4.0}
+## v1.4.0 - July 15, 2025 {#v1.4.0}
 
 - Add the ability to disable connection count tracking for channel subscriptions with [`omitFromSubCount`](../connections/claims.mdx#channels.omitFromSubCount). This is an optional cost reduction measure for cases where knowing the count.
+- Fix an issue where some item remove events were not triggering event bus events.
 - Dualstack mode is enabled for the WebSocket API, providing both IPv4 and IPv6 support for client WebSocket connections.
 - Build with Go 1.24.5.
-- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-07-09](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-07-09)).
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-07-15](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-07-15)).
 
 ## v1.3.2 - April 2, 2025 {#v1.3.2}
 
