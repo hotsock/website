@@ -55,9 +55,29 @@ If you've chosen HMAC, you'll need to Base64 encode your chosen raw shared key v
 
 ### RSA / ECDSA / EdDSA
 
-If you've chosen one of the asymmetric options, **you'll need to Base64 encode the PEM-formatted public key**. Do not supply the private key! Keep the private key secret!
+If you've chosen one of the asymmetric options, **you'll need to Base64 encode the PEM-formatted public key**. Do not supply the private key! Use the private key to sign tokens in your backend and keep it secret!
 
-Given the following public key:
+#### Generate a secure signing key
+
+You can generate a new private key using OpenSSL. **Do not use these keys. Generate your own.**
+
+```
+openssl ecparam -name prime256v1 -genkey -noout -out hotsock-private.pem
+```
+
+Now derive the public key from the private key.
+
+```
+openssl ec -in hotsock-private.pem -pubout -out hotsock-public.pem
+```
+
+Base64 encode the public key.
+
+```
+base64 -i hotsock-public.pem
+```
+
+Given the following PEM-formatted public key:
 
 ```
 -----BEGIN PUBLIC KEY-----
