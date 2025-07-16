@@ -78,7 +78,7 @@ Each object inside the channels object accepts [`messages`](#channels.messages) 
 
 `NumericDate` (optional) - Allows the connection to make HTTP API requests to load past messages stored on the channel prior to the time when the current connection's channel subscription was created, where the specified time is the oldest retrievable message. If supplied, the history start time must be expressed as a Unix timestamp - the number of seconds since the Unix epoch. By default, stored message retreval is limited to messages that were published during the lifetime of the active channel subscription.
 
-The following allows retieving stored messages going back to `2024-10-11 00:00:00 UTC`, which is `1728604800` as a Unix timestamp.
+The following allows retieving stored messages going back to `2024-10-11 00:00:00 UTC` (inclusive), which is `1728604800` as a Unix timestamp.
 
 ```json
 {
