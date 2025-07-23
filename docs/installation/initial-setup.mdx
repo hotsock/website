@@ -380,9 +380,13 @@ SQS acts as a buffer for all messages as they arrive. It keeps messages in order
 
 Things that happen (events) in Hotsock are published to SNS and subscribed to by listeners who care about specific types of events (often other Lambda functions). SNS is also used for all Hotsock-internal events.
 
-### EventBridge
+### EventBridge Event Bus
 
-Things that happen (events) in Hotsock can optionally be [published to EventBridge](../server-api/events.mdx) and subscribed to by various listeners in your applications or by [other AWS services](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html). You can also use EventBridge [API Destinations](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-api-destinations.html) to send events as webhooks to any HTTP endpoint you wish based on event rules and can transform the request shape to match your target systems.
+Things that happen (events) in Hotsock can optionally be [published to an EventBridge event bus](../server-api/events.mdx) and subscribed to by various listeners in your applications or by [other AWS services](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html). You can also use EventBridge [API Destinations](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-api-destinations.html) to send events as webhooks to any HTTP endpoint you wish based on event rules and can transform the request shape to match your target systems.
+
+### EventBridge Scheduler
+
+Messages can be scheduled for future delivery using [EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html). When you publish a message with a `scheduleExpression`, Hotsock creates a one-time schedule that will trigger message delivery at the specified time. This allows you to send messages at precise future timestamps, with optional timezone support.
 
 ### Systems Manager Parameter Store
 

@@ -1,8 +1,16 @@
 # Changelog
 
+## v1.5.0 - July 23, 2025 {#v1.5.0}
+
+- Add support for scheduling messages for future delivery. Specify [`scheduleExpression`](../server-api/publish-messages.mdx#message-format.scheduleExpression) and, optionally, [`scheduleExpressionTimezone`](../server-api/publish-messages.mdx#message-format.scheduleExpressionTimezone) when publishing messages with Lambda, HTTP URL, or client WebSocket or HTTP. For client requests, the event-level [`scheduleBefore`](../connections/claims.mdx#channels.messages.scheduleBefore) permission claim is required. This feature is backed by [Amazon EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html) and allows scheduling one-time message events (recurring schedules are not currently supported in Hotsock).
+- Server-initiated message publishing requests now return more helpful error info in the HTTP or Lambda response body.
+- In addition to publishing messages via the WebSocket, the web console provides interface options for sending standard and raw messages using the client HTTP API.
+- The web console now displays a timestamp alongside messages so you can see when each message was sent or received.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-07-22](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-07-22)).
+
 ## v1.4.0 - July 15, 2025 {#v1.4.0}
 
-- Add the ability to disable connection count tracking for channel subscriptions with [`omitFromSubCount`](../connections/claims.mdx#channels.omitFromSubCount). This is an optional cost reduction measure for cases where knowing the count.
+- Add the ability to disable connection count tracking for channel subscriptions with [`omitFromSubCount`](../connections/claims.mdx#channels.omitFromSubCount). This is an optional cost reduction measure for cases where the count of subscribers in a channel changes frequently and tracking that count is unneeded.
 - Fix an issue where some item remove events were not triggering event bus events.
 - Dualstack mode is enabled for the WebSocket API, providing both IPv4 and IPv6 support for client WebSocket connections.
 - Build with Go 1.24.5.

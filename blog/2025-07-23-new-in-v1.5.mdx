@@ -1,0 +1,78 @@
+---
+slug: message-scheduler-and-web-console-improvements
+title: Message scheduler and web console improvements
+authors: [james]
+tags: []
+---
+
+The latest Hotsock release is out and allows **scheduling messages for future delivery** along with some **updates to the web console** and **improved HTTP response error messages** to help with your debugging efforts.
+
+{/* truncate */}
+
+### Scheduling messages
+
+In Hotsock v1.5, you can now **schedule messages for future delivery**, backed by [Amazon EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html). This feature is available when publishing messages via Lambda, HTTP URL, or client WebSocket/HTTP, allowing you to publish a message now, but have it wait to send to channel subscribers until a specific time in the future.
+
+To schedule a message, specify a `scheduleExpression` when publishing using the [one-time `at()` timestamp syntax](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#one-time) provided by EventBridge Scheduler for a timestamp in the future.
+
+```json
+{
+  "channel": "my-channel",
+  "event": "reminder",
+  "data": "Don't forget about your meeting!",
+  // highlight-next-line
+  "scheduleExpression": "at(2025-07-24T14:30:00)"
+}
+```
+
+Specify a timezone for your scheduled messages using the optional `scheduleExpressionTimezone` attribute:
+
+```json
+{
+  "channel": "my-channel",
+  "event": "daily-standup",
+  "data": "Time for the daily standup!",
+  // highlight-start
+  "scheduleExpression": "at(2025-07-24T09:00:00)",
+  "scheduleExpressionTimezone": "America/New_York"
+  // highlight-end
+}
+```
+
+For client-initiated scheduled messages, you'll need to grant permission using the [`scheduleBefore`](/docs/connections/claims/#channels.messages.scheduleBefore) claim in addition to the [`publish`](/docs/connections/claims/#channels.messages.publish) claim, where the value is a Unix timestamp for the furthest out in time that the client is allowed to schedule messages:
+
+```json
+{
+  "channels": {
+    "my-channel": {
+      "messages": {
+        "reminder": {
+          "publish": true,
+          // highlight-next-line
+          "scheduleBefore": 1784820000
+        }
+      }
+    }
+  }
+}
+```
+
+Note that this feature currently supports **one-time scheduled messages only** - recurring schedules are not currently supported in Hotsock.
+
+### Web console improvements
+
+The [web console](/docs/server-api/web-console/) has received several useful updates to improve your debugging and testing experience.
+
+#### Send messages via HTTP API
+
+You can now **send both standard and raw messages directly from the web console** using the [client HTTP API](/docs/connections/client-http-api/). This makes it easier to test message publishing without needing to write custom client code or use external tools.
+
+The console provides interface options for both message types, allowing you to quickly test your channel permissions, message formatting, and subscriber delivery.
+
+#### Message timestamps
+
+The [web console](/docs/server-api/web-console/) now **displays timestamps alongside each message** with millisecond precision, so you can see exactly when messages were sent or received. This is particularly helpful when debugging message timing issues or understanding the sequence of events in your channels.
+
+### Wrapping up
+
+Existing installations with auto-update enabled are already running v1.5 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time. A [full changelog](/docs/installation/changelog/#v1.5.0) is available with the complete list of changes included in this release.

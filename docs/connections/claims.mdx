@@ -215,9 +215,31 @@ In the following example, since `chat.*` includes `chat.admin`, this connection 
 
 :::
 
+#### `scheduleBefore` {#channels.messages.scheduleBefore}
+
+`NumericDate` (optional) - If [client-initiated message publishing](#channels.messages.publish) is permitted for this channel and event, the `scheduleBefore` attribute specifies the furthest out future time that this connection can schedule messages for delivery. If supplied, the schedule before time must be expressed as a Unix timestamp - the number of seconds since the Unix epoch. By default, or if `scheduleBefore` is provided as `0` or any timestamp in the past, scheduled message publishing is not permitted.
+
+The following allows publishing "reminder" event messages to "mychannel" with scheduling permitted up to `2025-12-31 23:59:59 UTC` (which is `1735689599` as a Unix timestamp).
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "messages": {
+        "reminder": {
+          "publish": true,
+          // highlight-next-line
+          "scheduleBefore": 1735689599
+        }
+      }
+    }
+  }
+}
+```
+
 #### `store` {#channels.messages.store}
 
-`Integer` (optional) - If [client-initiated message publishing](#channels.messages.publish) are permitted for this channel, the `store` attribute specifies the number of seconds that written messages from this connection are retained in the database after being sent. `0` is the default if unspecified, which does not store the message. `-1` keeps messages forever. The highest number you can specify here is `3155695200`, roughly 100 years.
+`Integer` (optional) - If [client-initiated message publishing](#channels.messages.publish) is permitted for this channel, the `store` attribute specifies the number of seconds that written messages from this connection are retained in the database after being sent. `0` is the default if unspecified, which does not store the message. `-1` keeps messages forever. The highest number you can specify here is `3155695200`, roughly 100 years.
 
 The following allows sending ephemeral "is-typing" events and saved "chat" events to "mychannel", storing each "chat" message for about 1 year (365 days \* 24 hours \* 60 minutes \* 60 seconds) = 31,536,000 seconds.
 

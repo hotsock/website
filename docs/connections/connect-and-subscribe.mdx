@@ -81,7 +81,7 @@ aws lambda invoke \
   /dev/stdout
 ```
 
-The expected response to this function invocation is `{"id":null,"channel":"get-started-with-hotsock","event":"welcome"}`. More details on publishing with Lambda as well as request and response attributes in [message publishing](../server-api/publish-messages.mdx#publish-with-lambda).
+The expected response to this function invocation is `{"channel":"get-started-with-hotsock","event":"welcome"}`. More details on publishing with Lambda as well as request and response attributes in [message publishing](../server-api/publish-messages.mdx#publish-with-lambda).
 
 Over in your WebSocket connection window, the published message will be received by you, the channel subscriber.
 
@@ -111,7 +111,7 @@ curl -X "POST" "https://k6rcy6a2leyehqhlphlwkkuppm0xxubn.lambda-url.us-east-1.on
       }'
 ```
 
-The expected response to this request is `{"id":null,"channel":"get-started-with-hotsock","event":"welcome"}` with a `202 Accepted` HTTP response code. More details on publishing with HTTP as well as request and response attributes in [message publishing](../server-api/publish-messages.mdx#publish-with-http-url).
+The expected response to this request is `{"channel":"get-started-with-hotsock","event":"welcome"}` with a `202 Accepted` HTTP response code. More details on publishing with HTTP as well as request and response attributes in [message publishing](../server-api/publish-messages.mdx#publish-with-http-url).
 
 Over in your WebSocket connection window, the published message will be received by you, the channel subscriber.
 

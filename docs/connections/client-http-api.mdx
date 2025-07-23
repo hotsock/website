@@ -178,6 +178,25 @@ HTTP API calls give you the control of a full HTTP request/response. If you rece
 
 `String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` and must not contain any asterisk (`*`) characters.
 
+#### `scheduleExpression` {#connection/publishMessage.scheduleExpression}
+
+`String` (optional) - Schedule the message for future delivery using [EventBridge Scheduler one-time `at()` syntax](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#one-time). The connection must have the [`scheduleBefore`](./claims.mdx#channels.messages.scheduleBefore) permission claim for the channel and event. If specified, the message will be delivered at the scheduled time rather than immediately.
+
+Example values:
+
+- `"at(2025-07-24T14:30:00)"` - Schedule for July 24, 2025 at 2:30 PM UTC
+- `"at(2025-12-25T09:00:00)"` - Schedule for December 25, 2025 at 9:00 AM UTC
+
+#### `scheduleExpressionTimezone` {#connection/publishMessage.scheduleExpressionTimezone}
+
+`String` (optional) - The timezone for the `scheduleExpression`. Must be a valid [IANA timezone identifier](https://www.iana.org/time-zones). If not specified, the schedule expression is interpreted as UTC. Has no effect if `scheduleExpression` is not provided.
+
+Example values:
+
+- `"America/New_York"` - Eastern Time
+- `"Europe/London"` - British Time
+- `"Asia/Tokyo"` - Japan Standard Time
+
 ### Example {#connection/publishMessage--example}
 
 The following will publish a message to the `my-channel` channel.
@@ -204,8 +223,43 @@ Expect a `202 Accepted` status code for successful publishes.
 
 ```json
 {
-  "id": null,
   "channel": "my-channel",
   "event": "my-event"
+}
+```
+
+### Scheduled Message Example {#connection/publishMessage--scheduled-example}
+
+The following will schedule a message to be delivered to the `my-channel` channel on July 24, 2025 at 9:00 AM Eastern Time.
+
+#### Request {#connection/publishMessage--scheduled-example-request}
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/publishMessage?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({
+      channel: "my-channel",
+      event: "reminder",
+      data: "Don't forget about your meeting!",
+      // highlight-start
+      scheduleExpression: "at(2025-07-24T09:00:00)",
+      scheduleExpressionTimezone: "America/New_York",
+      // highlight-end
+    }),
+  }
+)
+```
+
+#### Response {#connection/publishMessage--scheduled-example-response}
+
+Expect a `202 Accepted` status code for successful scheduled message requests, with a `scheduleArn` value from EventBridge Scheduler that you could use to delete the scheduled message, if needed.
+
+```json
+{
+  "channel": "my-channel",
+  "event": "reminder",
+  "scheduleArn": "arn:aws:scheduler:us-east-1:111111111111:schedule/Hotsock-Scheduler-1CXU99B3NT-ScheduleGroup-17VG1F14Z7SM6/01K0WF560Z91WTKMSC892S799W"
 }
 ```

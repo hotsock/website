@@ -265,6 +265,52 @@ Deduplication is handled [internally by SQS](https://docs.aws.amazon.com/AWSSimp
 
 `String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` and must not contain any asterisk (`*`) characters.
 
+### `scheduleExpression` {#message-format.scheduleExpression}
+
+`String` (optional) - Schedule the message for future delivery using [EventBridge Scheduler one-time `at()` syntax](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#one-time). If specified, the message will be delivered at the scheduled time rather than immediately. Currently supports one-time scheduled messages only - recurring schedules are not supported.
+
+Example values:
+
+- `"at(2025-07-24T14:30:00)"` - Schedule for July 24, 2025 at 2:30 PM UTC
+- `"at(2025-12-25T09:00:00)"` - Schedule for December 25, 2025 at 9:00 AM UTC
+
+### `scheduleExpressionTimezone` {#message-format.scheduleExpressionTimezone}
+
+`String` (optional) - The timezone for the `scheduleExpression`. Must be a valid [IANA timezone identifier](https://www.iana.org/time-zones). If not specified, the schedule expression is interpreted as UTC. Has no effect if `scheduleExpression` is not provided.
+
+Example values:
+
+- `"America/New_York"` - Eastern Time
+- `"Europe/London"` - British Time
+- `"Asia/Tokyo"` - Japan Standard Time
+
 ### `store` {#message-format.store}
 
 `Integer` (optional) - The message retention duration in seconds. `0` is the default if unspecified, which does not save message data. `-1` keeps the message forever. The highest number you can specify here is `3155695200`, roughly 100 years. For example, setting this to `2592000` (60 seconds \* 60 minutes \* 24 hours \* 30 days) would store the message for 30 days.
+
+## Response format {#response-format}
+
+Publishing messages returns a JSON response containing information about the published message. All responses include the `channel` and `event` that were published. Additional fields are included based on the request parameters.
+
+```json
+{
+  "channel": "my-channel",
+  "event": "my-event"
+}
+```
+
+### `channel` {#response-format.channel}
+
+`String` - The name of the channel where the message was published. This matches the `channel` value from the request.
+
+### `event` {#response-format.event}
+
+`String` - The name of the event that was published. This matches the `event` value from the request.
+
+### `id` {#response-format.id}
+
+`String` (conditional) - The unique message ID generated for this message. This field is only included in the response when [`eagerIdGeneration`](#message-format.eagerIdGeneration) is set to `true` in the request.
+
+### `scheduleArn` {#response-format.scheduleArn}
+
+`String` (conditional) - The Amazon EventBridge Scheduler ARN for the scheduled message. This field is only included in the response when [`scheduleExpression`](#message-format.scheduleExpression) is provided in the request. You can use this ARN to cancel or modify the scheduled message using the EventBridge Scheduler API if needed.
