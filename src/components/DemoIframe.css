@@ -1,0 +1,15 @@
+.demo-iframe-container {
+  margin: 1rem 0;
+}
+
+.demo-loading, 
+.demo-error {
+  transition: opacity 0.2s ease;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .demo-iframe-container iframe {
+    height: 400px !important;
+  }
+}

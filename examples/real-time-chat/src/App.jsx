@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client"
-// import SendIcon from "./assets/send.svg";
 import { HotsockClient } from "@hotsock/hotsock-js"
 import { useEffect, useRef, useState } from "react"
+import "./index.css"
 
 const wssUrl = "wss://975x5pgn0h.execute-api.us-east-1.amazonaws.com/v1"
 
@@ -160,7 +160,7 @@ function Box({ hotsockClient, channelName }) {
 
   return (
     <div className="border-solid border-[2px] border-[#778899] w-full">
-      <header className="h-12 flex flex-row items-center justify-between py-2 px-5 border-solid border-[2px] border-[#778899] border-x-0 border-t-0">
+      <header className="h-12 flex flex-row items-center justify-between py-2 px-5 border-solid border-[2px] border-x-0 border-t-0">
         <span className="font-semibold">{name}</span>
         <span
           className={`h-3 w-3 rounded-full  ${
@@ -169,7 +169,7 @@ function Box({ hotsockClient, channelName }) {
         />
       </header>
       <main
-        className="min-h-96 max-h-96 h-96 space-y-4 overflow-y-scroll relative flex flex-col py-4 px-5 dark:bg-slate-900 bg-[#f7f7f7]"
+        className="min-h-96 max-h-96 h-96 space-y-4 overflow-y-scroll relative flex flex-col py-4 px-5"
         ref={messagesBoxRef}
       >
         <div className="flex-grow"></div>
@@ -221,4 +221,45 @@ export function renderToDom(container) {
   const root = createRoot(container)
 
   root.render(<App />)
+
+  // Add postMessage support for iframe communication
+  if (window.parent !== window) {
+    // We're running in an iframe, set up communication
+    const sendMessage = (type, data = {}) => {
+      try {
+        window.parent.postMessage(JSON.stringify({ type, ...data }), '*');
+      } catch (e) {
+        // Ignore postMessage errors
+      }
+    };
+
+    // Notify parent that demo is ready
+    sendMessage('demo:ready');
+
+    // Listen for messages from parent
+    window.addEventListener('message', (event) => {
+      try {
+        const message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+        // Handle parent messages if needed
+        switch (message.type) {
+          case 'demo:theme-change':
+            // Could handle theme changes from parent
+            break;
+          default:
+            break;
+        }
+      } catch (e) {
+        // Invalid JSON, ignore
+      }
+    });
+
+    // Auto-resize support
+    const resizeObserver = new ResizeObserver(() => {
+      const height = Math.max(document.documentElement.scrollHeight, 500);
+      sendMessage('demo:height', { height });
+    });
+
+    resizeObserver.observe(document.body);
+  }
 }

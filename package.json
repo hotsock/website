@@ -5,7 +5,9 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "build": "docusaurus build",
+    "build": "npm run build:examples && docusaurus build",
+    "build:examples": "node scripts/build-examples.js",
+    "build:examples:dev": "node scripts/build-examples.js --dev",
     "postinstall": "bash ./scripts/examples-npm-install.sh",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -33,8 +35,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.6.0",
-    "@docusaurus/types": "^3.6.0",
-    "glob": "^11.0.0"
+    "@docusaurus/types": "^3.6.0"
   },
   "browserslist": {
     "production": [
