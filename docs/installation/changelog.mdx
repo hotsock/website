@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.5.1 - August 9, 2025 {#v1.5.1}
+
+- Build with Go 1.24.6.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-08-08](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-08-08)).
+
 ## v1.5.0 - July 23, 2025 {#v1.5.0}
 
 - Add support for scheduling messages for future delivery. Specify [`scheduleExpression`](../server-api/publish-messages.mdx#message-format.scheduleExpression) and, optionally, [`scheduleExpressionTimezone`](../server-api/publish-messages.mdx#message-format.scheduleExpressionTimezone) when publishing messages with Lambda, HTTP URL, or client WebSocket or HTTP. For client requests, the event-level [`scheduleBefore`](../connections/claims.mdx#channels.messages.scheduleBefore) permission claim is required. This feature is backed by [Amazon EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html) and allows scheduling one-time message events (recurring schedules are not currently supported in Hotsock).
