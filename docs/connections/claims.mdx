@@ -98,6 +98,37 @@ If you wanted to allow access to the entire message history of a channel without
 
 `Object` (optional) - Manages the permissions and directives for client-initiated messages that are published directly to the WebSocket on the channel(s) for the specified events. Each object key is the name of an event and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that event or event wildcard.
 
+#### `broadcast` {#channels.messages.broadcast}
+
+`Boolean` (optional) - Controls whether this connection can publish client-initiated messages to the channel for the specified event without requiring the connection be subscribed to the chnanel. If a client should only send messages to the channel while subscribed, use [`publish`](#channels.messages.publish). `publish` _must not_ be explicitly set to `false` for this to have any effect. Only relevant for connect-scoped tokens, has no effect in subscribe tokens. Default is `false`.
+
+The following allows publishing messages on the "mychannel" channel with the "client-stats.\*" event name prefix, even when not subscribed to the channel and even when not allowed to subscribe.
+
+```json
+{
+  "scope": "connect",
+  "channels": {
+    "mychannel": {
+      "messages": {
+        "client-stats.*": {
+          // highlight-next-line
+          "broadcast": true
+        }
+      }
+    }
+  }
+}
+```
+
+:::info
+Priority rules for `broadcast` and `publish`:
+
+- `broadcast: true` (publish omitted): Allow publishing messages whether subscribed to the channel or not.
+- `broadcast: false`, `publish: true`: Deny publishing messages when not subscribed, allow when subscribed.
+- `publish: true` (broadcast omitted): Deny publishing messages when not subscribed, allow when subscribed.
+- `broadcast: true`, `publish: false`: Deny any message publishing - `publish` takes precedence
+  :::
+
 #### `echo` {#channels.messages.echo}
 
 `Boolean` (optional) - If [publish](#channels.messages.publish) is permitted for this channel and event, the `echo` attribute specifies whether or not this connection that is sending these messages will receive a copy of the message on the channel. Default is `false`. Has no effect if `publish` resolves to `false`.
@@ -154,7 +185,9 @@ In the following example, `chat` client event messages will trigger server-side 
 
 #### `publish` {#channels.messages.publish}
 
-`Boolean` (optional) - The following allows this connection to subscribe to the channel "mychannel" and publish client-initiated messages with the "is-typing" event name.
+`Boolean` (optional) - Controls whether this connection can publish client-initiated messages to the channel for the specified event when subscribed to the channel. If a client needs to send a message to a channel while unsubscribed, use [`broadcast`](#channels.messages.broadcast). Default is `false`.
+
+The following allows this connection to subscribe to the channel "mychannel" and publish client-initiated messages with the "is-typing" event name.
 
 ```json
 {

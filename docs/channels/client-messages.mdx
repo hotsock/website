@@ -54,3 +54,51 @@ All channel subscribers will receive a copy of this message. But this one will a
 ```
 
 You can see this chat example in action in the [Real-Time Chat](/examples/real-time-chat/) demo.
+
+## Broadcasting Without A Subscription
+
+In some cases, you may want clients to send messages to a channel without being subscribed to it. This is useful for scenarios like sending telemetry data, usage metrics, or notifications to channels where the sender doesn't need to receive messages back.
+
+The [`broadcast`](../connections/claims.mdx#channels.messages.broadcast) claim allows clients to publish messages to channels they aren't subscribed to. This is particularly useful for one-way communication patterns.
+
+### Usage Metrics Example
+
+Consider a scenario where you want to collect product usage metrics from client applications. Each user has their own metrics channel (e.g., `user.123.metrics`) where usage data is sent and stored, but the client doesn't need to subscribe to receive messages from this channel.
+
+```json
+{
+  "scope": "connect",
+  "uid": "123",
+  "channels": {
+    "user.123.metrics": {
+      "messages": {
+        "usage.*": {
+          "broadcast": true,
+          "store": 63072000
+        }
+      }
+    }
+  }
+}
+```
+
+With this token, the client can send usage metrics without subscribing to the channel:
+
+```
+> {"channel":"user.123.metrics","event":"usage.feature-click","data":{"feature":"dashboard","timestamp":1695123456}}
+```
+
+The message is stored for 2 years (`store: 63072000` seconds) but no subscribers receive it in real-time since no one is subscribed to the channel. This pattern is perfect for:
+
+- **Analytics and telemetry**: Send usage data, performance metrics, or error reports.
+- **Audit logging**: Record user actions for compliance or debugging.
+- **Background notifications**: Send status updates to channels monitored by backend systems.
+
+### Key Differences
+
+- **`publish`**: Requires an active subscription to the channel, messages are received by all subscribers including the sender (if `echo: true`).
+- **`broadcast`**: Does not require subscription, allows sending messages to channels where you're not subscribed.
+
+:::tip
+Use `broadcast` when you need one-way communication to channels that serve as data collection points, and `publish` for interactive, real-time messaging between subscribed participants.
+:::

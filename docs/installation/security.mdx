@@ -8,7 +8,7 @@ You decide who has access to your data. Data moves through various AWS services 
 
 All Hotsock-created roles use the principle of least-privilege, ensuring only a particular service can assume that role and the role only has permissions to do the specific things it needs and nothing more.
 
-For licensing purposes, Hotsock systems can assume the `HotsockLicensingRole` in your account, which only has permissions to invoke licensing-specific Lambda functions and to gather usage statistics.
+For licensing purposes, Hotsock systems can assume the `HotsockLicensingRole` in your account, which only has permissions to invoke licensing-specific Lambda functions and to gather usage statistics for billing purposes.
 
 For support purposes, you can request that Hotsock staff assume the `HotsockSupport` role in your account to help with issues. In this case, we would be able to access your data. **However, our ability to assume this role is disabled by default** and only you can explicity grant it. [Learn more](../licensing/support.mdx)
 
