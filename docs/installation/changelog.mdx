@@ -1,6 +1,11 @@
 # Changelog
 
-## v1.6.0 - September 19, 2025 {#v.1.6.0}
+## v1.7.0 - September 23, 2025 {#v1.7.0}
+
+- Add the ability to specify [`autoSubscribe`](../connections/claims.mdx#channels.autoSubscribe) in channel claims, which will automatically subscribe specified channels upon a successful connection.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-09-22](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-09-22)).
+
+## v1.6.0 - September 19, 2025 {#v1.6.0}
 
 - Allow clients to publish messages to channels where they are not subscribed. Set the [`broadcast`](../connections/claims.mdx#channels.messages.broadcast) claim to `true` for messages that are permitted. Supported for both WebSocket and Client HTTP messages.
 - Stop writing empty `ScheduleExpression` or `ScheduleExpressionTimezone` attributes to stored messages in DynamoDB.

@@ -72,7 +72,46 @@ For wildcards that overlap, any explicit `false` is used as the value and cannot
 }
 ```
 
-Each object inside the channels object accepts [`messages`](#channels.messages) and [`subscribe`](#channels.subscribe) attributes.
+Each object inside the channels object accepts [`autoSubscribe`](#channels.autoSubscribe), [`historyStart`](#channels.historyStart), [`messages`](#channels.messages), [`omitFromSubCount`](#channels.omitFromSubCount), and [`subscribe`](#channels.subscribe) attributes.
+
+### `autoSubscribe` {#channels.autoSubscribe}
+
+`Boolean` (optional) - When set to `true`, automatically subscribes to this channel upon a successful connection without requiring a separate subscribe request. This claim is supported for connect-scoped tokens only and non-wildcard (`*`) channel directives only. Default is `false`.
+
+The following automatically subscribes to the "user.123" channel once connected.
+
+```json
+{
+  "channels": {
+    "user.123": {
+      // highlight-next-line
+      "autoSubscribe": true
+    }
+  },
+  "scope": "connect"
+}
+```
+
+When the connection succeeds, the connection will receive a `hotsock.subscribed` message containing `"autoSubscribed":true` in its `data` payload.
+
+```json
+{
+  "event": "hotsock.subscribed",
+  "channel": "user.123",
+  // highlight-next-line
+  "data": { "autoSubscribed": true },
+  "meta": { "uid": null, "umd": null }
+}
+```
+
+Some situations where this is particularly useful:
+
+- When a connection _always_ needs to be subscribed to a given channel. For example, if user-specific messages are always published to a channel dedicated to that user and that channel name is known when the connection initiates, the client can skip the subscribe step and doesn't even need to know the name of the channel - they can just listen for expected event types.
+- When you need server-enforced presence management. With `autoSubscribe` enabled on a presence channel, you ensure presence is detected immediately when the client connects.
+
+:::tip
+If using `autoSubscribe` on a [presence](../channels/presence.mdx) channel, be sure to include a [`uid`](#uid) claim (required for presence), otherwise the connection will receive a `PRESENCE_CHANNEL_USER_ID_REQUIRED` subscribe error message once connected.
+:::
 
 ### `historyStart` {#channels.historyStart}
 
@@ -318,7 +357,7 @@ Setting `omitFromSubCount` to `true` _does not_ prevent [`hotsock.memberAdded`](
 :::
 
 :::warning
-When mixed usage of this claim occurs on a given channel (some connections omit counts, others don't), channel subscription counts become inconsistent with actual connection counts.
+When mixed usage of this claim occurs on a given channel (some connections omit counts, others do not), channel subscription counts become inconsistent with actual connection counts.
 :::
 
 ### `subscribe` {#channels.subscribe}

@@ -1,0 +1,76 @@
+---
+slug: auto-subscribe-and-broadcast-messaging
+title: Auto-subscribe and broadcast messaging
+authors: [james]
+tags: []
+---
+
+The latest Hotsock releases include **automatic channel subscription on connect** and **broadcast messaging to unsubscribed channels**, making it easier to build real-time applications with reduced client-side complexity.
+
+{/* truncate */}
+
+### Automatic channel subscriptions
+
+In Hotsock [v1.7](/docs/installation/changelog/#v1.7.0), you can now **automatically subscribe to channels upon connection** using the new [`autoSubscribe`](/docs/connections/claims/#channels.autoSubscribe) claim. This eliminates the need for a separate subscribe step when a connection always needs access to specific channels.
+
+To automatically subscribe to a channel, set `autoSubscribe` to `true` in your channel claims when issuing a connect token:
+
+```json
+{
+  "exp": 1727107200,
+  "scope": "connect",
+  "channels": {
+    "user.123": {
+      // highlight-next-line
+      "autoSubscribe": true
+    }
+  }
+}
+```
+
+When the connection succeeds, the client will immediately receive a `hotsock.subscribed` message containing `"autoSubscribed":true` in its `data` payload, confirming the automatic subscription:
+
+```json
+{
+  "event": "hotsock.subscribed",
+  "channel": "user.123",
+  // highlight-next-line
+  "data": { "autoSubscribed": true },
+  "meta": { "uid": null, "umd": null }
+}
+```
+
+This feature is particularly useful for:
+
+- **User-specific channels** where connections always need to receive messages for that user
+- **Presence management** where you need server-enforced presence detection immediately when clients connect
+- **Reducing client complexity** by eliminating the subscribe step for essential channels
+
+### Broadcasting to unsubscribed channels
+
+Hotsock [v1.6](/docs/installation/changelog/#v1.6.0) introduced the [`broadcast`](/docs/connections/claims/#channels.messages.broadcast) claim, which allows clients to **send messages to channels without being subscribed**. This is perfect for telemetry, logging, or fire-and-forget messaging scenarios, especially when combined with [storing messages](/docs/connections/claims/#channels.messages.store)!.
+
+To enable broadcast messaging, set the `broadcast` claim to `true` for the specific message events:
+
+```json
+{
+  "exp": 1727107200,
+  "scope": "connect",
+  "channels": {
+    "user.123.usage": {
+      "messages": {
+        "client-stats": {
+          // highlight-next-line
+          "broadcast": true
+        }
+      }
+    }
+  }
+}
+```
+
+With this configuration, clients can publish messages to the "user.123.usage" channel with the "client-stats" event without needing to subscribe to the channel first. This is supported for both WebSocket and [client HTTP API](/docs/connections/client-http-api/) messages.
+
+### Wrapping up
+
+Existing installations with auto-update enabled are already running v1.7 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time. A [full changelog](/docs/installation/changelog/) is available with the complete list of changes included in these releases.
