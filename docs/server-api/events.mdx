@@ -21,7 +21,7 @@ Published events use the same shape for both EventBridge and SNS, where the payl
     "id": "IDnAdd9kIAMCEsQ=",
     "connectedAt": "2024-05-31T15:47:45.231141792Z",
     "keepAlive": true,
-    "sourceIp": "155.186.123.137",
+    "sourceIp": "12.34.56.78",
     "uid": null,
     "umd": null,
     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
@@ -96,7 +96,7 @@ If enabled, all events are published to a Hotsock-specific event bus in your acc
       "id": "IDnAdd9kIAMCEsQ=",
       "connectedAt": "2024-05-31T15:47:45.231141792Z",
       "keepAlive": true,
-      "sourceIp": "155.186.123.137",
+      "sourceIp": "12.34.56.78",
       "uid": null,
       "umd": null,
       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
@@ -119,7 +119,7 @@ The following is a sample SNS message for a newly established connection. Most o
   "Type": "Notification",
   "MessageId": "4360060f-c95a-58d5-8a7c-58dbecd688ed",
   "TopicArn": "arn:aws:sns:us-east-1:111111111111:Hotsock-PubSub-EOLFPNQLL8CW-Topic-AZXpBXfkywWc",
-  "Message": "{\"source\":\"hotsock.v1\",\"type\":\"hotsock.connected\",\"metadata\":{},\"data\":{\"id\":\"YppzrdWfoAMCJBQ=\",\"umd\":null,\"connectedAt\":\"2024-05-31T19:21:47.747616027Z\",\"keepAlive\":true,\"uid\":null,\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0\",\"sourceIp\":\"155.186.123.137\"},\"dataType\":\"connection\"}",
+  "Message": "{\"source\":\"hotsock.v1\",\"type\":\"hotsock.connected\",\"metadata\":{},\"data\":{\"id\":\"YppzrdWfoAMCJBQ=\",\"umd\":null,\"connectedAt\":\"2024-05-31T19:21:47.747616027Z\",\"keepAlive\":true,\"uid\":null,\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0\",\"sourceIp\":\"12.34.56.78\"},\"dataType\":\"connection\"}",
   "Timestamp": "2024-05-31T19:21:48.428Z",
   "SignatureVersion": "1",
   "Signature": "PSnfnie3xEi4XDiJtcDBJGnQbZS5rvRut+ZAngBnQS7GqA/SC4fZuRFNf5d3pjoOuWM8idp5qyS+SppkBEt2a32cxEIeCMbV7MVeCR1A5FVuKKwZpqmmhyKIVfEvn30htjAgyy7V/OOvvzecoR0rHdG1KcyOze2XQILY6e8AAz8o/3mwpYx+KO7N1Ifs3+zavbjS/nuZbVyPVSxAWn2J9fcOGje/QhPi3wYvnrhsIotxPrLefIOWiRY3ayB5kvdkTTbRW1DADv/daCB9o7wpi9JNFQqklNkVOURNE2pjW/A5m9P1Ah14I437sS7xGHFeAfyBJhf4GwANS7r4Lyb/HQ==",
@@ -166,7 +166,7 @@ Object. Currently empty.
   "id": "IDnAdd9kIAMCEsQ=",
   "connectedAt": "2024-05-31T15:47:45.231141792Z",
   "keepAlive": true,
-  "sourceIp": "155.186.123.137",
+  "sourceIp": "12.34.56.78",
   "uid": null,
   "umd": null,
   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
@@ -208,7 +208,7 @@ This is always `hotsock.disconnected`.
   "id": "IDnAdd9kIAMCEsQ=",
   "connectedAt": "2024-05-31T15:47:45.231141792Z",
   "keepAlive": true,
-  "sourceIp": "155.186.123.137",
+  "sourceIp": "12.34.56.78",
   "uid": null,
   "umd": null,
   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
@@ -266,13 +266,19 @@ This is always `hotsock.messagePublished`.
 - `event` (String): The name of the event published.
 - `connectionId` (String): The identifier for the connection that subscribed to the channel. This field is only present for messages that were published by a WebSocket client.
 - `requestId` (String): The request ID for the Lambda invocation that originally accepted the message.
+- `sourceIp` (String): The IP address of the message sender. This field is only present if an IP address is known. It is unknown with [Lambda message publishing](./publish-messages.mdx#publish-with-lambda) when `trigger` is "server.lambda".
+- `trigger` (String): The kind of message initiator, set to one of `client.websocket`, `client.http`, `server.lambda`, or `server.http`.
+- `userAgent` (String): The User-Agent of the message sender. This field is only present if a user agent is known. It is unknown with [Lambda message publishing](./publish-messages.mdx#publish-with-lambda) when `trigger` is `server.lambda`.
 
 ```json
 {
   "channel": "my-channel",
   "event": "my-event",
   "connectionId": "IDnAdd9kIAMCEsQ=",
-  "requestId": "9d1d380a-0152-4962-bbbb-6e721b81db52"
+  "requestId": "9d1d380a-0152-4962-bbbb-6e721b81db52",
+  "sourceIp": "12.34.56.78",
+  "trigger": "client.websocket",
+  "userAgent": "iOS/26.0 (iPhone; iPhone14,2) CFNetwork/1410.0.3 Darwin/23.0.0"
 }
 ```
 

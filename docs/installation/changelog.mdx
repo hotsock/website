@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.8.0 - October 1, 2025 {#v1.8.0}
+
+- Add the ability to query stored messages by channel and event name, sorted by timestamp. This data is written to a keys-only global secondary index (GSI).
+- Add `ConnectionID`, `SourceIP`, `UserAgent`, and `Trigger` attributes to stored messages (and equivalent `connectionId`, `sourceIp`, `userAgent`, and `trigger` to pub-sub event metadata). `Trigger` is set to one of "client.websocket", "client.http", "server.http", or "server.lambda", depending on what triggered the message.
+- The built-in CloudWatch Dashboard for all installations has been completely overhauled and now includes version info and links to useful resources. It's also grouped into sections to make it easier to find relevant metrics.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-10-01](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-10-01)).
+
 ## v1.7.0 - September 23, 2025 {#v1.7.0}
 
 - Add the ability to specify [`autoSubscribe`](../connections/claims.mdx#channels.autoSubscribe) in channel claims, which will automatically subscribe specified channels upon a successful connection.
