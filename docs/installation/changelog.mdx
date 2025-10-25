@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.8.2 - October 24, 2025 {v1.8.2}
+## v1.8.2 - October 24, 2025 {#v1.8.2}
 
 - Fix an issue where function-level errors that cause Lambda functions to exit were being logged as `INFO`-level logs instead of `ERROR`, which would be suppressed when `ERROR`-level logging was configured. Improve the logged stack trace in cases where a function error is the result of a `panic`.
 - Set `MaximumEventAgeInSeconds` to `120` (2 minutes) for `ConnectedFunction` invocation async events. In response to the [recent AWS outage](https://aws.amazon.com/message/101925/), there's little chance of meaningful success for events older than a few seconds, so after 2 minutes these events will be dropped on the floor.
