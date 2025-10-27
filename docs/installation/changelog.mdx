@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.8.3 - October 27, 2025 {#v1.8.3}
+
+- Implement the [updated authorization model for Lambda Function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html), which requires that both the `lambda:InvokeFunctionUrl` and `lambda:InvokeFunction` actions are allowed in function resource policies. New installations require this permissions model in October 2025. Existing installations must update to use this model by November 2026.
+
 ## v1.8.2 - October 24, 2025 {#v1.8.2}
 
 - Fix an issue where function-level errors that cause Lambda functions to exit were being logged as `INFO`-level logs instead of `ERROR`, which would be suppressed when `ERROR`-level logging was configured. Improve the logged stack trace in cases where a function error is the result of a `panic`.
