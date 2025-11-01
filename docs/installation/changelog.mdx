@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.8.4 - November 1, 2025 {#v1.8.4}
+
+- Reduce the quantity of metrics on the monitoring dashboard to be fewer than 50, so the dashboard qualifies for the AWS Free Tier.
+- Disable pre-warm invocations on the messages table stream processor function, which is currently not in use but reserved for future functionality.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-10-31](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-10-31)).
+
 ## v1.8.3 - October 27, 2025 {#v1.8.3}
 
 - Implement the [updated authorization model for Lambda Function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html), which requires that both the `lambda:InvokeFunctionUrl` and `lambda:InvokeFunction` actions are allowed in function resource policies. New installations require this permissions model in October 2025. Existing installations must update to use this model by November 2026.
