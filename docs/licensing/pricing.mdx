@@ -44,13 +44,13 @@ Standard support provides quick, business hours email support where we can provi
 
 ## Premium Support
 
-Premium support provides quick, business hours email support where we can provide contextual use-case and application-specific guidance for your installations. Premium support also includes us being able to [assume a support role in your account](./support.mdx#assume-role-in-your-account) when necessary for us to gain further insight into your issues.
+Premium support provides quick, business hours email support where we can provide contextual use-case and application-specific guidance for your installations. Premium support also includes us being able to [assume a `HotsockSupportRole` IAM role in your account](./support.mdx#assume-role-in-your-account) if necessary for us to gain further insight into your issues.
 
 ## FAQs
 
 ### How are messages counted for billing purposes?
 
-We read the `AWS/ApiGateway/MessageCount` [CloudWatch metric](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/working_with_metrics.html) specific to the WebSocket API created by your installation(s) to calculate usage from your AWS account(s). This is done by periodically assuming the `HotsockLicensingRole` that is configured during installation. License updates will begin to fail if our permission to access usage metrics is revoked.
+We read the `AWS/ApiGateway/MessageCount` [CloudWatch metric](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/working_with_metrics.html) specific to the WebSocket API created by your installation(s) to calculate usage from your AWS account(s). This is done by periodically assuming the `HotsockLicensingRole` that is configured during installation. Licensing can fail if our permission to access usage metrics is revoked, which can interrupt service for your installations. If we have an email address on file for your license, we'll notify you of any licensing issues.
 
 The example account below sends ~170M messages per day (~5.2 billion per month) and would fit in the 7.5 billion messages per month (~250 million per day) plan.
 
