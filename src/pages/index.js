@@ -5,12 +5,16 @@ import Hero from "../components/landing/Hero"
 import Sections from "../components/landing/Sections"
 // import Testimonials from "../components/landing/Testimonials"
 import FeaturesNew from "../components/landing/FeaturesNew"
+import TrustStats from "../components/landing/TrustStats"
 import PricingTable from "../components/landing/Pricing"
+import { OrganizationSchema, ProductSchema } from "../components/StructuredData"
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext()
   return (
     <>
+      {/* <OrganizationSchema /> */}
+      {/* <ProductSchema /> */}
       <HomepageBanner />
       <Layout
         title="Private, self-hosted, and fully managed real-time messaging service"
@@ -19,6 +23,7 @@ export default function Home() {
         <Hero />
         <Sections />
         <FeaturesNew />
+        {/* <TrustStats /> */}
         {/* <Testimonials /> */}
         <PricingTable />
       </Layout>

@@ -1,5 +1,3 @@
-import React from "react"
-
 function Linkedin({ className }) {
   return (
     <svg

@@ -12,13 +12,15 @@ function Hero() {
       <Wrapper>
         <div className="lg:w-9/12  mx-auto">
           <h1 className="lg:text-5xl text-3xl !leading-[44px] lg:!leading-[65px] ">
-            Fully-private real-time messaging service run from your AWS account.
+            Add stunning real-time features to your applications without limits
+            or privacy trade-offs.
           </h1>
           <p className="text-lg lg:text-xl !leading-[36px] lg:!leading-[40px]">
-            Power your WebSocket-based web and mobile application experiences{" "}
-            <strong>from your own AWS account</strong> with flexible, stable,
-            and easy to use APIs. There are no servers to manage, no scaling
-            knobs to turn, and it installs in minutes with CloudFormation.
+            Hotsock is a fully-private WebSocket messaging service that runs{" "}
+            <strong>in your AWS account</strong>. Add chat, notifications, live
+            updates, and presence to your applications with simple APIs—no
+            servers to manage, no scaling complexity, and your data stays yours.
+            Installs in minutes.
           </p>
           <div className="flex flex-col lg:flex-row  max-lg:space-y-4 lg:space-x-4 w-full items-center justify-center">
             <Link
@@ -30,7 +32,7 @@ function Hero() {
               href="/docs/installation/initial-setup/"
             >
               <span
-                className="mr-3  group-hover:mr-5
+                className="mr-3 group-hover:mr-5
               ease-in-out transition-all duration-200
               "
               >
@@ -55,14 +57,18 @@ function Hero() {
               </span>
             </Link>
           </div>
-          <div className="flex flex-col lg:flex-row items-center justify-center max-lg:space-y-2 lg:space-x-6 mt-6">
+          <div className="flex flex-col lg:flex-row items-center justify-center max-lg:space-y-2 lg:space-x-6 mt-6 text-gray-600 dark:text-gray-400 text-sm">
             <p className="max-lg:m-0 flex flex-row items-center space-x-2">
               <Chart />
               <span>Automatically scales to your workload</span>
             </p>
             <p className="flex flex-row items-center space-x-2">
               <Certificate />
-              <span>Supported in 22 regions around the world</span>
+              <span>Supported in 22 AWS regions</span>
+            </p>
+            <p className="flex flex-row items-center space-x-2">
+              <span>✓</span>
+              <span>Free forever tier</span>
             </p>
           </div>
         </div>

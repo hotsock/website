@@ -1,5 +1,3 @@
-import React from "react"
-
 function Youtube({ className }) {
   return (
     <svg
