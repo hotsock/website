@@ -5,9 +5,9 @@ import Hero from "../components/landing/Hero"
 import Sections from "../components/landing/Sections"
 // import Testimonials from "../components/landing/Testimonials"
 import FeaturesNew from "../components/landing/FeaturesNew"
-import TrustStats from "../components/landing/TrustStats"
+// import TrustStats from "../components/landing/TrustStats"
 import PricingTable from "../components/landing/Pricing"
-import { OrganizationSchema, ProductSchema } from "../components/StructuredData"
+// import { OrganizationSchema, ProductSchema } from "../components/StructuredData"
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext()

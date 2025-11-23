@@ -1,4 +1,3 @@
-import React from "react"
 import Wrapper from "../global/Wrapper"
 import Link from "@docusaurus/Link"
 import { buttonVariants } from "../../lib/utils"
