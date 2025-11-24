@@ -185,8 +185,8 @@ function PricingTable() {
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
         <p className="text-base m-0">
           <strong>💡 Pricing note:</strong> Hotsock licensing fees are separate
-          from AWS infrastructure costs. Your AWS costs will vary based on
-          actual usage.
+          from AWS service costs. Your AWS costs will vary based on actual
+          usage.
         </p>
       </div>
 
