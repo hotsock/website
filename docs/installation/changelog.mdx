@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.8.7 - November 24, 2025 {#v1.8.7}
+
+- As of [v1.8.0](#v1.8.0), the message data table has a global secondary index (GSI) for querying on channel and event name, sorted by message timestamp. This release includes a `MessageDataTableChannelEventGSIParameter` configuration parameter that allows enabling or disabling this GSI for an installation. It is disabled by default for new installations.
+
 ## v1.8.6 - November 23, 2025 {#v1.8.6}
 
 - New and upgraded installations now use [AWS IAM Outbound Identity Federation](https://aws.amazon.com/blogs/aws/simplify-access-to-external-services-using-aws-iam-outbound-identity-federation/) for installation source identity validation.
