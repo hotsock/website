@@ -484,7 +484,7 @@ Say you issue a token with `{"scope":"connect subscribe","uid":"jim","channels":
 
 ## `singleUse` {#singleUse}
 
-`Boolean` (optional) - Setting to `true` ensures that this JWT is only used for a single connect operation (when used with a `connect` scope) or a single subscribe operation (when used with a `subscribe` scope). Follow-up attempts to use the same JWT results in denied access. Default is `false`.
+`Boolean` (optional) - Setting to `true` ensures that this JWT is only used for a single connect operation (when used with a `connect` scope) or a single subscribe operation (when used with a `subscribe` scope). Follow-up attempts to use the same JWT results in denied access. If enabled, `singleUse` also requires the [`jti`](#jti) claim to be set to a unique value (UUID is a good choice). Default is `false`.
 
 ```json
 {
