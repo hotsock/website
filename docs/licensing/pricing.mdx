@@ -1,41 +1,219 @@
 ---
 sidebar_label: Pricing
+description: Hotsock pricing plans. Start with 1 million free messages per month, then upgrade to a flat-rate license for unlimited usage. Compare Free Tier vs Paid Tier features and support options.
 ---
 
 # Hotsock Pricing
 
-Start for free, then pay as you grow.
+Start for free, upgrade to a license for unlimited usage!
 
 ## Free Tier
 
 New installations are granted Free Tier access forever, which includes all features but has the following limits:
 
-- Usage is hard-capped at 1 million free WebSockets messages per calendar month across all installations in an AWS account or AWS organization.
 - Unlimited installations in a single AWS account in a single region.
+- Usage is hard-capped at 1 million WebSocket messages per calendar month across all installations in an AWS account or AWS organization.
 - If your AWS account is a member of an AWS Organization, installations can only be created in a single AWS account within that organization.
-- Support is limited.
+- Standard support is included.
 
-To ensure your installations operate uninterrupted and scale beyond the Free Tier to any number of messages, AWS accounts, and AWS regions, choose one of our flexible Paid Tier options.
+To ensure your installations operate uninterrupted and scale to unlimited messages across any number of AWS accounts and regions, upgrade to our Paid Tier.
 
 ## Paid Tier
 
-Paid Tier pricing scales with your usage. Both pay-as-you-go and baseline allowance licensing is available. See the pricing table below for details.
+The Paid Tier provides unlimited messages with pricing per AWS account. Choose monthly or annual billing.
 
-|             Price              |                       Included messages per month                       |     AWS Configuration     |            Support            |
-| :----------------------------: | :---------------------------------------------------------------------: | :-----------------------: | :---------------------------: |
-| **$1.25 per million messages** |         1 million free messages each month, then pay as you go          |    1 account, 1 region    | [Standard](#standard-support) |
-|         **$99/month**          | 300 million (~10 million per day) <br/> _$0.50 per additional million_  |    1 account, 1 region    | [Standard](#standard-support) |
-|         **$299/month**         | 1.5 billion (~50 million per day) <br/> _$0.45 per additional million_  |   5 accounts, 2 regions   |  [Premium](#premium-support)  |
-|         **$599/month**         | 7.5 billion (~250 million per day) <br/> _$0.40 per additional million_ |  25 accounts, 5 regions   |  [Premium](#premium-support)  |
-|        **$1,299/month**        |  30 billion (~1 billion per day) <br/> _$0.35 per additional million_   | 100 accounts, all regions |  [Premium](#premium-support)  |
-|        **$2,799/month**        |  150 billion (~5 billion per day) <br/> _$0.30 per additional million_  | 500 accounts, all regions |  [Premium](#premium-support)  |
+<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', maxWidth: '900px', margin: '2rem auto'}}>
 
-Need to send more messages, have a unique situation, or have questions about billing? Email support@hotsock.io.
+<div style={{background: 'var(--ifm-background-surface-color)', border: '2px solid var(--ifm-color-primary)', borderRadius: '1rem', padding: '2rem', display: 'flex', flexDirection: 'column'}}>
+  <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
+    <h3 style={{fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem'}}>Billed Monthly</h3>
+    <div style={{display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '0.5rem'}}>
+      <span style={{fontSize: '3rem', fontWeight: 'bold', color: 'var(--ifm-color-primary)'}}>$99</span>
+      <span style={{fontSize: '1.25rem', color: 'var(--ifm-color-emphasis-600)'}}>/month</span>
+    </div>
+    <p style={{fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', marginTop: '0.5rem', marginBottom: 0}}>per AWS account</p>
+  </div>
 
-All plans support an unlimited number of installations. This allows configuring development or staging environments as needed (within the AWS account and region parameters for your pricing plan). You can also [create multiple installations for tenant isolation or scaling reasons](../performance/limits-and-scaling.mdx#multiple-installations) if that meets your use case.
+{" "}
+
+<ul
+  style={{
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+    flexGrow: 1,
+    marginBottom: "1.5rem",
+  }}
+>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>
+      <strong>Unlimited messages</strong>
+    </span>
+  </li>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>
+      <strong>Unlimited concurrent connections</strong>
+    </span>
+  </li>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>Unlimited installations</span>
+  </li>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>
+      <a href="/docs/installation/region-support/">All supported AWS regions</a>
+    </span>
+  </li>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>
+      <a href="#premium-support">Premium support</a>
+    </span>
+  </li>
+</ul>
+
+  <a href="/docs/installation/initial-setup/" style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '100%', background: 'var(--ifm-color-primary)', color: 'white', height: '3rem', padding: '0 2rem', borderRadius: '0.375rem', textDecoration: 'none', fontWeight: '500', fontSize: '1.125rem'}}>
+    <span style={{marginRight: '0.75rem'}}>Buy Now</span> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="14"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M1 7h16M11 1l6 6-6 6"></path></g></svg>
+  </a>
+</div>
+
+<div style={{background: 'var(--ifm-background-surface-color)', border: '2px solid var(--ifm-color-primary)', borderRadius: '1rem', padding: '2rem', display: 'flex', flexDirection: 'column'}}>
+  <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
+    <h3 style={{fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem'}}>Billed Annually</h3>
+    <div style={{display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '0.5rem'}}>
+      <span style={{fontSize: '3rem', fontWeight: 'bold', color: 'var(--ifm-color-primary)'}}>$999</span>
+      <span style={{fontSize: '1.25rem', color: 'var(--ifm-color-emphasis-600)'}}>/year</span>
+    </div>
+    <p style={{fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', marginTop: '0.5rem', marginBottom: 0}}>per AWS account</p>
+  </div>
+
+{" "}
+
+<ul
+  style={{
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+    flexGrow: 1,
+    marginBottom: "1.5rem",
+  }}
+>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>
+      <strong>Unlimited messages</strong>
+    </span>
+  </li>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>
+      <strong>Unlimited concurrent connections</strong>
+    </span>
+  </li>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>Unlimited installations</span>
+  </li>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>
+      <a href="/docs/installation/region-support/">All supported AWS regions</a>
+    </span>
+  </li>
+  <li
+    style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      marginBottom: "1rem",
+    }}
+  >
+    <span style={{ color: "#22c55e", fontSize: "1.25rem" }}>✓</span>
+    <span>
+      <a href="#premium-support">Premium support</a>
+    </span>
+  </li>
+</ul>
+
+  <a href="/docs/installation/initial-setup/" style={{display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '100%', background: 'var(--ifm-color-primary)', color: 'white', height: '3rem', padding: '0 2rem', borderRadius: '0.375rem', textDecoration: 'none', fontWeight: '500', fontSize: '1.125rem'}}>
+    <span style={{marginRight: '0.75rem'}}>Buy Now</span> <svg xmlns="http://www.w3.org/2000/svg" width="18" height="14"><g fill="none" fillRule="evenodd" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"><path d="M1 7h16M11 1l6 6-6 6"></path></g></svg>
+  </a>
+</div>
+
+</div>
+
+Need a custom solution or have questions about billing? Email support@hotsock.io.
+
+All plans support an unlimited number of installations. This allows configuring development or staging environments as needed. You can also [create multiple installations for tenant isolation or scaling reasons](../performance/limits-and-scaling.mdx#multiple-installations) if that meets your use case. For the Paid Tier, each AWS account requires its own license at $99/month or $999/year.
 
 :::info
-All pricing information listed is for Hotsock licensing only. **It does not include any AWS infrastructure costs for running your installations.** AWS pricing can be found on each AWS service's pricing page.
+All pricing information listed is for Hotsock licensing only. **It does not include any AWS service costs for running your installations.** AWS pricing can be found on each AWS service's pricing page.
 :::
 
 ## Standard Support
@@ -48,24 +226,20 @@ Premium support provides quick, business hours email support where we can provid
 
 ## FAQs
 
-### How are messages counted for billing purposes?
+### How are messages counted?
 
 We read the `AWS/ApiGateway/MessageCount` [CloudWatch metric](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/working_with_metrics.html) specific to the WebSocket API created by your installation(s) to calculate usage from your AWS account(s). This is done by periodically assuming the `HotsockLicensingRole` that is configured during installation. Licensing can fail if our permission to access usage metrics is revoked, which can interrupt service for your installations. If we have an email address on file for your license, we'll notify you of any licensing issues.
 
-The example account below sends ~170M messages per day (~5.2 billion per month) and would fit in the 7.5 billion messages per month (~250 million per day) plan.
+For Free Tier installations, once you reach 1 million messages in a calendar month, the installation will stop functioning until the next calendar month begins. For Paid Tier installations, there is no message limit.
 
-![Message counting graph](../../static/img/screenshots/pricing-faq-message-counting.png)
+### What happens if I go over the Free Tier message limit?
 
-### What happens if I go over the plan's message count?
+Free Tier installations stop functioning once they use 1 million messages in a calendar month. Service is restored at the beginning of the next calendar month. [Upgrade to Paid Tier](./paid-tier-upgrade.mdx) to remove this hard limit and gain unlimited messaging.
 
-Paid Tier plans have a baseline monthly allocation as well as an overage price billed per one million messages. After you use your baseline allocation for the month, you're billed per million messages after that until your billing cycle renews. This allows you to handle temporary spikes in message volume or remain on your current plan as long as you like.
-
-There are **never any hard license-imposed limits** that will suddenly or unexpectedly affect your application as long as you have a valid Paid Tier license tied to an account in good standing.
-
-Free Tier installations stop functioning once they use 1 million messages in a calendar month. Service is restored at the beginning of the next calendar month. [Upgrade to pay-as-you-go](./paid-tier-upgrade.mdx) to remove this hard limit.
+Paid Tier installations have no message limits and will never be interrupted due to message volume.
 
 ### Can I distribute Hotsock to my customers?
 
-Each license allows for use across a specific number of AWS accounts. You can configure Hotsock installations in your customers' AWS accounts or in AWS accounts you maintain on behalf of your customers as long as **each installation in your customer accounts is only used as part of your product or application. You may not resell Hotsock as a standalone service.**
+Each Paid Tier license covers one AWS account. You can configure Hotsock installations in your customers' AWS accounts or in AWS accounts you maintain on behalf of your customers as long as **each installation in your customer accounts is only used as part of your product or application. You may not resell Hotsock as a standalone service.** Each AWS account where Hotsock is installed requires its own license ($99/month or $999/year per AWS account).
 
-For example, if you sell a product that is hosted in your customer's AWS account that incorporates real-time features backed by Hotsock, your license can cover your customer's Hotsock usage.
+For example, if you sell a product that is hosted in your customer's AWS account that incorporates real-time features backed by Hotsock, each customer's AWS account would need its own Hotsock license. [Get in touch](mailto:support@hotsock.io) to discuss your use case though!
