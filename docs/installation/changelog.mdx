@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.8.11 - February 18, 2026 {#v1.8.11}
+
+- When a JWT token specifies a `kid` header, the validation now allows any `kid` if the signing key ID parameter is blank. Previously, a blank `SigningKey1IdParameter` would reject tokens with a `kid` header, even though a blank key ID should mean "accept any `kid`". Now blank signing key IDs accept any token `kid` value while still enforcing strict matching when both are specified.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-02-18](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-02-18)).
+
 ## v1.8.10 - February 12, 2026 {#v1.8.10}
 
 - Build with Go 1.26.0.
