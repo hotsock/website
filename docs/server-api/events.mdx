@@ -20,6 +20,7 @@ Published events use the same shape for both EventBridge and SNS, where the payl
   "data": {
     "id": "IDnAdd9kIAMCEsQ=",
     "connectedAt": "2024-05-31T15:47:45.231141792Z",
+    "disconnectedAt": null,
     "keepAlive": true,
     "sourceIp": "12.34.56.78",
     "uid": null,
@@ -95,6 +96,7 @@ If enabled, all events are published to a Hotsock-specific event bus in your acc
     "data": {
       "id": "IDnAdd9kIAMCEsQ=",
       "connectedAt": "2024-05-31T15:47:45.231141792Z",
+      "disconnectedAt": null,
       "keepAlive": true,
       "sourceIp": "12.34.56.78",
       "uid": null,
@@ -119,7 +121,7 @@ The following is a sample SNS message for a newly established connection. Most o
   "Type": "Notification",
   "MessageId": "4360060f-c95a-58d5-8a7c-58dbecd688ed",
   "TopicArn": "arn:aws:sns:us-east-1:111111111111:Hotsock-PubSub-EOLFPNQLL8CW-Topic-AZXpBXfkywWc",
-  "Message": "{\"source\":\"hotsock.v1\",\"type\":\"hotsock.connected\",\"metadata\":{},\"data\":{\"id\":\"YppzrdWfoAMCJBQ=\",\"umd\":null,\"connectedAt\":\"2024-05-31T19:21:47.747616027Z\",\"keepAlive\":true,\"uid\":null,\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0\",\"sourceIp\":\"12.34.56.78\"},\"dataType\":\"connection\"}",
+  "Message": "{\"source\":\"hotsock.v1\",\"type\":\"hotsock.connected\",\"metadata\":{},\"data\":{\"id\":\"YppzrdWfoAMCJBQ=\",\"umd\":null,\"connectedAt\":\"2024-05-31T19:21:47.747616027Z\",\"disconnectedAt\":null,\"keepAlive\":true,\"uid\":null,\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0\",\"sourceIp\":\"12.34.56.78\"},\"dataType\":\"connection\"}",
   "Timestamp": "2024-05-31T19:21:48.428Z",
   "SignatureVersion": "1",
   "Signature": "PSnfnie3xEi4XDiJtcDBJGnQbZS5rvRut+ZAngBnQS7GqA/SC4fZuRFNf5d3pjoOuWM8idp5qyS+SppkBEt2a32cxEIeCMbV7MVeCR1A5FVuKKwZpqmmhyKIVfEvn30htjAgyy7V/OOvvzecoR0rHdG1KcyOze2XQILY6e8AAz8o/3mwpYx+KO7N1Ifs3+zavbjS/nuZbVyPVSxAWn2J9fcOGje/QhPi3wYvnrhsIotxPrLefIOWiRY3ayB5kvdkTTbRW1DADv/daCB9o7wpi9JNFQqklNkVOURNE2pjW/A5m9P1Ah14I437sS7xGHFeAfyBJhf4GwANS7r4Lyb/HQ==",
@@ -155,6 +157,7 @@ Object. Currently empty.
 
 - `id` (String): The identifier for this connection. This identifier is guaranteed to be unique across this installation while this connection is active and for an unknown time period afterward, but is not guaranteed to be unique forever. It's possible that sometime in the distant future, a connection ID could be reused.
 - `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
+- `disconnectedAt` (String | null): The ISO3339 timestamp for when the connection was terminated.
 - `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connections/claims.mdx#keepAlive) is enabled for this connection.
 - `sourceIp` (String | null): The source IP address that was used by the client when the connection was established.
 - `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this connection.
@@ -165,6 +168,7 @@ Object. Currently empty.
 {
   "id": "IDnAdd9kIAMCEsQ=",
   "connectedAt": "2024-05-31T15:47:45.231141792Z",
+  "disconnectedAt": null,
   "keepAlive": true,
   "sourceIp": "12.34.56.78",
   "uid": null,
@@ -197,6 +201,7 @@ This is always `hotsock.disconnected`.
 
 - `id` (String): The identifier for this connection. This identifier is guaranteed to be unique across this installation while this connection is active and for an unknown time period afterward, but is not guaranteed to be unique forever. It's possible that sometime in the distant future, a connection ID could be reused.
 - `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
+- `disconnectedAt` (String | null): The ISO3339 timestamp for when the connection was terminated.
 - `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connections/claims.mdx#keepAlive) is enabled for this connection.
 - `sourceIp` (String | null): The source IP address that was used by the client when the connection was established.
 - `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this connection.
@@ -207,6 +212,7 @@ This is always `hotsock.disconnected`.
 {
   "id": "IDnAdd9kIAMCEsQ=",
   "connectedAt": "2024-05-31T15:47:45.231141792Z",
+  "disconnectedAt": "2024-05-31T17:47:45.000000000Z",
   "keepAlive": true,
   "sourceIp": "12.34.56.78",
   "uid": null,
