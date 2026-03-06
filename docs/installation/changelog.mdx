@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.10.0 - March 5, 2026 {#v1.10.0}
+
+- Add automatic message publishing fan-out for channels with more than 250 subscribers. When a channel exceeds 250 subscribers, message delivery is distributed across multiple Lambda invocations in batches of 250 connections, significantly improving delivery performance and latency for large channels.
+- Randomize connection IDs before batching for fan-out, preventing connections with certain ID patterns from consistently receiving messages earlier or later than others.
+- Clean up disconnected connections (410 Gone) in a separate thread pool, preventing them from blocking message delivery slots for active connections and improving delivery latency when channels have a mix of active and stale connections.
+- Add support for [channel aliases](../connections/claims.mdx#channels.alias). Aliases let you define a friendly name for a channel in the token so clients can subscribe, unsubscribe, and publish using the alias instead of the real channel name.
+- Update the [Web Console](../server-api/web-console.mdx) to use [hotsock-js](https://github.com/hotsock/hotsock-js) [v1.3.0](https://github.com/hotsock/hotsock-js/releases/tag/v1.3.0), which includes support for channel aliases and contains bug fixes.
+- Build with Go 1.26.1.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-03-05](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-03-05)).
+
 ## v1.9.1 - February 27, 2026 {#v1.9.1}
 
 - Add `hotsockVersion` to the `metadata` object of all pub-sub events.

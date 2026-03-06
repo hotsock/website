@@ -72,7 +72,58 @@ For wildcards that overlap, any explicit `false` is used as the value and cannot
 }
 ```
 
-Each object inside the channels object accepts [`autoSubscribe`](#channels.autoSubscribe), [`historyStart`](#channels.historyStart), [`messages`](#channels.messages), [`omitFromSubCount`](#channels.omitFromSubCount), and [`subscribe`](#channels.subscribe) attributes.
+Each object inside the channels object accepts [`alias`](#channels.alias), [`autoSubscribe`](#channels.autoSubscribe), [`historyStart`](#channels.historyStart), [`messages`](#channels.messages), [`omitFromSubCount`](#channels.omitFromSubCount), and [`subscribe`](#channels.subscribe) attributes.
+
+### `alias` {#channels.alias}
+
+`String` (optional) - Defines a friendly name that clients can use instead of the real channel name when subscribing, unsubscribing, and publishing messages. This is useful for hiding internal channel naming from clients or providing stable client-side references when channel names contain dynamic IDs.
+
+The following allows the client to subscribe to `"user"` instead of `"user.123"`.
+
+```json
+{
+  "channels": {
+    "user.123": {
+      // highlight-next-line
+      "alias": "user",
+      "subscribe": true
+    }
+  }
+}
+```
+
+Key behaviors:
+
+- Works in both `connect` and `subscribe` scoped tokens.
+- If the same channel has an alias in both a connect token and a subscribe token, the subscribe token alias takes precedence (matching `uid`/`umd` precedence).
+- Cannot be used on wildcard channel entries.
+- Must be a valid channel name (no spaces, asterisks, or `#` characters).
+- Cannot duplicate another alias or collide with an actual channel name in the same token.
+- If the client sends a name that matches an alias, it resolves to the real channel. If it matches a real channel name directly, the real name takes priority.
+
+The alias appears in `meta.channelAlias` on `hotsock.subscribed` and `hotsock.unsubscribed` response messages. The alias is stored on the subscription, so unsubscribe responses include it regardless of whether the client uses the alias or the real channel name.
+
+```json
+{
+  "event": "hotsock.subscribed",
+  "channel": "user.123",
+  "data": {},
+  // highlight-start
+  "meta": { "channelAlias": "user", "uid": null, "umd": null }
+  // highlight-end
+}
+```
+
+```json
+{
+  "event": "hotsock.unsubscribed",
+  "channel": "user.123",
+  "data": {},
+  // highlight-start
+  "meta": { "channelAlias": "user", "uid": null, "umd": null }
+  // highlight-end
+}
+```
 
 ### `autoSubscribe` {#channels.autoSubscribe}
 
@@ -136,6 +187,8 @@ If you wanted to allow access to the entire message history of a channel without
 ### `messages` {#channels.messages}
 
 `Object` (optional) - Manages the permissions and directives for client-initiated messages that are published directly to the WebSocket on the channel(s) for the specified events. Each object key is the name of an event and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that event or event wildcard.
+
+Each object inside the messages object accepts [`broadcast`](#channels.messages.broadcast), [`echo`](#channels.messages.echo), [`emitPubSubEvent`](#channels.messages.emitPubSubEvent), [`publish`](#channels.messages.publish), [`scheduleBefore`](#channels.messages.scheduleBefore), and [`store`](#channels.messages.store) attributes.
 
 #### `broadcast` {#channels.messages.broadcast}
 

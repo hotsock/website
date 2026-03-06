@@ -1,0 +1,78 @@
+---
+slug: channel-aliases-and-large-channel-fan-out
+title: Channel aliases and large channel fan-out
+authors: [james]
+tags: [releases, features, channels]
+description: Hotsock v1.10 adds channel aliases for friendly client-side channel names and automatic fan-out for channels with hundreds or thousands of subscribers. Plus a recap of features since v1.8.
+---
+
+Hotsock v1.10 is here with **channel aliases** for cleaner client-side channel names and **automatic message fan-out** for channels with large subscriber counts. It's been a while since the last feature post, so let's also catch up on some highlights from v1.8 and v1.9.
+
+{/* truncate */}
+
+### Channel aliases
+
+The new [`alias`](/docs/connections/claims/#channels.alias) channel claim lets you define a friendly name that clients can use instead of the real channel name. This is great when your channel names contain dynamic IDs or internal naming conventions that you'd rather not expose to clients.
+
+For example, say you have a channel named `user.83f29a` for a specific user. You can assign an alias of `"user"` so the client never needs to know the real channel name:
+
+```json
+{
+  "exp": 1741219200,
+  "scope": "connect",
+  "channels": {
+    "user.83f29a": {
+      // highlight-next-line
+      "alias": "user",
+      "autoSubscribe": true
+    }
+  }
+}
+```
+
+The client can subscribe to `"user"` instead of `"user.83f29a"`, and the same alias works for unsubscribing and publishing messages. The alias is included in `meta.channelAlias` on subscribe and unsubscribe response messages:
+
+```json
+{
+  "event": "hotsock.subscribed",
+  "channel": "user.83f29a",
+  "data": { "autoSubscribed": true },
+  // highlight-next-line
+  "meta": { "channelAlias": "user", "uid": null, "umd": null }
+}
+```
+
+A few things to keep in mind:
+
+- If a subscribe token also defines an alias for the same channel, the subscribe token's alias takes precedence (matching the existing `uid`/`umd` precedence behavior).
+- Aliases cannot be used on wildcard channel entries.
+- An alias must be a valid channel name and cannot collide with another alias or an actual channel name in the same token.
+- If a client sends a name that matches both an alias and a real channel name, the real channel name takes priority.
+
+### Automatic fan-out for large channels
+
+When a channel exceeds 250 subscribers, message delivery is now automatically distributed across multiple Lambda invocations in batches of 250 connections. This significantly improves delivery performance and latency for large channels, making it practical to scale channels to thousands of subscribers.
+
+Alongside fan-out, connection IDs are now randomized before batching, preventing connections with certain ID patterns from consistently receiving messages earlier or later than others. Disconnected connections (410 Gone) are also cleaned up in a separate thread pool so they don't block delivery slots for active connections.
+
+### Catching up: v1.8 and v1.9
+
+Since the last feature post covered v1.7, here's a quick recap of what's shipped since then.
+
+#### Stored message querying (v1.8)
+
+You can now [query stored messages](/docs/installation/changelog/#v1.8.0) by channel and event name, sorted by timestamp. This is backed by a DynamoDB global secondary index (GSI) that can be enabled or disabled per installation.
+
+v1.8 also added `connectionId`, `sourceIp`, `userAgent`, and `trigger` metadata to stored messages and pub-sub events, making it easier to trace where a message originated.
+
+#### Revamped Web Console (v1.9)
+
+The [Web Console](/docs/server-api/web-console/) got a full refresh in v1.9 with JSON syntax highlighting, message filtering, improved mobile support, and a full-viewport layout. It's also been updated to [hotsock-js v1.3.0](https://github.com/hotsock/hotsock-js/releases/tag/v1.3.0) in v1.10, which includes support for channel aliases.
+
+#### Overhauled CloudWatch Dashboard (v1.8)
+
+The built-in CloudWatch Dashboard has been completely overhauled with version info, links to useful resources, and metrics grouped into sections so you can find what you need faster. If you don't need the dashboard on a particular installation, it can now be disabled to reduce CloudWatch costs.
+
+### Wrapping up
+
+Existing installations with auto-update enabled are already running v1.10 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time. A [full changelog](/docs/installation/changelog/#v1.10.0) is available with the complete list of changes included in these releases.
