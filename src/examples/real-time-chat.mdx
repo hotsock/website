@@ -80,18 +80,52 @@ channel.bind("hotsock.subscribed", () => {
 
 The `channel.uid` property contains the user's identifier from their token, making it easy to distinguish your own messages from others.
 
-### Receiving messages
+### Receiving and displaying messages
 
-Bind handlers to specific event names on the channel. Each incoming message includes the event data and [metadata](/docs/connections/claims/#uid) about who sent it:
+Bind handlers to event names on the channel. Each incoming message includes the event data and [metadata](/docs/connections/claims/#uid) about who sent it. In React, push messages into state and render them as a list:
 
 ```jsx
+const [messages, setMessages] = useState([])
+const [isTyping, setIsTyping] = useState("")
+
 channel.bind("chat", (message) => {
-  console.log(`${message.meta.uid}: ${message.data}`)
+  setMessages((prev) => [
+    ...prev,
+    { sender: message.meta.uid, content: message.data },
+  ])
 })
 
 channel.bind("is-typing", (message) => {
-  console.log(`${message.meta.uid} is typing...`)
+  setIsTyping(`${message.meta.uid} is typing...`)
+  // Clear after 2 seconds of no further typing events
+  clearTimeout(typingTimeout)
+  typingTimeout = setTimeout(() => setIsTyping(""), 2000)
 })
+```
+
+Then render the messages, aligning your own to the right and others to the left using `channel.uid` to identify the current user:
+
+```jsx
+{
+  messages.map((msg, i) => (
+    <div
+      key={i}
+      className={`flex ${msg.sender === channel.uid ? "justify-end" : "justify-start"}`}
+    >
+      <div
+        className={
+          msg.sender === channel.uid ? "bg-pink-500 text-white" : "bg-white"
+        }
+      >
+        {msg.content}
+      </div>
+    </div>
+  ))
+}
+
+{
+  isTyping && <span>{isTyping}</span>
+}
 ```
 
 ### Sending messages
@@ -99,11 +133,15 @@ channel.bind("is-typing", (message) => {
 Publish messages to the channel using `sendMessage`. The first argument is the event name (which must match a permitted event in your token), and the second is an optional data payload:
 
 ```jsx
-// Send a chat message
-channel.sendMessage("chat", { data: "Hello!" })
+const handleSend = (e) => {
+  if (e.key === "Enter" && e.target.value.trim() !== "") {
+    channel.sendMessage("chat", { data: e.target.value.trim() })
+    e.target.value = ""
+  }
+}
 
-// Send a typing indicator (no data payload needed)
-channel.sendMessage("is-typing")
+// In your JSX
+;<input type="text" placeholder="Type a message..." onKeyDown={handleSend} />
 ```
 
 ### Typing indicators
