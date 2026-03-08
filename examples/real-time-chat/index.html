@@ -8,23 +8,33 @@
     />
     <title>Real-time Chat Example</title>
     <meta name="description" content="Real-time Chat Example" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { darkMode: "class" }
+    </script>
     <style>
       body {
         margin: 0;
         font-family: sans-serif;
       }
-      #app {
-        width: 100vw;
-        height: 100vh;
+      .dark body, .dark #app {
+        background-color: #1e293b;
+        color: #e2e8f0;
       }
     </style>
+    <script>
+      window.addEventListener("message", (e) => {
+        if (e.data?.type === "theme-change") {
+          document.documentElement.classList.toggle(
+            "dark",
+            e.data.theme === "dark"
+          )
+        }
+      })
+    </script>
   </head>
   <body>
     <div id="app"></div>
-    <script type="module">
-      import { renderToDom } from "./src/app"
-
-      renderToDom(document.querySelector("#app"))
-    </script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -4,7 +4,6 @@
 const { themes } = require("prism-react-renderer")
 const lightTheme = themes.github
 const darkTheme = themes.dracula
-const { globSync } = require("glob")
 const { resolve } = require("path")
 
 /** @type {import('@docusaurus/types').Config} */
@@ -170,36 +169,6 @@ const config = {
 
   plugins: [
     [
-      "./ocular-docusaurus-plugin",
-      {
-        debug: true,
-        resolve: {
-          modules: [
-            resolve("node_modules"),
-            resolve("./node_modules"),
-            ...globSync("./examples/*/node_modules"),
-          ],
-          alias: {
-            "@src-docusaurus": resolve("./src"),
-            "website-examples": resolve("./examples"),
-            react: resolve("node_modules/react"),
-            "react-dom": resolve("node_modules/react-dom"),
-          },
-        },
-        module: {
-          rules: [
-            // https://github.com/Esri/calcite-components/issues/2865
-            {
-              test: /\.m?js/,
-              resolve: {
-                fullySpecified: false,
-              },
-            },
-          ],
-        },
-      },
-    ],
-    [
       "@docusaurus/plugin-content-docs",
       {
         id: "examples",
@@ -207,7 +176,6 @@ const config = {
         routeBasePath: "examples",
         sidebarPath: resolve("./src/sidebar-examples.js"),
         breadcrumbs: false,
-        docItemComponent: resolve("./src/components/ExamplesDocItem.js"),
       },
     ],
     async function tailwindPlugin(_context, _options) {

@@ -1,5 +1,3 @@
-import { createRoot } from "react-dom/client"
-// import SendIcon from "./assets/send.svg";
 import { HotsockClient } from "@hotsock/hotsock-js"
 import { useEffect, useRef, useState } from "react"
 
@@ -216,9 +214,3 @@ function Box({ hotsockClient, channelName }) {
 }
 
 export default App
-
-export function renderToDom(container) {
-  const root = createRoot(container)
-
-  root.render(<App />)
-}
