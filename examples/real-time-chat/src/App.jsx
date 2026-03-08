@@ -1,5 +1,3 @@
-import { createRoot } from "react-dom/client"
-// import SendIcon from "./assets/send.svg";
 import { HotsockClient } from "@hotsock/hotsock-js"
 import { useEffect, useRef, useState } from "react"
 
@@ -88,7 +86,7 @@ function App() {
   }, [])
 
   return (
-    <section className="grid grid-cols-2 lg:gap-8 md:gap-6 gap-4 w-full p-6">
+    <section className="grid grid-cols-2 gap-4 w-full h-screen p-4">
       <Box hotsockClient={jimClientRef.current} channelName={channelName} />
       <Box hotsockClient={pamClientRef.current} channelName={channelName} />
     </section>
@@ -158,55 +156,69 @@ function Box({ hotsockClient, channelName }) {
     scrollToBottom()
   }, [messages])
 
+  const isSelf = (sender) => sender === name
+
   return (
-    <div className="border-solid border-[2px] border-[#778899] w-full">
-      <header className="h-12 flex flex-row items-center justify-between py-2 px-5 border-solid border-[2px] border-[#778899] border-x-0 border-t-0">
-        <span className="font-semibold">{name}</span>
+    <div className="flex flex-col h-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
+      <header className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+        <div className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white text-sm font-semibold shrink-0">
+          {name ? name.charAt(0).toUpperCase() : "?"}
+        </div>
+        <div className="flex flex-col min-w-0">
+          <span className="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate">
+            {name || "Connecting..."}
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {name ? "Online" : "Waiting"}
+          </span>
+        </div>
         <span
-          className={`h-3 w-3 rounded-full  ${
-            name ? "bg-green-500" : "bg-red-500"
+          className={`ml-auto h-2.5 w-2.5 rounded-full shrink-0 ${
+            name ? "bg-green-500" : "bg-amber-400"
           }`}
         />
       </header>
+
       <main
-        className="min-h-96 max-h-96 h-96 space-y-4 overflow-y-scroll relative flex flex-col py-4 px-5 dark:bg-slate-900 bg-[#f7f7f7]"
+        className="flex-1 overflow-y-auto flex flex-col gap-1 p-4 bg-gray-50 dark:bg-gray-900"
         ref={messagesBoxRef}
       >
-        <div className="flex-grow"></div>
+        <div className="flex-grow" />
         {messages.length === 0 && (
-          <div className="text-center text-slate-400">
+          <div className="text-center text-sm text-gray-400 dark:text-gray-500 py-8">
             Start the conversation by typing a message below...
           </div>
         )}
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`  ${
-              message.sender === name ? "text-left" : "text-right"
-            }`}
+            className={`flex ${isSelf(message.sender) ? "justify-end" : "justify-start"}`}
           >
-            <span
-              className={` py-2 px-3 ${
-                message.sender === name
-                  ? "bg-[#fbd3e3] dark:bg-[#fbd3e327]"
-                  : "bg-[#f294c5] dark:bg-[#f294c527]"
+            <div
+              className={`max-w-[85%] px-3 py-2 text-sm ${
+                isSelf(message.sender)
+                  ? "bg-pink-500 text-white rounded-2xl rounded-br-md"
+                  : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-2xl rounded-bl-md border border-gray-200 dark:border-gray-700"
               }`}
             >
-              {message.sender}: {message.content}
-            </span>
+              {message.content}
+            </div>
           </div>
         ))}
-        <div className="h-6 flex flex-row sticky bottom-0 left-0 w-full items-start">
-          {isTyping !== "" && (
-            <span className="text-sm text-slate-400 mt-3">{isTyping}</span>
-          )}
-        </div>
+        {isTyping !== "" && (
+          <div className="flex justify-start">
+            <span className="text-xs text-gray-400 dark:text-gray-500 px-1 py-1">
+              {isTyping}
+            </span>
+          </div>
+        )}
       </main>
-      <footer className="h-12 relative">
+
+      <footer className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 px-3 py-2">
         <input
-          className="w-full h-12 outline-none border border-solid border-slate-400 pr-12 px-5 bg-transparent"
+          className="w-full rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 transition-colors"
           type="text"
-          placeholder="Type..."
+          placeholder="Type a message..."
           onKeyUp={handleTyping}
           onKeyDown={handleSendMessage}
         />
@@ -216,9 +228,3 @@ function Box({ hotsockClient, channelName }) {
 }
 
 export default App
-
-export function renderToDom(container) {
-  const root = createRoot(container)
-
-  root.render(<App />)
-}

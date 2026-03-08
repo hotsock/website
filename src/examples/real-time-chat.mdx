@@ -1,10 +1,191 @@
-import BrowserOnly from "@docusaurus/BrowserOnly"
-import App from "website-examples/real-time-chat/src/App"
+import ExampleIframe from "@site/src/components/ExampleIframe"
 
 # Real-Time Chat
 
 The two windows below allow chatting with one another. Although they are on the same screen for the purposes of the demo, they each have their own isolated Hotsock connection over WebSockets and all messages are routed through the Hotsock installation before showing in the other window.
 
-<BrowserOnly>{() => <App />}</BrowserOnly>
+<ExampleIframe name="real-time-chat" height="550px" />
 
 Get the code for this example and run it yourself [from the GitHub repository](https://github.com/hotsock/website/tree/main/examples/real-time-chat).
+
+## How it works
+
+This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect two users to the same channel and exchange messages in real time. Below is a walkthrough of each piece.
+
+### Authentication
+
+Before connecting, each user needs a [connect token](/docs/connections/authentication/) — a signed JWT that grants permission to subscribe to a channel and publish specific message events.
+
+For this demo, a backend endpoint issues tokens for two users (Jim and Pam) that include permissions for the same channel. A typical token payload looks like:
+
+```json
+{
+  "exp": 1693963905,
+  "scope": "connect",
+  "uid": "jim",
+  "channels": {
+    "chat-room-abc": {
+      "subscribe": true,
+      "messages": {
+        "chat": { "publish": true, "echo": true },
+        "is-typing": { "publish": true }
+      }
+    }
+  }
+}
+```
+
+The [`uid`](/docs/connections/claims/#uid) claim identifies each user and is included in the metadata of every message they send. The [`channels`](/docs/connections/claims/#channels) claim grants subscribe access and permission to publish `chat` and `is-typing` events. Setting `echo: true` on `chat` means the sender receives their own message back, which simplifies rendering.
+
+The client fetches tokens from the backend with a `connectTokenFn` — a function the Hotsock client calls whenever it needs a new or refreshed token:
+
+```jsx
+const connectTokenFn = async () => {
+  const resp = await fetch("https://your-backend.example.com/tokens", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({}),
+  })
+  const data = await resp.json()
+  return data.token
+}
+```
+
+### Connecting
+
+Each user creates their own `HotsockClient` instance with the WebSocket URL and their token function:
+
+```jsx
+import { HotsockClient } from "@hotsock/hotsock-js"
+
+const client = new HotsockClient(
+  "wss://your-hotsock-url.execute-api.us-east-1.amazonaws.com/v1",
+  { connectTokenFn },
+)
+```
+
+The client handles the WebSocket lifecycle automatically — connecting, reconnecting on failure, and calling `connectTokenFn` to get fresh tokens as needed.
+
+### Subscribing to a channel
+
+Once connected, subscribe to a channel by name. The `hotsock.subscribed` event fires when the subscription is confirmed:
+
+```jsx
+const channel = client.channels("chat-room-abc")
+
+channel.bind("hotsock.subscribed", () => {
+  console.log("Subscribed! My uid:", channel.uid)
+})
+```
+
+The `channel.uid` property contains the user's identifier from their token, making it easy to distinguish your own messages from others.
+
+### Receiving and displaying messages
+
+Bind handlers to event names on the channel. Each incoming message includes the event data and [metadata](/docs/connections/claims/#uid) about who sent it. In React, push messages into state and render them as a list:
+
+```jsx
+const [messages, setMessages] = useState([])
+const [isTyping, setIsTyping] = useState("")
+
+channel.bind("chat", (message) => {
+  setMessages((prev) => [
+    ...prev,
+    { sender: message.meta.uid, content: message.data },
+  ])
+})
+
+channel.bind("is-typing", (message) => {
+  setIsTyping(`${message.meta.uid} is typing...`)
+  // Clear after 2 seconds of no further typing events
+  clearTimeout(typingTimeout)
+  typingTimeout = setTimeout(() => setIsTyping(""), 2000)
+})
+```
+
+Then render the messages, aligning your own to the right and others to the left using `channel.uid` to identify the current user:
+
+```jsx
+{
+  messages.map((msg, i) => (
+    <div
+      key={i}
+      className={`flex ${msg.sender === channel.uid ? "justify-end" : "justify-start"}`}
+    >
+      <div
+        className={
+          msg.sender === channel.uid ? "bg-pink-500 text-white" : "bg-white"
+        }
+      >
+        {msg.content}
+      </div>
+    </div>
+  ))
+}
+
+{
+  isTyping && <span>{isTyping}</span>
+}
+```
+
+### Sending messages
+
+Publish messages to the channel using `sendMessage`. The first argument is the event name (which must match a permitted event in your token), and the second is an optional data payload:
+
+```jsx
+const handleSend = (e) => {
+  if (e.key === "Enter" && e.target.value.trim() !== "") {
+    channel.sendMessage("chat", { data: e.target.value.trim() })
+    e.target.value = ""
+  }
+}
+
+// In your JSX
+;<input type="text" placeholder="Type a message..." onKeyDown={handleSend} />
+```
+
+### Typing indicators
+
+The demo throttles typing indicator events to avoid flooding the channel. A timestamp tracks when the last `is-typing` event was sent, and new events are only published if enough time has passed:
+
+```jsx
+const lastSentTime = useRef(0)
+
+const handleTyping = (e) => {
+  if (e.key === "Enter") return
+
+  const now = Date.now()
+  if (now - lastSentTime.current >= 1500) {
+    channel.sendMessage("is-typing")
+    lastSentTime.current = now
+  }
+}
+```
+
+On the receiving end, typing indicators are shown temporarily and cleared after a short timeout:
+
+```jsx
+channel.bind("is-typing", (message) => {
+  setIsTyping(`${message.meta.uid} is typing...`)
+  clearTimeout(typingTimeout)
+  typingTimeout = setTimeout(() => setIsTyping(""), 2000)
+})
+```
+
+### Cleanup
+
+When the component unmounts, terminate the client to close the WebSocket connection cleanly:
+
+```jsx
+useEffect(() => {
+  return () => {
+    client.terminate()
+  }
+}, [])
+```
+
+## Putting it all together
+
+The full flow is: your backend signs a connect token with channel permissions, the client connects and subscribes, then publishes and receives messages in real time. The Hotsock client library handles reconnection and token refresh automatically.
+
+For a deeper dive into each concept, see the [Connect & Subscribe](/docs/connections/connect-and-subscribe/) guide and the [Client Messages](/docs/channels/client-messages/) documentation.
