@@ -1,0 +1,196 @@
+import ExampleIframe from "@site/src/components/ExampleIframe"
+
+# Collaborative To-Do List
+
+The two panels below share a to-do list. Although they are on the same screen for the purposes of the demo, each has its own isolated Hotsock connection and all actions are routed through the Hotsock installation. Items are stored so they persist across connections.
+
+<ExampleIframe name="collaborative-todo" height="550px" />
+
+Get the code for this example and run it yourself [from the GitHub repository](https://github.com/hotsock/website/tree/main/examples/collaborative-todo).
+
+## How it works
+
+This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect two users to the same channel where they collaboratively manage a to-do list using stored client messages and the [Client HTTP API](/docs/connections/client-http-api/) for loading message history. Below is a walkthrough of each piece.
+
+### Session persistence
+
+Each to-do list has a session ID that maps to a Hotsock channel. The session ID is stored in both `localStorage` and the URL hash so that lists persist across page loads and can be shared via link.
+
+```jsx
+const STORAGE_KEY = "hotsock-todo-session"
+
+function getSessionId() {
+  const hash = window.location.hash.slice(1)
+  if (hash) return hash
+  const stored = localStorage.getItem(STORAGE_KEY)
+  if (stored) return stored
+  return null
+}
+
+function saveSessionId(id) {
+  localStorage.setItem(STORAGE_KEY, id)
+  window.location.hash = id
+}
+```
+
+On load, the client checks for an existing session — first from the URL hash (for shared links), then from localStorage (for returning visitors). If neither exists, the backend generates a new session ID and the client saves it for next time.
+
+### Authentication
+
+Each user needs a [connect token](/docs/connections/authentication/) with permission to subscribe, publish multiple event types, and access message history. The key additions compared to the chat example are [`store`](/docs/connections/claims/#channels.messages.store) for message persistence and [`historyStart`](/docs/connections/claims/#channels.historyStart) for loading past messages:
+
+```json
+{
+  "exp": 1693963905,
+  "scope": "connect",
+  "uid": "alice",
+  "channels": {
+    "todo-abc123": {
+      "subscribe": true,
+      "historyStart": 0,
+      "messages": {
+        "add-item": { "publish": true, "echo": true, "store": 86400 },
+        "toggle-item": { "publish": true, "echo": true, "store": 86400 },
+        "delete-item": { "publish": true, "echo": true, "store": 86400 }
+      }
+    }
+  }
+}
+```
+
+Three event types handle the to-do operations. Each has `echo: true` so the sender receives confirmation, and `store: 86400` to retain messages for 24 hours. The `historyStart: 0` claim grants access to the full message history for replaying state on connect.
+
+### Loading history on connect
+
+When the WebSocket connects, the [`hotsock.connected`](/docs/connections/client-http-api/#authentication) message provides `connectionId` and `connectionSecret` credentials. After subscribing to the channel, the client uses these credentials to call the [Client HTTP API's `connection/listMessages`](/docs/connections/client-http-api/#connection/listMessages) endpoint to load stored messages and replay them into the current to-do list state:
+
+```jsx
+hotsockClient.bind("hotsock.connected", (message) => {
+  connectionInfo.current = {
+    connectionId: message.data.connectionId,
+    connectionSecret: message.data.connectionSecret,
+  }
+})
+
+channel.bind("hotsock.subscribed", () => {
+  if (connectionInfo.current) {
+    loadHistory(
+      connectionInfo.current.connectionId,
+      connectionInfo.current.connectionSecret
+    )
+  }
+})
+```
+
+The `listMessages` endpoint returns up to 100 messages per request. If a full page is returned, the client paginates forward using the `after` parameter with the last message's ID until all history is loaded:
+
+```jsx
+const loadHistory = async (connId, connSecret) => {
+  const params = new URLSearchParams({
+    connectionId: connId,
+    connectionSecret: connSecret,
+  })
+  const allMessages = []
+  let after = undefined
+  while (true) {
+    const body = { channel: channelName }
+    if (after) body.after = after
+    const resp = await fetch(
+      `${httpApiUrl}/connection/listMessages?${params}`,
+      { method: "POST", body: JSON.stringify(body) }
+    )
+    const { messages } = await resp.json()
+    if (messages && messages.length > 0) {
+      allMessages.push(...messages)
+      if (messages.length >= 100) {
+        after = messages[messages.length - 1].id
+        continue
+      }
+    }
+    break
+  }
+  // Replay all messages to reconstruct current state
+  const result = new Map()
+  allMessages.forEach((msg) => {
+    if (msg.event === "add-item") result.set(msg.data.id, msg.data)
+    if (msg.event === "toggle-item") {
+      const item = result.get(msg.data.id)
+      if (item) item.completed = !item.completed
+    }
+    if (msg.event === "delete-item") result.delete(msg.data.id)
+  })
+  setItems(result)
+}
+```
+
+This event-sourcing pattern means the to-do list state is fully reconstructable from its stored message history — no separate database needed.
+
+### Multiple client event types
+
+Each to-do operation maps to a different event name. The client binds handlers for all three so that real-time updates from other users are applied immediately:
+
+```jsx
+channel.bind("add-item", (message) => {
+  setItems((prev) => new Map(prev).set(message.data.id, {
+    ...message.data,
+    addedBy: message.meta.uid,
+  }))
+})
+
+channel.bind("toggle-item", (message) => {
+  setItems((prev) => {
+    const next = new Map(prev)
+    const item = next.get(message.data.id)
+    if (item) next.set(message.data.id, { ...item, completed: !item.completed })
+    return next
+  })
+})
+
+channel.bind("delete-item", (message) => {
+  setItems((prev) => {
+    const next = new Map(prev)
+    next.delete(message.data.id)
+    return next
+  })
+})
+```
+
+### Sending actions
+
+Each interaction publishes the corresponding event:
+
+```jsx
+const handleAddItem = (text) => {
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
+  channel.sendMessage("add-item", {
+    data: { id, text, completed: false },
+  })
+}
+
+const handleToggle = (id) => {
+  channel.sendMessage("toggle-item", { data: { id } })
+}
+
+const handleDelete = (id) => {
+  channel.sendMessage("delete-item", { data: { id } })
+}
+```
+
+### Cleanup
+
+When the component unmounts, terminate both clients to close the WebSocket connections:
+
+```jsx
+useEffect(() => {
+  return () => {
+    aliceClient.terminate()
+    bobClient.terminate()
+  }
+}, [])
+```
+
+## Putting it all together
+
+The full flow is: the client resolves a session ID (from URL hash, localStorage, or a fresh one from the backend), connects both users with tokens granting publish and history access, loads existing items by paginating through stored messages via the Client HTTP API and replaying them, then publishes add/toggle/delete events that are both delivered in real time and stored for future connections. The session persists automatically — returning visitors rejoin their list, and sharing the URL lets others collaborate on the same list.
+
+For a deeper dive, see the [Client HTTP API](/docs/connections/client-http-api/) documentation, the [Message Storage (`store`)](/docs/connections/claims/#channels.messages.store) claim, the [History Access (`historyStart`)](/docs/connections/claims/#channels.historyStart) claim, and the [Client Messages](/docs/channels/client-messages/) documentation.

@@ -1,7 +1,25 @@
 import { HotsockClient } from "@hotsock/hotsock-js"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 const wssUrl = "wss://975x5pgn0h.execute-api.us-east-1.amazonaws.com/v1"
+const httpApiUrl =
+  "https://f3hl5m33mxzpbu3ybcwcmcznu40njuio.lambda-url.us-east-1.on.aws"
+const STORAGE_KEY = "hotsock-chat-session"
+
+function getSessionId() {
+  const hash = window.location.hash.slice(1)
+  if (hash) return hash
+  const stored = localStorage.getItem(STORAGE_KEY)
+  if (stored) return stored
+  return null
+}
+
+function saveSessionId(id) {
+  localStorage.setItem(STORAGE_KEY, id)
+  window.location.hash = id
+}
+
+const initialSessionId = getSessionId()
 
 let cachedResponse = null
 let lastFetchTime = 0
@@ -11,12 +29,10 @@ const connectTokenFn = async () => {
   const now = Date.now()
 
   if (cachedResponse && now - lastFetchTime < 10000) {
-    // Return the cached response if it's within 10 seconds
     return cachedResponse
   }
 
   if (fetchPromise) {
-    // If a fetch is already in progress, wait for it to resolve
     return await fetchPromise
   }
 
@@ -27,18 +43,20 @@ const connectTokenFn = async () => {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify(
+        initialSessionId ? { sessionId: initialSessionId } : {}
+      ),
     }
   )
     .then((resp) => resp.json())
     .then((data) => {
       cachedResponse = data
       lastFetchTime = Date.now()
-      fetchPromise = null // Clear the fetchPromise once it's resolved
+      fetchPromise = null
       return data
     })
     .catch((error) => {
-      fetchPromise = null // Clear the fetchPromise in case of an error
+      fetchPromise = null
       throw error
     })
 
@@ -55,51 +73,107 @@ const pamConnectTokenFn = async () => {
   return data.pam.token
 }
 
+const AVATAR_COLORS = {
+  jim: "bg-blue-500",
+  pam: "bg-pink-500",
+}
+
+function formatTime(date) {
+  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+}
+
 function App() {
   const [channelName, setChannelName] = useState(null)
-  const jimClientRef = useRef(null)
-  const pamClientRef = useRef(null)
-
-  if (!jimClientRef.current) {
-    jimClientRef.current = new HotsockClient(wssUrl, {
-      connectTokenFn: jimConnectTokenFn,
-      logLevel: "debug",
-    })
-  }
-
-  if (!pamClientRef.current) {
-    pamClientRef.current = new HotsockClient(wssUrl, {
-      connectTokenFn: pamConnectTokenFn,
-      logLevel: "debug",
-    })
-  }
+  const [sessionId, setSessionId] = useState(null)
+  const [copied, setCopied] = useState(false)
+  const [jimClient] = useState(
+    () =>
+      new HotsockClient(wssUrl, {
+        connectTokenFn: jimConnectTokenFn,
+        logLevel: "debug",
+      })
+  )
+  const [pamClient] = useState(
+    () =>
+      new HotsockClient(wssUrl, {
+        connectTokenFn: pamConnectTokenFn,
+        logLevel: "debug",
+      })
+  )
 
   useEffect(() => {
     connectTokenFn().then((data) => {
       setChannelName(data.channel)
+      const sid = data.sessionId || data.channel
+      setSessionId(sid)
+      saveSessionId(sid)
     })
 
     return () => {
-      jimClientRef.current.terminate()
-      pamClientRef.current.terminate()
+      jimClient.terminate()
+      pamClient.terminate()
     }
   }, [])
 
+  const handleNewChat = () => {
+    localStorage.removeItem(STORAGE_KEY)
+    window.location.hash = ""
+    window.location.reload()
+  }
+
+  const handleCopyLink = () => {
+    const url = window.location.href.split("#")[0] + "#" + sessionId
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
   return (
-    <section className="grid grid-cols-2 gap-4 w-full h-screen p-4">
-      <Box hotsockClient={jimClientRef.current} channelName={channelName} />
-      <Box hotsockClient={pamClientRef.current} channelName={channelName} />
-    </section>
+    <div className="flex flex-col h-screen">
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 shrink-0">
+        <span className="text-xs text-gray-500 dark:text-gray-400 font-mono truncate">
+          {sessionId ? `Session: ${sessionId}` : "Connecting..."}
+        </span>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={handleCopyLink}
+            className="text-xs text-[#FE337E] hover:text-[#FE0B64] font-medium"
+          >
+            {copied ? "Copied!" : "Copy link"}
+          </button>
+          <span className="text-xs text-gray-300 dark:text-gray-600">&bull;</span>
+          <button
+            onClick={handleNewChat}
+            className="text-xs text-[#FE337E] hover:text-[#FE0B64] font-medium"
+          >
+            New chat
+          </button>
+        </div>
+      </div>
+      <section className="grid grid-cols-2 gap-4 w-full flex-1 min-h-0 p-4">
+        <ChatPanel
+          hotsockClient={jimClient}
+          channelName={channelName}
+        />
+        <ChatPanel
+          hotsockClient={pamClient}
+          channelName={channelName}
+        />
+      </section>
+    </div>
   )
 }
 
-function Box({ hotsockClient, channelName }) {
+function ChatPanel({ hotsockClient, channelName }) {
   const [name, setName] = useState(null)
   const [isTyping, setIsTyping] = useState("")
   const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(true)
   const isTypingTimeout = useRef(null)
   const wasCalled = useRef(false)
   const channel = useRef({})
+  const connectionInfo = useRef(null)
   const lastSentTime = useRef(0)
   const messagesBoxRef = useRef(null)
 
@@ -109,21 +183,83 @@ function Box({ hotsockClient, channelName }) {
     }
   }
 
+  const loadHistory = useCallback(
+    async (connId, connSecret) => {
+      const params = new URLSearchParams({
+        connectionId: connId,
+        connectionSecret: connSecret,
+      })
+      const allMessages = []
+      let after = undefined
+      while (true) {
+        const body = { channel: channelName }
+        if (after) body.after = after
+        const resp = await fetch(
+          `${httpApiUrl}/connection/listMessages?${params}`,
+          {
+            method: "POST",
+            body: JSON.stringify(body),
+          }
+        )
+        const { messages } = await resp.json()
+        if (messages && messages.length > 0) {
+          allMessages.push(...messages)
+          if (messages.length >= 100) {
+            after = messages[messages.length - 1].id
+            continue
+          }
+        }
+        break
+      }
+      if (allMessages.length > 0) {
+        setMessages(
+          allMessages
+            .filter((msg) => msg.event === "chat")
+            .map((msg) => ({
+              sender: msg.meta.uid,
+              content: msg.data,
+              time: formatTime(new Date(msg.id ? decodUlidTime(msg.id) : Date.now())),
+            }))
+        )
+      }
+      setLoading(false)
+    },
+    [channelName]
+  )
+
   useEffect(() => {
     if (!channelName || wasCalled.current) return
     wasCalled.current = true
 
+    hotsockClient.bind("hotsock.connected", (message) => {
+      connectionInfo.current = {
+        connectionId: message.data.connectionId,
+        connectionSecret: message.data.connectionSecret,
+      }
+    })
+
     channel.current = hotsockClient.channels(channelName)
     channel.current.bind("hotsock.subscribed", () => {
       setName(channel.current.uid)
+      if (connectionInfo.current) {
+        loadHistory(
+          connectionInfo.current.connectionId,
+          connectionInfo.current.connectionSecret
+        )
+      } else {
+        setLoading(false)
+      }
     })
     channel.current.bind("chat", (message) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: message.meta.uid, content: message.data },
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: message.meta.uid,
+          content: message.data,
+          time: formatTime(new Date()),
+        },
       ])
       setIsTyping("")
-      scrollToBottom()
     })
     channel.current.bind("is-typing", (message) => {
       setIsTyping(`${message.meta.uid} is typing...`)
@@ -132,7 +268,11 @@ function Box({ hotsockClient, channelName }) {
         setIsTyping("")
       }, 2000)
     })
-  }, [channelName])
+  }, [channelName, hotsockClient, loadHistory])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const handleTyping = (e) => {
     if (e.key === "Enter") return
@@ -152,16 +292,15 @@ function Box({ hotsockClient, channelName }) {
     }
   }
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
   const isSelf = (sender) => sender === name
+  const avatarColor = AVATAR_COLORS[name] || "bg-gray-500"
 
   return (
     <div className="flex flex-col h-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-        <div className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white text-sm font-semibold shrink-0">
+        <div
+          className={`w-8 h-8 rounded-full ${avatarColor} flex items-center justify-center text-white text-sm font-semibold shrink-0`}
+        >
           {name ? name.charAt(0).toUpperCase() : "?"}
         </div>
         <div className="flex flex-col min-w-0">
@@ -184,7 +323,12 @@ function Box({ hotsockClient, channelName }) {
         ref={messagesBoxRef}
       >
         <div className="flex-grow" />
-        {messages.length === 0 && (
+        {loading && (
+          <div className="text-center text-sm text-gray-400 dark:text-gray-500 py-8">
+            Loading messages...
+          </div>
+        )}
+        {!loading && messages.length === 0 && (
           <div className="text-center text-sm text-gray-400 dark:text-gray-500 py-8">
             Start the conversation by typing a message below...
           </div>
@@ -194,14 +338,23 @@ function Box({ hotsockClient, channelName }) {
             key={index}
             className={`flex ${isSelf(message.sender) ? "justify-end" : "justify-start"}`}
           >
-            <div
-              className={`max-w-[85%] px-3 py-2 text-sm ${
-                isSelf(message.sender)
-                  ? "bg-pink-500 text-white rounded-2xl rounded-br-md"
-                  : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-2xl rounded-bl-md border border-gray-200 dark:border-gray-700"
-              }`}
-            >
-              {message.content}
+            <div className="flex flex-col max-w-[85%]">
+              <div
+                className={`px-3 py-2 text-sm ${
+                  isSelf(message.sender)
+                    ? "bg-pink-500 text-white rounded-2xl rounded-br-md"
+                    : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-2xl rounded-bl-md border border-gray-200 dark:border-gray-700"
+                }`}
+              >
+                {message.content}
+              </div>
+              <span
+                className={`text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 ${
+                  isSelf(message.sender) ? "text-right" : "text-left"
+                }`}
+              >
+                {message.time}
+              </span>
             </div>
           </div>
         ))}
@@ -225,6 +378,16 @@ function Box({ hotsockClient, channelName }) {
       </footer>
     </div>
   )
+}
+
+// Decode timestamp from a ULID (first 10 characters encode ms since epoch)
+function decodUlidTime(ulid) {
+  const chars = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+  let time = 0
+  for (let i = 0; i < 10; i++) {
+    time = time * 32 + chars.indexOf(ulid.charAt(i).toUpperCase())
+  }
+  return time
 }
 
 export default App

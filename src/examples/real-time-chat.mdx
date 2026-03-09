@@ -2,7 +2,7 @@ import ExampleIframe from "@site/src/components/ExampleIframe"
 
 # Real-Time Chat
 
-The two windows below allow chatting with one another. Although they are on the same screen for the purposes of the demo, they each have their own isolated Hotsock connection over WebSockets and all messages are routed through the Hotsock installation before showing in the other window.
+The two windows below allow chatting with one another. Although they are on the same screen for the purposes of the demo, they each have their own isolated Hotsock connection over WebSockets and all messages are routed through the Hotsock installation before showing in the other window. Chat history is stored and persists across page loads.
 
 <ExampleIframe name="real-time-chat" height="550px" />
 
@@ -10,11 +10,34 @@ Get the code for this example and run it yourself [from the GitHub repository](h
 
 ## How it works
 
-This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect two users to the same channel and exchange messages in real time. Below is a walkthrough of each piece.
+This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect two users to the same channel, exchange messages in real time, and persist chat history using stored messages and the [Client HTTP API](/docs/connections/client-http-api/). Below is a walkthrough of each piece.
+
+### Session persistence
+
+Each chat session has an ID that maps to a Hotsock channel. The session ID is stored in both `localStorage` and the URL hash so that conversations persist across page loads and can be shared via link.
+
+```jsx
+const STORAGE_KEY = "hotsock-chat-session"
+
+function getSessionId() {
+  const hash = window.location.hash.slice(1)
+  if (hash) return hash
+  const stored = localStorage.getItem(STORAGE_KEY)
+  if (stored) return stored
+  return null
+}
+
+function saveSessionId(id) {
+  localStorage.setItem(STORAGE_KEY, id)
+  window.location.hash = id
+}
+```
+
+On load, the client checks for an existing session — first from the URL hash (for shared links), then from localStorage (for returning visitors). If neither exists, the backend generates a new session ID and the client saves it for next time.
 
 ### Authentication
 
-Before connecting, each user needs a [connect token](/docs/connections/authentication/) — a signed JWT that grants permission to subscribe to a channel and publish specific message events.
+Before connecting, each user needs a [connect token](/docs/connections/authentication/) — a signed JWT that grants permission to subscribe to a channel, publish specific message events, and access message history.
 
 For this demo, a backend endpoint issues tokens for two users (Jim and Pam) that include permissions for the same channel. A typical token payload looks like:
 
@@ -24,10 +47,11 @@ For this demo, a backend endpoint issues tokens for two users (Jim and Pam) that
   "scope": "connect",
   "uid": "jim",
   "channels": {
-    "chat-room-abc": {
+    "chat-abc123": {
       "subscribe": true,
+      "historyStart": 0,
       "messages": {
-        "chat": { "publish": true, "echo": true },
+        "chat": { "publish": true, "echo": true, "store": 86400 },
         "is-typing": { "publish": true }
       }
     }
@@ -35,7 +59,7 @@ For this demo, a backend endpoint issues tokens for two users (Jim and Pam) that
 }
 ```
 
-The [`uid`](/docs/connections/claims/#uid) claim identifies each user and is included in the metadata of every message they send. The [`channels`](/docs/connections/claims/#channels) claim grants subscribe access and permission to publish `chat` and `is-typing` events. Setting `echo: true` on `chat` means the sender receives their own message back, which simplifies rendering.
+The [`uid`](/docs/connections/claims/#uid) claim identifies each user and is included in the metadata of every message they send. The [`channels`](/docs/connections/claims/#channels) claim grants subscribe access and permission to publish `chat` and `is-typing` events. Setting [`echo: true`](/docs/connections/claims/#channels.messages.echo) on `chat` means the sender receives their own message back, which simplifies rendering. The [`store: 86400`](/docs/connections/claims/#channels.messages.store) claim retains chat messages for 24 hours, and [`historyStart: 0`](/docs/connections/claims/#channels.historyStart) grants access to the full message history. The `is-typing` event is intentionally ephemeral — no `store` — since typing indicators are only relevant to live subscribers.
 
 The client fetches tokens from the backend with a `connectTokenFn` — a function the Hotsock client calls whenever it needs a new or refreshed token:
 
@@ -60,73 +84,106 @@ import { HotsockClient } from "@hotsock/hotsock-js"
 
 const client = new HotsockClient(
   "wss://your-hotsock-url.execute-api.us-east-1.amazonaws.com/v1",
-  { connectTokenFn },
+  { connectTokenFn }
 )
 ```
 
 The client handles the WebSocket lifecycle automatically — connecting, reconnecting on failure, and calling `connectTokenFn` to get fresh tokens as needed.
 
-### Subscribing to a channel
+### Loading message history
 
-Once connected, subscribe to a channel by name. The `hotsock.subscribed` event fires when the subscription is confirmed:
+When the WebSocket connects, the [`hotsock.connected`](/docs/connections/client-http-api/#authentication) message provides `connectionId` and `connectionSecret` credentials. After subscribing to the channel, the client uses these credentials to call the [Client HTTP API's `connection/listMessages`](/docs/connections/client-http-api/#connection/listMessages) endpoint to load stored chat messages:
 
 ```jsx
-const channel = client.channels("chat-room-abc")
+hotsockClient.bind("hotsock.connected", (message) => {
+  connectionInfo.current = {
+    connectionId: message.data.connectionId,
+    connectionSecret: message.data.connectionSecret,
+  }
+})
+
+channel.bind("hotsock.subscribed", () => {
+  if (connectionInfo.current) {
+    loadHistory(
+      connectionInfo.current.connectionId,
+      connectionInfo.current.connectionSecret
+    )
+  }
+})
+```
+
+The `listMessages` endpoint returns up to 100 messages per request. If a full page is returned, the client paginates forward using the `after` parameter with the last message's ID until all history is loaded:
+
+```jsx
+const loadHistory = async (connId, connSecret) => {
+  const params = new URLSearchParams({
+    connectionId: connId,
+    connectionSecret: connSecret,
+  })
+  const allMessages = []
+  let after = undefined
+  while (true) {
+    const body = { channel: channelName }
+    if (after) body.after = after
+    const resp = await fetch(
+      `${httpApiUrl}/connection/listMessages?${params}`,
+      { method: "POST", body: JSON.stringify(body) }
+    )
+    const { messages } = await resp.json()
+    if (messages && messages.length > 0) {
+      allMessages.push(...messages)
+      if (messages.length >= 100) {
+        after = messages[messages.length - 1].id
+        continue
+      }
+    }
+    break
+  }
+  // Filter to chat messages only (skip is-typing) and render
+  setMessages(
+    allMessages
+      .filter((msg) => msg.event === "chat")
+      .map((msg) => ({
+        sender: msg.meta.uid,
+        content: msg.data,
+        time: formatTime(new Date(decodeUlidTime(msg.id))),
+      }))
+  )
+}
+```
+
+History messages get their timestamps from the message ID — Hotsock message IDs are [ULIDs](https://github.com/ulid/spec), which encode the creation time in their first 10 characters. Only `chat` events are loaded; ephemeral `is-typing` events are not stored.
+
+### Subscribing and receiving messages
+
+Once connected, subscribe to a channel by name. The `hotsock.subscribed` event fires when the subscription is confirmed, and then handlers for each event type process incoming messages:
+
+```jsx
+const channel = client.channels("chat-abc123")
 
 channel.bind("hotsock.subscribed", () => {
   console.log("Subscribed! My uid:", channel.uid)
 })
-```
-
-The `channel.uid` property contains the user's identifier from their token, making it easy to distinguish your own messages from others.
-
-### Receiving and displaying messages
-
-Bind handlers to event names on the channel. Each incoming message includes the event data and [metadata](/docs/connections/claims/#uid) about who sent it. In React, push messages into state and render them as a list:
-
-```jsx
-const [messages, setMessages] = useState([])
-const [isTyping, setIsTyping] = useState("")
 
 channel.bind("chat", (message) => {
   setMessages((prev) => [
     ...prev,
-    { sender: message.meta.uid, content: message.data },
+    {
+      sender: message.meta.uid,
+      content: message.data,
+      time: formatTime(new Date()),
+    },
   ])
 })
 
 channel.bind("is-typing", (message) => {
   setIsTyping(`${message.meta.uid} is typing...`)
-  // Clear after 2 seconds of no further typing events
   clearTimeout(typingTimeout)
   typingTimeout = setTimeout(() => setIsTyping(""), 2000)
 })
 ```
 
-Then render the messages, aligning your own to the right and others to the left using `channel.uid` to identify the current user:
-
-```jsx
-{
-  messages.map((msg, i) => (
-    <div
-      key={i}
-      className={`flex ${msg.sender === channel.uid ? "justify-end" : "justify-start"}`}
-    >
-      <div
-        className={
-          msg.sender === channel.uid ? "bg-pink-500 text-white" : "bg-white"
-        }
-      >
-        {msg.content}
-      </div>
-    </div>
-  ))
-}
-
-{
-  isTyping && <span>{isTyping}</span>
-}
-```
+The `channel.uid` property contains the user's identifier from their token, making it easy to distinguish your own messages from others and align them left or right in the UI.
 
 ### Sending messages
 
@@ -139,9 +196,6 @@ const handleSend = (e) => {
     e.target.value = ""
   }
 }
-
-// In your JSX
-;<input type="text" placeholder="Type a message..." onKeyDown={handleSend} />
 ```
 
 ### Typing indicators
@@ -162,30 +216,23 @@ const handleTyping = (e) => {
 }
 ```
 
-On the receiving end, typing indicators are shown temporarily and cleared after a short timeout:
-
-```jsx
-channel.bind("is-typing", (message) => {
-  setIsTyping(`${message.meta.uid} is typing...`)
-  clearTimeout(typingTimeout)
-  typingTimeout = setTimeout(() => setIsTyping(""), 2000)
-})
-```
+On the receiving end, typing indicators are shown temporarily and cleared after a short timeout. Since `is-typing` has no `store` claim, these events are purely ephemeral — only delivered to users who are currently connected.
 
 ### Cleanup
 
-When the component unmounts, terminate the client to close the WebSocket connection cleanly:
+When the component unmounts, terminate both clients to close the WebSocket connections:
 
 ```jsx
 useEffect(() => {
   return () => {
-    client.terminate()
+    jimClient.terminate()
+    pamClient.terminate()
   }
 }, [])
 ```
 
 ## Putting it all together
 
-The full flow is: your backend signs a connect token with channel permissions, the client connects and subscribes, then publishes and receives messages in real time. The Hotsock client library handles reconnection and token refresh automatically.
+The full flow is: the client resolves a session ID (from URL hash, localStorage, or a fresh one from the backend), connects both users with tokens granting publish and history access, loads existing chat messages by paginating through stored history via the Client HTTP API, then publishes and receives messages in real time. Chat messages are stored for 24 hours while typing indicators remain ephemeral. The session persists automatically — returning visitors see their previous conversation, and sharing the URL lets others join the same chat.
 
-For a deeper dive into each concept, see the [Connect & Subscribe](/docs/connections/connect-and-subscribe/) guide and the [Client Messages](/docs/channels/client-messages/) documentation.
+For a deeper dive into each concept, see the [Client HTTP API](/docs/connections/client-http-api/) documentation, the [Message Storage (`store`)](/docs/connections/claims/#channels.messages.store) claim, the [History Access (`historyStart`)](/docs/connections/claims/#channels.historyStart) claim, and the [Client Messages](/docs/channels/client-messages/) documentation.
