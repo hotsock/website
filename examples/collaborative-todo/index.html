@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Collaborative To-Do List Example</title>
+    <meta name="description" content="Collaborative To-Do List Example" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { darkMode: "class" }
+    </script>
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+      .dark body,
+      .dark #app {
+        background-color: #1e293b;
+        color: #e2e8f0;
+      }
+    </style>
+    <script>
+      window.addEventListener("message", (e) => {
+        if (e.data?.type === "theme-change") {
+          document.documentElement.classList.toggle(
+            "dark",
+            e.data.theme === "dark",
+          )
+        }
+      })
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
