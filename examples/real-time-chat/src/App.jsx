@@ -86,22 +86,20 @@ function App() {
   const [channelName, setChannelName] = useState(null)
   const [sessionId, setSessionId] = useState(null)
   const [copied, setCopied] = useState(false)
-  const jimClientRef = useRef(null)
-  const pamClientRef = useRef(null)
-
-  if (!jimClientRef.current) {
-    jimClientRef.current = new HotsockClient(wssUrl, {
-      connectTokenFn: jimConnectTokenFn,
-      logLevel: "debug",
-    })
-  }
-
-  if (!pamClientRef.current) {
-    pamClientRef.current = new HotsockClient(wssUrl, {
-      connectTokenFn: pamConnectTokenFn,
-      logLevel: "debug",
-    })
-  }
+  const [jimClient] = useState(
+    () =>
+      new HotsockClient(wssUrl, {
+        connectTokenFn: jimConnectTokenFn,
+        logLevel: "debug",
+      })
+  )
+  const [pamClient] = useState(
+    () =>
+      new HotsockClient(wssUrl, {
+        connectTokenFn: pamConnectTokenFn,
+        logLevel: "debug",
+      })
+  )
 
   useEffect(() => {
     connectTokenFn().then((data) => {
@@ -112,8 +110,8 @@ function App() {
     })
 
     return () => {
-      jimClientRef.current.terminate()
-      pamClientRef.current.terminate()
+      jimClient.terminate()
+      pamClient.terminate()
     }
   }, [])
 
@@ -155,11 +153,11 @@ function App() {
       </div>
       <section className="grid grid-cols-2 gap-4 w-full flex-1 min-h-0 p-4">
         <ChatPanel
-          hotsockClient={jimClientRef.current}
+          hotsockClient={jimClient}
           channelName={channelName}
         />
         <ChatPanel
-          hotsockClient={pamClientRef.current}
+          hotsockClient={pamClient}
           channelName={channelName}
         />
       </section>

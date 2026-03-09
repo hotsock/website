@@ -78,22 +78,20 @@ function App() {
   const [channelName, setChannelName] = useState(null)
   const [sessionId, setSessionId] = useState(null)
   const [copied, setCopied] = useState(false)
-  const aliceClientRef = useRef(null)
-  const bobClientRef = useRef(null)
-
-  if (!aliceClientRef.current) {
-    aliceClientRef.current = new HotsockClient(wssUrl, {
-      connectTokenFn: aliceConnectTokenFn,
-      logLevel: "debug",
-    })
-  }
-
-  if (!bobClientRef.current) {
-    bobClientRef.current = new HotsockClient(wssUrl, {
-      connectTokenFn: bobConnectTokenFn,
-      logLevel: "debug",
-    })
-  }
+  const [aliceClient] = useState(
+    () =>
+      new HotsockClient(wssUrl, {
+        connectTokenFn: aliceConnectTokenFn,
+        logLevel: "debug",
+      })
+  )
+  const [bobClient] = useState(
+    () =>
+      new HotsockClient(wssUrl, {
+        connectTokenFn: bobConnectTokenFn,
+        logLevel: "debug",
+      })
+  )
 
   useEffect(() => {
     connectTokenFn().then((data) => {
@@ -104,8 +102,8 @@ function App() {
     })
 
     return () => {
-      aliceClientRef.current.terminate()
-      bobClientRef.current.terminate()
+      aliceClient.terminate()
+      bobClient.terminate()
     }
   }, [])
 
@@ -147,11 +145,11 @@ function App() {
       </div>
       <section className="grid grid-cols-2 gap-4 w-full flex-1 min-h-0 p-4">
         <TodoPanel
-          hotsockClient={aliceClientRef.current}
+          hotsockClient={aliceClient}
           channelName={channelName}
         />
         <TodoPanel
-          hotsockClient={bobClientRef.current}
+          hotsockClient={bobClient}
           channelName={channelName}
         />
       </section>

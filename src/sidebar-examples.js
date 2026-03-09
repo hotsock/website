@@ -9,7 +9,12 @@ const sidebars = {
       type: "category",
       label: "Examples",
       collapsible: false,
-      items: ["real-time-chat"],
+      items: [
+        "real-time-chat",
+        "live-dashboard",
+        "collaborative-todo",
+        "notification-feed",
+      ],
     },
   ],
 }
