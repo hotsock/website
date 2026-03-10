@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.10.1 - March 10, 2026 {#v1.10.1}
+
+- Doubles the channel name limit from 128 to 256 characters to accommodate real-world use cases approaching the limit.
+
 ## v1.10.0 - March 5, 2026 {#v1.10.0}
 
 - Add automatic message publishing fan-out for channels with more than 250 subscribers. When a channel exceeds 250 subscribers, message delivery is distributed across multiple Lambda invocations in batches of 250 connections, significantly improving delivery performance and latency for large channels.
