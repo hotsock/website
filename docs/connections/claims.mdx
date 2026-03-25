@@ -38,7 +38,7 @@ Per the JWT spec, `aud` can also be an array of audiences, where the installatio
 
 ## `channels` {#channels}
 
-`Object` (optional) - The `channels` claim specifies the channel permissions granted and channel directives assigned to this connection. Each object key is the name of a channel and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that channel or channel wildcard.
+`Object` (optional) - The `channels` claim specifies the channel permissions granted and channel directives assigned to this connection. Each object key is the name of a channel and can include asterisks (\*) anywhere in the string to denote wildcards. Keys can also use the `#regex:` prefix to specify a regular expression pattern for matching channel names. Each object value is another object with the settings for that channel or channel pattern.
 
 The following grants subscribe access to any channel with the prefix `account.123.` and the channel named `user.456`.
 
@@ -71,6 +71,29 @@ For wildcards that overlap, any explicit `false` is used as the value and cannot
   }
 }
 ```
+
+#### Regex patterns {#channels--regex}
+
+In addition to wildcards, channel keys can use the `#regex:` prefix to specify a [Go regular expression](https://pkg.go.dev/regexp/syntax) pattern. This enables fine-grained permission control for dynamically-named channels where wildcards are not precise enough.
+
+The following grants subscribe access to any channel where the name starts with `org.` followed by one or more digits.
+
+```json
+{
+  // highlight-next-line
+  "channels": {
+    "#regex:^org\\.[0-9]+$": {
+      "subscribe": true
+    }
+  }
+}
+```
+
+Regex patterns are compiled and validated when the token is parsed. Invalid patterns cause the token to be rejected. Regex patterns follow the same precedence rules as wildcards — an explicit `false` from any matching pattern always wins.
+
+:::info
+Regex patterns cannot have an [`alias`](#channels.alias) or [`autoSubscribe`](#channels.autoSubscribe) defined on them, just like wildcard patterns.
+:::
 
 Each object inside the channels object accepts [`alias`](#channels.alias), [`autoSubscribe`](#channels.autoSubscribe), [`historyStart`](#channels.historyStart), [`messages`](#channels.messages), [`omitFromSubCount`](#channels.omitFromSubCount), and [`subscribe`](#channels.subscribe) attributes.
 
@@ -186,9 +209,36 @@ If you wanted to allow access to the entire message history of a channel without
 
 ### `messages` {#channels.messages}
 
-`Object` (optional) - Manages the permissions and directives for client-initiated messages that are published directly to the WebSocket on the channel(s) for the specified events. Each object key is the name of an event and can include asterisks (\*) anywhere in the string to denote wildcards. Each object value is another object with the settings for that event or event wildcard.
+`Object` (optional) - Manages the permissions and directives for client-initiated messages that are published directly to the WebSocket on the channel(s) for the specified events. Each object key is the name of an event and can include asterisks (\*) anywhere in the string to denote wildcards. Keys can also use the `#regex:` prefix to specify a regular expression pattern for matching event names. Each object value is another object with the settings for that event or event pattern.
 
 Each object inside the messages object accepts [`broadcast`](#channels.messages.broadcast), [`echo`](#channels.messages.echo), [`emitPubSubEvent`](#channels.messages.emitPubSubEvent), [`publish`](#channels.messages.publish), [`scheduleBefore`](#channels.messages.scheduleBefore), and [`store`](#channels.messages.store) attributes.
+
+#### Regex patterns {#channels.messages--regex}
+
+In addition to wildcards, event keys can use the `#regex:` prefix to specify a [Go regular expression](https://pkg.go.dev/regexp/syntax) pattern. This enables fine-grained permission control for event names where wildcards are not precise enough.
+
+The following allows the connection to publish `move` events and any event matching the pattern `action.{digits}` on the "game.123" channel.
+
+```json
+{
+  "channels": {
+    "game.123": {
+      "subscribe": true,
+      "messages": {
+        "move": {
+          "publish": true
+        },
+        // highlight-next-line
+        "#regex:^action\\.[0-9]+$": {
+          "publish": true
+        }
+      }
+    }
+  }
+}
+```
+
+Regex patterns in event keys are compiled and validated when the token is parsed. Invalid patterns cause the token to be rejected. Regex patterns follow the same precedence rules as wildcards — an explicit `false` from any matching pattern always wins.
 
 #### `broadcast` {#channels.messages.broadcast}
 

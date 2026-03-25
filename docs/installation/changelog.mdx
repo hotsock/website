@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.11.0 - March 19, 2026 {#v1.11.0}
+
+- Add [regex pattern support](../connections/claims.mdx#channels--regex) for channel name patterns in JWT claims. Channel keys can now use the `#regex:` prefix for [Go regular expression](https://pkg.go.dev/regexp/syntax) matching, enabling fine-grained permission control for dynamically-named channels where wildcards are not precise enough.
+- Add [regex pattern support](../connections/claims.mdx#channels.messages--regex) for event name patterns in JWT message claims. Event keys inside `messages` can use the same `#regex:` prefix for matching event names. Regex patterns are validated at token parse time.
+- Allow `#` in event names except as a prefix, reserving the `#regex:` namespace for pattern directives while permitting `#` elsewhere in event names.
+- Return friendly error messages for type mismatches in message input. When clients send incorrect types like `{"event": ["badarray"]}` instead of a string, the error now clearly indicates what went wrong instead of exposing internal Go type information.
+- Fix a panic in the logging library when writing failed error logs.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-03-13](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-03-13)).
+
 ## v1.10.1 - March 10, 2026 {#v1.10.1}
 
 - Doubles the channel name limit from 128 to 256 characters to accommodate real-world use cases approaching the limit.
