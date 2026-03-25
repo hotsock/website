@@ -263,7 +263,7 @@ Deduplication is handled [internally by SQS](https://docs.aws.amazon.com/AWSSimp
 
 ### `event` {#message-format.event}
 
-`String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` and must not contain any asterisk (`*`) characters.
+`String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` or `#`, and must not contain any asterisk (`*`) characters.
 
 ### `scheduleExpression` {#message-format.scheduleExpression}
 
