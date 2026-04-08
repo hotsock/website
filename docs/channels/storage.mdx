@@ -50,12 +50,12 @@ Storage access is controlled per-key in [JWT claims](../connections/claims.mdx#c
 
 Five directives control what a connection can do with matching keys:
 
-| Directive | Purpose |
-|---|---|
-| [`observe`](../connections/claims.mdx#channels.storage.observe) | Receive real-time updates when the value changes, and get current values on subscribe |
-| [`get`](../connections/claims.mdx#channels.storage.get) | Read the current value on demand |
-| [`set`](../connections/claims.mdx#channels.storage.set) | Write values |
-| [`store`](../connections/claims.mdx#channels.storage.store) | TTL in seconds for entries written by this connection (defaults to forever) |
+| Directive                                                                       | Purpose                                                                                                        |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [`observe`](../connections/claims.mdx#channels.storage.observe)                 | Receive real-time updates when the value changes, and get current values on subscribe                          |
+| [`get`](../connections/claims.mdx#channels.storage.get)                         | Read the current value on demand                                                                               |
+| [`set`](../connections/claims.mdx#channels.storage.set)                         | Write values                                                                                                   |
+| [`store`](../connections/claims.mdx#channels.storage.store)                     | TTL in seconds for entries written by this connection (defaults to forever)                                    |
 | [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) | Trigger a backend [pub/sub event](../server-api/events.mdx#hotsock.channelStorageUpdated) when a value changes |
 
 :::info
@@ -137,7 +137,9 @@ Unlike message echo behavior, `hotsock.channelStorageUpdated` is always delivere
 
 By default, storage entries are retained forever. The [`store`](../connections/claims.mdx#channels.storage.store) directive sets a TTL in seconds for entries written by a connection. Server-side writes can also specify a `store` value to control TTL.
 
-When an entry expires, it is removed from DynamoDB. WebSocket observers are **not** notified of TTL expirations — expired entries simply stop appearing in `observe` deliveries on subscribe and in `get` responses. If you need to react to expirations on your backend, enable [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) — the [`hotsock.channelStorageUpdated`](../server-api/events.mdx#hotsock.channelStorageUpdated) pub/sub event includes an `expired` flag that distinguishes TTL deletions from explicit deletes.
+When an entry expires, it is removed from storage. WebSocket observers are **not** notified of TTL expirations — expired entries simply stop appearing in `observe` deliveries on subscribe and in `get` responses. This is because DynamoDB TTL cleanup is a background process that can lag up to 48 hours behind the actual expiration time, making it unsuitable as a notification trigger for a real-time service.
+
+If you need observers to be notified when a value expires, explicitly set the storage entry to `null` at the desired time — either by publishing a [scheduled message](../server-api/publish-messages.mdx#message-format.scheduleExpression) or by invoking a `hotsock.channelStorageSet` from your backend when the expiration should take effect.
 
 ## Backend events
 
