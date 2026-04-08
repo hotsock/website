@@ -458,7 +458,7 @@ The following allows sending ephemeral "is-typing" events and saved "chat" event
 
 Storage keys must not be blank, must be no more than 128 characters, and must not contain spaces, asterisks (`*`), number signs (`#`), or commas (`,`).
 
-Each object inside the storage object accepts [`emitPubSubEvent`](#channels.storage.emitPubSubEvent), [`get`](#channels.storage.get), [`observe`](#channels.storage.observe), [`set`](#channels.storage.set), and [`store`](#channels.storage.store) attributes.
+Each object inside the storage object accepts [`emitPubSubEvent`](#channels.storage.emitPubSubEvent), [`get`](#channels.storage.get), [`observe`](#channels.storage.observe), [`scheduleBefore`](#channels.storage.scheduleBefore), [`set`](#channels.storage.set), and [`store`](#channels.storage.store) attributes.
 
 The following grants observe on the `settings` storage key storage key with the `settings.` prefix and `observe`, `get`, and `set` access to a key named `status` on the "mychannel" channel.
 
@@ -570,6 +570,28 @@ When a storage value is set or updated by any client, observers receive:
 :::info
 Unlike message echo behavior, `hotsock.channelStorageUpdated` is always delivered back to the connection that set the value (when that connection observes the key). Storage updates are state notifications, not message echoes.
 :::
+
+#### `scheduleBefore` {#channels.storage.scheduleBefore}
+
+`NumericDate` (optional) - If [`set`](#channels.storage.set) is permitted for matching storage keys, the `scheduleBefore` attribute specifies the furthest out future time that this connection can schedule storage writes for. If supplied, the schedule before time must be expressed as a Unix timestamp — the number of seconds since the Unix epoch. By default, or if `scheduleBefore` is provided as `0` or any timestamp in the past, scheduled storage writes are not permitted.
+
+The following allows setting `session.*` storage keys on "mychannel" with scheduling permitted up to `2026-12-31 23:59:59 UTC` (which is `1798761599` as a Unix timestamp).
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "storage": {
+        "session.*": {
+          "set": true,
+          // highlight-next-line
+          "scheduleBefore": 1798761599
+        }
+      }
+    }
+  }
+}
+```
 
 #### `set` {#channels.storage.set}
 

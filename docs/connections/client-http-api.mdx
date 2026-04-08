@@ -328,6 +328,14 @@ Write a channel storage entry value. An active channel subscription is not requi
 
 `JSON` (optional) - The value to store. Setting `data` to `null` or `{}` clears the storage entry.
 
+#### `scheduleExpression` {#connection/channelStorageSet.scheduleExpression}
+
+`String` (optional) - Schedule the storage write for future delivery using [EventBridge Scheduler one-time `at()` syntax](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#one-time). The connection must have the [`scheduleBefore`](./claims.mdx#channels.storage.scheduleBefore) permission for the matching storage key. If specified, the storage entry will be written at the scheduled time rather than immediately.
+
+#### `scheduleExpressionTimezone` {#connection/channelStorageSet.scheduleExpressionTimezone}
+
+`String` (optional) - The timezone for the `scheduleExpression`. Must be a valid [IANA timezone identifier](https://www.iana.org/time-zones). If not specified, the schedule expression is interpreted as UTC. Has no effect if `scheduleExpression` is not provided.
+
 ### Example {#connection/channelStorageSet--example}
 
 #### Request {#connection/channelStorageSet--example-request}
