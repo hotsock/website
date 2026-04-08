@@ -69,7 +69,7 @@ Clients interact with storage using `hotsock.channelStorageSet` and `hotsock.cha
 
 Writes that don't change the value are detected automatically and skip subscriber fan-out entirely, so you don't need to worry about deduplication on the client side. Setting `data` to `null` or `{}` clears the entry.
 
-Storage entries also track the [`uid`](/docs/connections/claims/#uid) and [`umd`](/docs/connections/claims/#umd) of the last writer in `meta`, so observers always know who last set a value.
+For client-initiated writes, storage entries track the [`uid`](/docs/connections/claims/#uid) and [`umd`](/docs/connections/claims/#umd) of the last writer in `meta`, so observers know who set a value.
 
 #### Real-time sync on subscribe
 
