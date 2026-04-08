@@ -43,10 +43,8 @@ const connectTokenFn = async () => {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify(
-        initialSessionId ? { sessionId: initialSessionId } : {},
-      ),
-    },
+      body: JSON.stringify(initialSessionId ? { sessionId: initialSessionId } : {}),
+    }
   )
     .then((resp) => resp.json())
     .then((data) => {
@@ -85,14 +83,14 @@ function App() {
       new HotsockClient(wssUrl, {
         connectTokenFn: aliceConnectTokenFn,
         logLevel: "debug",
-      }),
+      })
   )
   const [bobClient] = useState(
     () =>
       new HotsockClient(wssUrl, {
         connectTokenFn: bobConnectTokenFn,
         logLevel: "debug",
-      }),
+      })
   )
 
   useEffect(() => {
@@ -136,9 +134,7 @@ function App() {
           >
             {copied ? "Copied!" : "Copy link"}
           </button>
-          <span className="text-xs text-gray-300 dark:text-gray-600">
-            &bull;
-          </span>
+          <span className="text-xs text-gray-300 dark:text-gray-600">&bull;</span>
           <button
             onClick={handleNewList}
             className="text-xs text-[#FE337E] hover:text-[#FE0B64] font-medium"
@@ -148,8 +144,14 @@ function App() {
         </div>
       </div>
       <section className="grid grid-cols-2 gap-4 w-full flex-1 min-h-0 p-4">
-        <TodoPanel hotsockClient={aliceClient} channelName={channelName} />
-        <TodoPanel hotsockClient={bobClient} channelName={channelName} />
+        <TodoPanel
+          hotsockClient={aliceClient}
+          channelName={channelName}
+        />
+        <TodoPanel
+          hotsockClient={bobClient}
+          channelName={channelName}
+        />
       </section>
     </div>
   )
@@ -205,7 +207,7 @@ function TodoPanel({ hotsockClient, channelName }) {
           {
             method: "POST",
             body: JSON.stringify(body),
-          },
+          }
         )
         const { messages } = await resp.json()
         if (messages && messages.length > 0) {
@@ -245,7 +247,7 @@ function TodoPanel({ hotsockClient, channelName }) {
       }
       setLoading(false)
     },
-    [channelName],
+    [channelName]
   )
 
   useEffect(() => {
@@ -265,7 +267,7 @@ function TodoPanel({ hotsockClient, channelName }) {
       if (connectionInfo.current) {
         loadHistory(
           connectionInfo.current.connectionId,
-          connectionInfo.current.connectionSecret,
+          connectionInfo.current.connectionSecret
         )
       } else {
         setLoading(false)

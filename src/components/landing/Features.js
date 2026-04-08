@@ -75,7 +75,7 @@ function Features() {
                     {
                       size: "sm",
                       variant: "link",
-                    },
+                    }
                   )}`}
                   href="/"
                 >

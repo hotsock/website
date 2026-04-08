@@ -110,7 +110,7 @@ function FeatureAnimation({ idx, feature }) {
     <motion.div
       className={clsx(
         "flex  items-center space-x-0 md:space-x-8",
-        idx % 2 !== 0 ? "flex-col md:flex-row" : "flex-col md:flex-row-reverse",
+        idx % 2 !== 0 ? "flex-col md:flex-row" : "flex-col md:flex-row-reverse"
       )}
       key={idx}
       initial={{ opacity: 0, x: idx % 2 === 0 ? -100 : 100 }}

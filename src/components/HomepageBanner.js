@@ -11,8 +11,8 @@ export default function HomepageBanner() {
                 New in v1.12: channel storage and live user metadata updates!
               </span>
               <span className="hidden md:inline">
-                New in v1.12: persistent channel storage with real-time sync and
-                live user metadata updates without reconnecting!
+                New in v1.12: persistent channel storage with real-time sync
+                and live user metadata updates without reconnecting!
               </span>
             </p>
           </div>

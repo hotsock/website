@@ -50,14 +50,14 @@ Storage access is controlled per-key in [JWT claims](../connections/claims.mdx#c
 
 Six directives control what a connection can do with matching keys:
 
-| Directive                                                                       | Purpose                                                                                                        |
-| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| [`observe`](../connections/claims.mdx#channels.storage.observe)                 | Receive real-time updates when the value changes, and get current values on subscribe                          |
-| [`get`](../connections/claims.mdx#channels.storage.get)                         | Read the current value on demand                                                                               |
-| [`set`](../connections/claims.mdx#channels.storage.set)                         | Write values                                                                                                   |
-| [`store`](../connections/claims.mdx#channels.storage.store)                     | TTL in seconds for entries written by this connection (defaults to forever)                                    |
-| [`scheduleBefore`](../connections/claims.mdx#channels.storage.scheduleBefore)   | The furthest future time this connection can schedule storage writes for                                       |
-| [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) | Trigger a backend [pub/sub event](../server-api/events.mdx#hotsock.channelStorageUpdated) when a value changes |
+| Directive                                                                           | Purpose                                                                                                        |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [`observe`](../connections/claims.mdx#channels.storage.observe)                     | Receive real-time updates when the value changes, and get current values on subscribe                          |
+| [`get`](../connections/claims.mdx#channels.storage.get)                             | Read the current value on demand                                                                               |
+| [`set`](../connections/claims.mdx#channels.storage.set)                             | Write values                                                                                                   |
+| [`store`](../connections/claims.mdx#channels.storage.store)                         | TTL in seconds for entries written by this connection (defaults to forever)                                     |
+| [`scheduleBefore`](../connections/claims.mdx#channels.storage.scheduleBefore)       | The furthest future time this connection can schedule storage writes for                                        |
+| [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent)     | Trigger a backend [pub/sub event](../server-api/events.mdx#hotsock.channelStorageUpdated) when a value changes |
 
 :::info
 Storage operations do not require an active channel subscription. Connect token permissions alone are sufficient for `get` and `set`.

@@ -21,7 +21,7 @@ const connectTokenFn = async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({}),
-    },
+    }
   )
     .then((resp) => resp.json())
     .then((data) => {
@@ -218,7 +218,7 @@ function App() {
 
   const markOneRead = useCallback((id) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     )
   }, [])
 
@@ -286,7 +286,9 @@ function App() {
                 key={n.id}
                 onClick={() => markOneRead(n.id)}
                 className={`w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors border-b border-gray-50 dark:border-slate-700/50 ${
-                  !n.read ? "bg-blue-50/50 dark:bg-blue-900/10" : ""
+                  !n.read
+                    ? "bg-blue-50/50 dark:bg-blue-900/10"
+                    : ""
                 }`}
               >
                 <NotificationIcon event={n.event} icon={n.icon} />

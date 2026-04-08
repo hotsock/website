@@ -27,7 +27,7 @@ function Hero() {
               className={`flex max-lg:w-full flex-row items-center group ${buttonVariants(
                 {
                   size: "lg",
-                },
+                }
               )}`}
               href="/docs/installation/initial-setup/"
             >
@@ -45,7 +45,7 @@ function Hero() {
                 {
                   size: "lg",
                   variant: "link",
-                },
+                }
               )}`}
               href="/examples/real-time-chat/"
             >

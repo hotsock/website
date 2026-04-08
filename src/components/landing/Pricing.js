@@ -88,7 +88,7 @@ function PricingTable() {
               className={`flex my-6 max-lg:w-full flex-row items-center group ${buttonVariants(
                 {
                   size: "lg",
-                },
+                }
               )}`}
               href="/docs/installation/initial-setup/"
             >
@@ -165,7 +165,7 @@ function PricingTable() {
               className={`flex my-6 max-lg:w-full flex-row items-center group ${buttonVariants(
                 {
                   size: "lg",
-                },
+                }
               )}`}
               href="/docs/installation/initial-setup/"
             >
@@ -195,7 +195,7 @@ function PricingTable() {
           className={`flex my-6 max-lg:w-full flex-row items-center group ${buttonVariants(
             {
               size: "lg",
-            },
+            }
           )}`}
           href="/docs/installation/initial-setup/"
         >
