@@ -83,6 +83,8 @@ Storage writes support [scheduling for future delivery](/docs/channels/storage/#
 
 Storage entries can also be set from the server side using the existing Lambda or HTTP publish APIs by specifying `"event": "hotsock.channelStorageSet"` with a [`key`](/docs/server-api/publish-messages/#message-format.key) field. Server-side writes bypass client permission checks, so they're always authorized. This is handy for initializing channel state from your backend before any clients connect.
 
+For a full walkthrough of permissions, TTL behavior, and all the ways to interact with storage, see the [channel storage documentation](/docs/channels/storage/).
+
 ### Live user metadata updates
 
 Previously, the only way to change a connection's `umd` was to disconnect and reconnect with a new token, or unsubscribe and resubscribe with a new subscribe token. Now clients can update their `umd` in place using `hotsock.umdUpdate`.
