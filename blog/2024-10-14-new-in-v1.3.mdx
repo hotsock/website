@@ -10,7 +10,7 @@ I'm excited to share the latest Hotsock release, which supports **storing messag
 
 {/* truncate */}
 
-### Storing messages
+### Storing messages {/* #storing-messages */}
 
 In the just-released Hotsock v1.3, you can now choose to store published messages on a per-message basis and your connected clients can retrieve the history of messages on the channels where they are subscribed.
 
@@ -52,11 +52,11 @@ Here are example claims for the chat app example above, where typing indicators 
 }
 ```
 
-### Query channel message history
+### Query channel message history {/* #query-channel-message-history */}
 
 Using the new [client HTTP API](/docs/connections/client-http-api/), you can make HTTP requests from your client applications to fetch message history of stored messages, authorized by using the `connectionId` and `connectionSecret` returned in the `hotsock.connected` WebSocket message received when a connection is established.
 
-#### Request
+#### Request {/* #request */}
 
 ```javascript
 fetch(
@@ -68,7 +68,7 @@ fetch(
 )
 ```
 
-#### Response
+#### Response {/* #response */}
 
 ```json
 {
@@ -89,7 +89,7 @@ fetch(
 
 Additional details and options for this endpoint are available [in the docs](/docs/connections/client-http-api/#connection/listMessages).
 
-### Expand visibility with the `historyStart` claim
+### Expand visibility with the `historyStart` claim {/* #expand-visibility-with-the-historystart-claim */}
 
 By default, connections can view message history **for channels where they are currently subscribed, but are limited to viewing messages that were published and stored during the lifetime of the current WebSocket connection's subscription.**
 
@@ -121,11 +121,11 @@ The following grants authorization to retrieve all stored messages since July 1,
 
 With this claim in force, this client can obtain the history of the channel back to July 1, 2024, but cannot view anything before that.
 
-### Publish client messages with HTTP
+### Publish client messages with HTTP {/* #publish-client-messages-with-http */}
 
 In addition to listing messages via the HTTP API, **you can also publish messages to subscribed channels with a standard `POST` request**. HTTP-based client message publishing uses the same [`publish`](/docs/connections/claims/#channels.messages.publish) claim as WebSocket-based publishing, but adds the full request/response cycle of an HTTP request and making it easier to keep track of success/failure of message delivery.
 
-#### Request
+#### Request {/* #request-1 */}
 
 ```javascript
 fetch(
@@ -137,7 +137,7 @@ fetch(
 )
 ```
 
-#### Response
+#### Response {/* #response-1 */}
 
 ```json
 {
@@ -148,6 +148,6 @@ fetch(
 
 Additional details and options for this endpoint are available [in the docs](/docs/connections/client-http-api/#connection/publishMessage).
 
-### Wrapping up
+### Wrapping up {/* #wrapping-up */}
 
 Existing installations with auto-update enabled are already running v1.3 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time. A [full changelog](/docs/installation/changelog/#v1.3.0) is available with the full list of changes included in this release as well.

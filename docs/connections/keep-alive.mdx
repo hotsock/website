@@ -9,7 +9,7 @@ AWS API Gateway WebSockets has [2 built-in timeouts](https://docs.aws.amazon.com
 
 _Please open tickets with AWS Support requesting that these limits be configurable. It's understandable that connections can't remain open forever, but a hard limit of 8 hours or longer would be swell. #awswishlist_
 
-## Receive `hotsock.keepAlive`
+## Receive `hotsock.keepAlive` {/* #receive-hotsockkeepalive */}
 
 To keep connections alive beyond the 10-minute timeout in cases where message sending may be infrequent, set the [`keepAlive` claim](./claims.mdx#keepAlive) to `true` and Hotsock will automatically send a `hotsock.keepAlive` message to the connection every 9 minutes and 30 seconds (or so).
 
@@ -37,7 +37,7 @@ wscat -c   0.20s user 0.07s system 0% cpu 2:00:00.46 total
 
 Clients should not reply to server-initiated `hotsock.keepAlive` events.
 
-<!-- ## Send `hotsock.heartbeat`
+{/* ## Send `hotsock.heartbeat`
 
 Like other TCP-based protocols, WebSockets will happily assume that connections are still alive until proven otherwise or until they are explicitly closed. There are many circumstances, however, where the connection is dead but one side doesn't know it yet. Unexpected network disconnects and computers going to sleep are some examples of where this can happen.
 
@@ -54,9 +54,9 @@ The backend records receipt of this message, but does not send a reply. Avoid ov
 >
 ```
 
-If the server does not receive a heartbeat message from the client within the timeframe specified by the `clientHeartbeatInterval` claim, that connection is forcefully closed by the server.-->
+If the server does not receive a heartbeat message from the client within the timeframe specified by the `clientHeartbeatInterval` claim, that connection is forcefully closed by the server. */}
 
-## `hotsock.ping` and `hotsock.pong`
+## `hotsock.ping` and `hotsock.pong` {/* #hotsockping-and-hotsockpong */}
 
 Clients can send a `hotsock.ping` event to test whether or not the connection is still alive. If the connection is still alive, `hotsock.pong` event will be returned.
 

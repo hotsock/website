@@ -8,7 +8,7 @@ By default, events are not published. If you know nothing is listening, there's 
 **The Hotsock event bus and SNS topics must be considered read-only.** They should only ever be used for subscribing and consuming events. Do not publish custom events or attempt to replay past events directly into the Hotsock pub/sub topic or event bus. Bad things will happen. Always use the public APIs for writing/publishing to Hotsock.
 :::
 
-## Event format
+## Event format {/* #event-format */}
 
 Published events use the same shape for both EventBridge and SNS, where the payload is JSON on the `detail` object in [EventBridge events](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events-structure.html) and a JSON string in the `Message` attribute for [SNS messages](https://docs.aws.amazon.com/sns/latest/dg/sns-message-and-json-formats.html#http-notification-json). Both support filtering subscribed events based on content of this message body. SNS also includes `source`, `type`, `dataType`, and the keys/values in `metadata` (except for `hotsockVersion`) as `MessageAttributes` to give flexibility in your [SNS filter policies](https://docs.aws.amazon.com/sns/latest/dg/sns-subscription-filter-policies.html).
 
@@ -33,7 +33,7 @@ Published events use the same shape for both EventBridge and SNS, where the payl
 }
 ```
 
-### `source`
+### `source` {/* #source */}
 
 This indicates where the event originated and is set to "hotsock.v1" for all events.
 
@@ -43,29 +43,29 @@ Events intended for consumption by your applications (the events listed below) s
 Hotsock-internal events are published to a separate SNS topic. Nothing stops you from subscribing to Hotsock-internal events on that topic. Just know that they're not guaranteed to be API-stable across installation versions.
 :::
 
-### `type`
+### `type` {/* #type */}
 
 `String` - This is the type of the event, indicating what action was taken that triggered the event. `hotsock.connected`, `hotsock.disconnected`, `hotsock.subscribed`, etc.
 
-### `metadata`
+### `metadata` {/* #metadata */}
 
 `Object` - Metadata is an attribute that contains additional information about the event, data that may or may not also be contained in `data`. For example, any event that has anything to do with a channel has a `channel` property set in metadata. See each event type below to know which metadata attributes are included, if any. All metadata items have `String` keys and `String` values.
 
-### `data`
+### `data` {/* #data */}
 
 `Object` - Data is the event payload. Items in this object are detailed below in the listing of event types. All items have `String` keys and varying value types.
 
-### `dataType`
+### `dataType` {/* #datatype */}
 
 `String` - This attribute indicates the kind of object that will be found in the `data` attribute. For example, `connection` objects have a different shape than `subscription` objects, so this hints at the expected object shape.
 
-## Compatibility
+## Compatibility {/* #compatibility */}
 
 New event types may be added to the "hotsock.v1" source namespace in minor version updates (1.x). Configure SNS filter policies or EventBridge rules for specific events to avoid unexpectedly receiving new events.
 
 Additionally, new attributes may be added to existing event `metadata` and `data` objects for existing types in minor version updates. Any reasonable JSON parser should have no trouble with this.
 
-## Enable/disable EventBridge or SNS events {#eventbridge-sns-enable-disable}
+## Enable/disable EventBridge or SNS events {/* #eventbridge-sns-enable-disable */}
 
 1. Sign into your AWS account as a principal with administrative permissions and open the CloudFormation console. Find the root Hotsock stack and click on it. There are many Hotsock stacks marked as "nested", you'll want to ignore those and find the root stack that is _not_ marked as nested.
 1. In the upper-right, click the "Update" button. Conveniently, if you accidentally try and update a nested stack, it will suggest that you instead go to the root stack.
@@ -77,7 +77,7 @@ Additionally, new attributes may be added to existing event `metadata` and `data
 
 The setting is applied immediately and messages begin publishing as soon as the stack update completes.
 
-## EventBridge
+## EventBridge {/* #eventbridge */}
 
 If enabled, all events are published to a Hotsock-specific event bus in your account. The Arn of the event bus is available in your installation's [stack outputs](../installation/initial-setup.mdx#PubSubBusArn).
 
@@ -112,9 +112,9 @@ If enabled, all events are published to a Hotsock-specific event bus in your acc
 }
 ```
 
-### Configure an EventBridge rule
+### Configure an EventBridge rule {/* #configure-an-eventbridge-rule */}
 
-## SNS
+## SNS {/* #sns */}
 
 If enabled, all messages are published to a Hotsock-specific SNS topic in your account. The Arn of the topic is available in your installation's [stack outputs](../installation/initial-setup.mdx#PubSubTopicArn).
 
@@ -139,17 +139,17 @@ The following is a sample SNS message for a newly established connection. Most o
 }
 ```
 
-### Configure an SNS subscription
+### Configure an SNS subscription {/* #configure-an-sns-subscription */}
 
-## `hotsock.connected` {#hotsock.connected}
+## `hotsock.connected` {/* #hotsock.connected */}
 
 This event is sent whenever a client successfully connects to the WebSocket.
 
-### `type` {#hotsock.connected--type}
+### `type` {/* #hotsock.connected--type */}
 
 This is always `hotsock.connected`.
 
-### `metadata` {#hotsock.connected--metadata}
+### `metadata` {/* #hotsock.connected--metadata */}
 
 - `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
 
@@ -159,7 +159,7 @@ This is always `hotsock.connected`.
 }
 ```
 
-### `data` {#hotsock.connected--data}
+### `data` {/* #hotsock.connected--data */}
 
 - `id` (String): The identifier for this connection. This identifier is guaranteed to be unique across this installation while this connection is active and for an unknown time period afterward, but is not guaranteed to be unique forever. It's possible that sometime in the distant future, a connection ID could be reused.
 - `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
@@ -183,19 +183,19 @@ This is always `hotsock.connected`.
 }
 ```
 
-### `dataType` {#hotsock.connected--dataType}
+### `dataType` {/* #hotsock.connected--dataType */}
 
 The data object type for this event is `connection`.
 
-## `hotsock.disconnected` {#hotsock.disconnected}
+## `hotsock.disconnected` {/* #hotsock.disconnected */}
 
 This event is sent whenever a connected client disconnects from the WebSocket.
 
-### `type` {#hotsock.disconnected--type}
+### `type` {/* #hotsock.disconnected--type */}
 
 This is always `hotsock.disconnected`.
 
-### `metadata` {#hotsock.disconnected--metadata}
+### `metadata` {/* #hotsock.disconnected--metadata */}
 
 - `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
 
@@ -205,7 +205,7 @@ This is always `hotsock.disconnected`.
 }
 ```
 
-### `data` {#hotsock.disconnected--data}
+### `data` {/* #hotsock.disconnected--data */}
 
 - `id` (String): The identifier for this connection. This identifier is guaranteed to be unique across this installation while this connection is active and for an unknown time period afterward, but is not guaranteed to be unique forever. It's possible that sometime in the distant future, a connection ID could be reused.
 - `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
@@ -229,19 +229,19 @@ This is always `hotsock.disconnected`.
 }
 ```
 
-### `dataType` {#hotsock.disconnected--dataType}
+### `dataType` {/* #hotsock.disconnected--dataType */}
 
 The data object type for this event is `connection`.
 
-## `hotsock.channelUpdated` {#hotsock.channelUpdated}
+## `hotsock.channelUpdated` {/* #hotsock.channelUpdated */}
 
 This event is sent whenever metadata about a channel changes, such as the number of members in the channel.
 
-### `type` {#hotsock.channelUpdated--type}
+### `type` {/* #hotsock.channelUpdated--type */}
 
 This is always `hotsock.channelUpdated`.
 
-### `metadata` {#hotsock.channelUpdated--metadata}
+### `metadata` {/* #hotsock.channelUpdated--metadata */}
 
 - `channel`: The name of the channel that was updated.
 - `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
@@ -253,7 +253,7 @@ This is always `hotsock.channelUpdated`.
 }
 ```
 
-### `data` {#hotsock.channelUpdated--data}
+### `data` {/* #hotsock.channelUpdated--data */}
 
 - `name` (String): The name of the channel.
 
@@ -264,19 +264,19 @@ This is always `hotsock.channelUpdated`.
 }
 ```
 
-### `dataType` {#hotsock.channelUpdated--dataType}
+### `dataType` {/* #hotsock.channelUpdated--dataType */}
 
 The data object type for this event is `channel`.
 
-## `hotsock.messagePublished` {#hotsock.messagePublished}
+## `hotsock.messagePublished` {/* #hotsock.messagePublished */}
 
 This event is sent whenever a message is published to Hotsock with `emitPubSubEvent` enabled. For server-initiated messages, set [`emitPubSubEvent`](./publish-messages.mdx#message-format.emitPubSubEvent) when publishing. For client-initiated messages, set the [`emitPubSubEvent` claim](../connections/claims.mdx#channels.messages.emitPubSubEvent) to `true` for desired channel events.
 
-### `type` {#hotsock.messagePublished--type}
+### `type` {/* #hotsock.messagePublished--type */}
 
 This is always `hotsock.messagePublished`.
 
-### `metadata` {#hotsock.messagePublished--metadata}
+### `metadata` {/* #hotsock.messagePublished--metadata */}
 
 - `channel` (String): The name of the channel where this message was published to.
 - `connectionId` (String): The identifier for the connection that subscribed to the channel. This field is only present for messages that were published by a WebSocket client.
@@ -300,11 +300,11 @@ This is always `hotsock.messagePublished`.
 }
 ```
 
-### `dataType` {#hotsock.messagePublished--dataType}
+### `dataType` {/* #hotsock.messagePublished--dataType */}
 
 The data object type for this event is `message`.
 
-### `data` {#hotsock.messagePublished--data}
+### `data` {/* #hotsock.messagePublished--data */}
 
 - `channel` (String): The name of the channel where this message was published to.
 - `event` (String): The name of the event published.
@@ -321,15 +321,15 @@ The data object type for this event is `message`.
 }
 ```
 
-## `hotsock.subscribed` {#hotsock.subscribed}
+## `hotsock.subscribed` {/* #hotsock.subscribed */}
 
 This event is sent whenever someone subscribes to a channel.
 
-### `type` {#hotsock.subscribed--type}
+### `type` {/* #hotsock.subscribed--type */}
 
 This is always `hotsock.subscribed`.
 
-### `metadata` {#hotsock.subscribed--metadata}
+### `metadata` {/* #hotsock.subscribed--metadata */}
 
 - `channel`: The name of the channel that was subscribed to.
 - `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
@@ -341,11 +341,11 @@ This is always `hotsock.subscribed`.
 }
 ```
 
-### `dataType` {#hotsock.subscribed--dataType}
+### `dataType` {/* #hotsock.subscribed--dataType */}
 
 The data object type for this event is `subscription`.
 
-### `data` {#hotsock.subscribed--data}
+### `data` {/* #hotsock.subscribed--data */}
 
 - `channel` (String): The name of the channel that was subscribed to.
 - `connectionId` (String): The identifier for the connection that subscribed to the channel.
@@ -361,15 +361,15 @@ The data object type for this event is `subscription`.
 }
 ```
 
-## `hotsock.unsubscribed` {#hotsock.unsubscribed}
+## `hotsock.unsubscribed` {/* #hotsock.unsubscribed */}
 
 This event is sent whenever someone unsubscribes from a channel.
 
-### `type` {#hotsock.unsubscribed--type}
+### `type` {/* #hotsock.unsubscribed--type */}
 
 This is always `hotsock.unsubscribed`.
 
-### `metadata` {#hotsock.unsubscribed--metadata}
+### `metadata` {/* #hotsock.unsubscribed--metadata */}
 
 - `channel`: The name of the channel that was unsubscribed from.
 - `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
@@ -381,7 +381,7 @@ This is always `hotsock.unsubscribed`.
 }
 ```
 
-### `data` {#hotsock.unsubscribed--data}
+### `data` {/* #hotsock.unsubscribed--data */}
 
 - `channel` (String): The name of the channel that was unsubscribed from.
 - `connectionId` (String): The identifier for the connection that subscribed to the channel.
@@ -397,19 +397,19 @@ This is always `hotsock.unsubscribed`.
 }
 ```
 
-### `dataType` {#hotsock.unsubscribed--dataType}
+### `dataType` {/* #hotsock.unsubscribed--dataType */}
 
 The data object type for this event is `subscription`.
 
-## `hotsock.connectionUpdated` {#hotsock.connectionUpdated}
+## `hotsock.connectionUpdated` {/* #hotsock.connectionUpdated */}
 
 This event is sent whenever a connection's user metadata changes via a connection-level [`umdUpdate`](../connections/claims.mdx#umdUpdate). This event is only emitted when `UserMetadata` actually changes, not on heartbeat-only updates.
 
-### `type` {#hotsock.connectionUpdated--type}
+### `type` {/* #hotsock.connectionUpdated--type */}
 
 This is always `hotsock.connectionUpdated`.
 
-### `metadata` {#hotsock.connectionUpdated--metadata}
+### `metadata` {/* #hotsock.connectionUpdated--metadata */}
 
 - `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
 
@@ -419,7 +419,7 @@ This is always `hotsock.connectionUpdated`.
 }
 ```
 
-### `data` {#hotsock.connectionUpdated--data}
+### `data` {/* #hotsock.connectionUpdated--data */}
 
 - `id` (String): The identifier for this connection.
 - `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
@@ -443,21 +443,21 @@ This is always `hotsock.connectionUpdated`.
 }
 ```
 
-### `dataType` {#hotsock.connectionUpdated--dataType}
+### `dataType` {/* #hotsock.connectionUpdated--dataType */}
 
 The data object type for this event is `connection`.
 
-## `hotsock.channelStorageUpdated` {#hotsock.channelStorageUpdated}
+## `hotsock.channelStorageUpdated` {/* #hotsock.channelStorageUpdated */}
 
 This event is sent whenever a [channel storage](../connections/claims.mdx#channels.storage) entry value changes and the [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) storage key directive is enabled. This event is only emitted when the stored value actually changes — writes that set the same value are suppressed. Clearing a storage entry (setting `data` to `null` or `{}`) and TTL-based expiration also trigger this event.
 
 For client-initiated storage writes, the `emitPubSubEvent` directive must be set to `true` on the matching storage key pattern in the token claims. For server-initiated writes (Lambda or HTTP API), set `emitPubSubEvent` to `true` in the publish payload.
 
-### `type` {#hotsock.channelStorageUpdated--type}
+### `type` {/* #hotsock.channelStorageUpdated--type */}
 
 This is always `hotsock.channelStorageUpdated`.
 
-### `metadata` {#hotsock.channelStorageUpdated--metadata}
+### `metadata` {/* #hotsock.channelStorageUpdated--metadata */}
 
 - `channel` (String): The name of the channel where the storage entry was updated.
 - `connectionId` (String): The identifier for the connection that updated the storage entry. This field is only present for updates initiated by a WebSocket client or Client HTTP API.
@@ -481,7 +481,7 @@ SNS filter attributes are limited to `channel`, `key`, and `trigger`.
 }
 ```
 
-### `data` {#hotsock.channelStorageUpdated--data}
+### `data` {/* #hotsock.channelStorageUpdated--data */}
 
 - `channel` (String): The name of the channel where the storage entry was updated.
 - `key` (String): The storage key that was updated.
@@ -503,6 +503,6 @@ SNS filter attributes are limited to `channel`, `key`, and `trigger`.
 }
 ```
 
-### `dataType` {#hotsock.channelStorageUpdated--dataType}
+### `dataType` {/* #hotsock.channelStorageUpdated--dataType */}
 
 The data object type for this event is `channelStorage`.

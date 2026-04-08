@@ -10,7 +10,7 @@ Channels are how you organize and control access to real-time data in Hotsock. C
 
 There is no limit to the number of channels your application can use, and channels do not need to be declared ahead of time. When a message is published to a channel, every currently subscribed client receives a copy.
 
-## Naming
+## Naming {/* #naming */}
 
 Channel names can be any string between 1 and 256 characters. The following characters are **not allowed** in channel names:
 
@@ -21,7 +21,7 @@ Channel names can be any string between 1 and 256 characters. The following char
 
 In JWT claims, channel keys support wildcards (`*`) and [regex patterns](../connections/claims.mdx#channels--regex) (`#regex:`) for flexible permission matching across multiple channels.
 
-## Events
+## Events {/* #events */}
 
 Every message published to a channel must include an **event name**. Events let you group different types of messages on the same channel so your client code can handle them separately.
 
@@ -53,7 +53,7 @@ All events published to a channel are delivered to every subscriber, regardless 
 Use **channels** to filter what data a client receives. Use **events** to categorize different message types within the same context.
 :::
 
-## Channel Types
+## Channel Types {/* #channel-types */}
 
 | Type                       | Use case                                                                            | Member awareness |
 | -------------------------- | ----------------------------------------------------------------------------------- | ---------------- |

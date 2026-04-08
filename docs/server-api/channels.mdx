@@ -6,7 +6,7 @@ sidebar_label: Channels
 
 The Channels API provides server-side read access to channel metadata and storage entries. These endpoints are authenticated with the same API keys used for [HTTP message publishing](./publish-messages.mdx#publish-with-http-url).
 
-## Authentication
+## Authentication {/* #authentication */}
 
 All requests **must include an `Authorization` header** with a Bearer token set to one of your installation's API keys, available at [HttpApiSecretKey1ConsoleUrl](../installation/initial-setup.mdx#HttpApiSecretKey1ConsoleUrl) or [HttpApiSecretKey2ConsoleUrl](../installation/initial-setup.mdx#HttpApiSecretKey2ConsoleUrl).
 
@@ -16,20 +16,20 @@ Your base URL is available in your installation's [HttpApiUrl](../installation/i
 Authorization: Bearer YOUR_API_KEY
 ```
 
-## `GET /channels/{name}` {#get-channel}
+## `GET /channels/{name}` {/* #get-channel */}
 
 Retrieve metadata for a channel, including the current subscription count.
 
-### Example {#get-channel--example}
+### Example {/* #get-channel--example */}
 
-#### Request {#get-channel--example-request}
+#### Request {/* #get-channel--example-request */}
 
 ```bash
 curl "https://r6zcm2.lambda-url.us-east-1.on.aws/channels/my-channel" \
   -H 'Authorization: Bearer JAnzQFqRXsBgV0kKvd2DYhJMk77IhL8j9J2sLi5b'
 ```
 
-#### Response {#get-channel--example-response}
+#### Response {/* #get-channel--example-response */}
 
 ```json
 {
@@ -58,23 +58,23 @@ For presence channels, the response includes a deduplicated `members` array:
 
 If the channel has no active subscriptions or has never been used, `subscriptionsCount` is `0`. For presence channels with no members, `members` is an empty array.
 
-## `GET /channels/{name}/storage` {#get-channel-storage}
+## `GET /channels/{name}/storage` {/* #get-channel-storage */}
 
 List storage entries for a channel. Returns a paginated list of all storage entries, or specific entries when keys are requested.
 
-### Query parameters {#get-channel-storage--params}
+### Query parameters {/* #get-channel-storage--params */}
 
-#### `after` {#get-channel-storage.after}
+#### `after` {/* #get-channel-storage.after */}
 
 `String` (optional) - For pagination, the storage key to start after. Returns entries with keys that sort after this value.
 
-#### `keys` {#get-channel-storage.keys}
+#### `keys` {/* #get-channel-storage.keys */}
 
 `String` (optional) - Comma-separated list of specific storage keys to retrieve. Maximum of 100 keys per request.
 
-### Example {#get-channel-storage--example}
+### Example {/* #get-channel-storage--example */}
 
-#### Request {#get-channel-storage--example-request}
+#### Request {/* #get-channel-storage--example-request */}
 
 List all storage entries for a channel:
 
@@ -90,7 +90,7 @@ curl "https://r6zcm2.lambda-url.us-east-1.on.aws/channels/my-channel/storage?key
   -H 'Authorization: Bearer JAnzQFqRXsBgV0kKvd2DYhJMk77IhL8j9J2sLi5b'
 ```
 
-#### Response {#get-channel-storage--example-response}
+#### Response {/* #get-channel-storage--example-response */}
 
 ```json
 {

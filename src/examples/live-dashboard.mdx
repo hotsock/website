@@ -8,11 +8,11 @@ A metrics dashboard that receives real-time updates from the server. The client 
 
 Get the code for this example and run it yourself [from the GitHub repository](https://github.com/hotsock/website/tree/main/examples/live-dashboard).
 
-## How it works
+## How it works {/* #how-it-works */}
 
 This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect a viewer to a channel that receives server-published metrics in real time. Below is a walkthrough of each piece.
 
-### Authentication
+### Authentication {/* #authentication */}
 
 The viewer needs a [connect token](/docs/connections/authentication/) with subscribe-only permission — no message publishing rights. This is a purely receive-only pattern:
 
@@ -31,7 +31,7 @@ The viewer needs a [connect token](/docs/connections/authentication/) with subsc
 
 Notice there's no `messages` claim at all. This connection can only receive messages published by the server, never send any.
 
-### Server-published messages
+### Server-published messages {/* #server-published-messages */}
 
 Unlike the chat and to-do examples where clients publish messages, this dashboard receives data pushed from the server via the [Publish Messages](/docs/server-api/publish-messages/) API. The server publishes three different event types to the same channel:
 
@@ -39,7 +39,7 @@ Unlike the chat and to-do examples where clients publish messages, this dashboar
 - **`chart-data`** — A time-series data point for the chart
 - **`alert`** — System alerts with severity levels
 
-### Subscribing and binding multiple events
+### Subscribing and binding multiple events {/* #subscribing-and-binding-multiple-events */}
 
 After connecting, the client subscribes to the dashboard channel and binds separate handlers for each event type:
 
@@ -69,7 +69,7 @@ channel.bind("alert", (message) => {
 
 Each event type updates a different piece of state, allowing the UI to react independently to stats, chart data, and alerts.
 
-### Rendering real-time data
+### Rendering real-time data {/* #rendering-real-time-data */}
 
 Stat cards compare the current value to the previous value to show trend arrows. Conditional coloring highlights when metrics cross thresholds:
 
@@ -96,7 +96,7 @@ The chart accumulates the last 20 data points and renders proportional bars usin
 }
 ```
 
-### Cleanup
+### Cleanup {/* #cleanup */}
 
 When the component unmounts, terminate the client to close the WebSocket connection:
 
@@ -108,7 +108,7 @@ useEffect(() => {
 }, [])
 ```
 
-## Putting it all together
+## Putting it all together {/* #putting-it-all-together */}
 
 The full flow is: the backend issues a subscribe-only token, the client connects and listens for multiple event types on a single channel, and the server pushes periodic updates. This pattern is ideal for dashboards, live feeds, status pages, or any scenario where data flows one-way from server to client.
 

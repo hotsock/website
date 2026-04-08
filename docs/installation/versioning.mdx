@@ -6,7 +6,7 @@ sidebar_label: Compatibility & Versioning
 
 **Stability is paramount.** You can have the following expectations when evaluating Hotsock and planning for the future.
 
-## Expectations
+## Expectations {/* #expectations */}
 
 - Hotsock is built on "forever APIs" and services provided by AWS. If history is any indication, the APIs of the underlying AWS services do not change. Tangental service and permissions deprecations do happen from time to time, and we'll be in contact with licensed account owners if API deprecations affect Hotsock installations.
 - There are no long-running processes that ever need to be restarted and there are no backing services that require scheduled maintenance. In the case of AWS issues and outages, Hotsock installations are self-healing &mdash; service will be fully restored upon restoration of the backing AWS service(s).
@@ -18,7 +18,7 @@ sidebar_label: Compatibility & Versioning
 - AWS Lambda runtime changes and other AWS service configuration updates may be included in minor version updates, as long as the changes do not cause resources to be replaced or break existing behavior.
 - Log entries written to CloudWatch Logs are not considered public API and their keys/values or shape may change between minor versions. If you find yourself attaching metric filters or getting fancy with logs insights, get in touch &mdash; I'd love to hear the use case.
 
-## Determine your current version
+## Determine your current version {/* #determine-your-current-version */}
 
 All installations include a Lambda function that you can run manually to return current version and license information. This is particularly useful when [contacting support](mailto:support@hotsock.io) to help with debugging.
 

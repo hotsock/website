@@ -8,7 +8,7 @@ Open the URL, and you'll see your web console.
 
 ![Open web console](../../static/img/screenshots/web-console-initial.png)
 
-## Connect to the WebSocket
+## Connect to the WebSocket {/* #connect-to-the-websocket */}
 
 Using the JWT issuer configured for your installation, issue yourself a valid token with the [`connect` scope](../connections/claims.mdx#scope).
 
@@ -16,7 +16,7 @@ Paste the token in the input on top. The token is parsed so you can see what cla
 
 ![Web console connected](../../static/img/screenshots/web-console-connected.png)
 
-## Subscribe
+## Subscribe {/* #subscribe */}
 
 The permissions in the example token allow subscribing to `my-channel`.
 
@@ -28,7 +28,7 @@ You'll see an outgoing WebSocket message that requests the subscription followed
 
 You can [publish messages](./publish-messages.mdx) from your backend to the `my-channel` channel and you'll see a copy of those messages as they're received in real-time.
 
-## Send message
+## Send message {/* #send-message */}
 
 The permissions in the example token allow publishing messages in `my-channel` that have the event `my-event`.
 
@@ -38,6 +38,6 @@ You'll see an outgoing WebSocket message that sends the message on the channel. 
 
 ![Web console send message](../../static/img/screenshots/web-console-send-message.png)
 
-## Other actions
+## Other actions {/* #other-actions */}
 
 You can also use the web console to unsubscribe from channels, send pings and heartbeats, test disconnect/reconnect, get/set channel storage, and test sending your own raw messages on the WebSocket. Use the dropdown menu at the bottom to select the action you need.

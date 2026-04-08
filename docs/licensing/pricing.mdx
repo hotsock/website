@@ -7,7 +7,7 @@ description: Hotsock pricing plans. Start with 1 million free messages per month
 
 Start for free, upgrade to a license for unlimited usage!
 
-## Free Tier
+## Free Tier {/* #free-tier */}
 
 New installations are granted Free Tier access forever, which includes all features but has the following limits:
 
@@ -18,7 +18,7 @@ New installations are granted Free Tier access forever, which includes all featu
 
 To ensure your installations operate uninterrupted and scale to unlimited messages across any number of AWS accounts and regions, upgrade to our Paid Tier.
 
-## Paid Tier
+## Paid Tier {/* #paid-tier */}
 
 The Paid Tier provides unlimited messages with pricing per AWS account. Choose monthly or annual billing.
 
@@ -216,29 +216,29 @@ All plans support an unlimited number of installations. This allows configuring 
 All pricing information listed is for Hotsock licensing only. **It does not include any AWS service costs for running your installations.** AWS pricing can be found on each AWS service's pricing page.
 :::
 
-## Standard Support
+## Standard Support {/* #standard-support */}
 
 Standard support provides quick, business hours email support where we can provide general guidance for issues. General guidance will help you work through most issues, but does not get into the nitty gritty of your specific installation.
 
-## Premium Support
+## Premium Support {/* #premium-support */}
 
 Premium support provides quick, business hours email support where we can provide contextual use-case and application-specific guidance for your installations. Premium support also includes us being able to [assume a `HotsockSupportRole` IAM role in your account](./support.mdx#assume-role-in-your-account) if necessary for us to gain further insight into your issues.
 
-## FAQs
+## FAQs {/* #faqs */}
 
-### How are messages counted?
+### How are messages counted? {/* #how-are-messages-counted */}
 
 We read the `AWS/ApiGateway/MessageCount` [CloudWatch metric](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/working_with_metrics.html) specific to the WebSocket API created by your installation(s) to calculate usage from your AWS account(s). This is done by periodically assuming the `HotsockLicensingRole` that is configured during installation. Licensing can fail if our permission to access usage metrics is revoked, which can interrupt service for your installations. If we have an email address on file for your license, we'll notify you of any licensing issues.
 
 For Free Tier installations, once you reach 1 million messages in a calendar month, the installation will stop functioning until the next calendar month begins. For Paid Tier installations, there is no message limit.
 
-### What happens if I go over the Free Tier message limit?
+### What happens if I go over the Free Tier message limit? {/* #what-happens-if-i-go-over-the-free-tier-message-limit */}
 
 Free Tier installations stop functioning once they use 1 million messages in a calendar month. Service is restored at the beginning of the next calendar month. [Upgrade to Paid Tier](./paid-tier-upgrade.mdx) to remove this hard limit and gain unlimited messaging.
 
 Paid Tier installations have no message limits and will never be interrupted due to message volume.
 
-### Can I distribute Hotsock to my customers?
+### Can I distribute Hotsock to my customers? {/* #can-i-distribute-hotsock-to-my-customers */}
 
 Each Paid Tier license covers one AWS account. You can configure Hotsock installations in your customers' AWS accounts or in AWS accounts you maintain on behalf of your customers as long as **each installation in your customer accounts is only used as part of your product or application. You may not resell Hotsock as a standalone service.** Each AWS account where Hotsock is installed requires its own license ($99/month or $999/year per AWS account).
 

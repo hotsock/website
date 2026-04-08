@@ -8,9 +8,9 @@ Hotsock is designed to scale infinitely. Whether you have 10, 100K, or 1M simult
 
 You probably don't need to consider any of this until you're hitting tens of thousands of concurrent connections or hundreds of millions of messages per month.
 
-## DynamoDB
+## DynamoDB {/* #dynamodb */}
 
-### DynamoDB Provisioned Billing
+### DynamoDB Provisioned Billing {/* #dynamodb-provisioned-billing */}
 
 Hotsock uses [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html) for its database. By default, DynamoDB's billing settings are configured in [on-demand mode](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html#HowItWorks.OnDemand) which bills entirely based on usage and automatically scales the underlying hardware to accommodate any scale.
 
@@ -20,9 +20,9 @@ As Hotsock database table usage increases, it typically also looks less spikey. 
 Enabling provisioned mode can be a meaningful cost savings measure at scale, but make sure you provision enough capacity to avoid request throttling!
 :::
 
-## Lambda
+## Lambda {/* #lambda */}
 
-### Lambda Account Concurrency
+### Lambda Account Concurrency {/* #lambda-account-concurrency */}
 
 AWS accounts default to allowing 1,000 concurrent executions in each region. As your Hotsock usage increases, the overall quantity and concurrency of Lambda invocations in your account will increase as well. [Learn more about Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html). You can and should monitor or set an alarm on the `AWS/Lambda - ConcurrentExecutions` CloudWatch metric to get a warning ahead of needing your account-level limit increased.
 
@@ -32,15 +32,15 @@ Brand new AWS accounts have a lower, undocumented concurrency limit that is auto
 Like most account-level limits, AWS is willing to raise this limit upon request, but don't wait to request a limit increase until after you've hit the ceiling - approval can take a few days!
 :::
 
-### Lambda Provisioned Concurrency
+### Lambda Provisioned Concurrency {/* #lambda-provisioned-concurrency */}
 
 [Lambda Provisioned Concurrency](https://docs.aws.amazon.com/lambda/latest/dg/provisioned-concurrency.html) is not currently supported by Hotsock. Provisioned Concurrency requires the use of Lambda function versions, which unfortunately have stability/consistency issues when configuring with CloudFormation.
 
 Thankfully, Hotsock functions do not suffer from notable cold-start performance issues, so you'd likely see little benefit to enabling Provisioned Concurrency for that purpose anyway.
 
-## API Gateway
+## API Gateway {/* #api-gateway */}
 
-### Requests Per Second
+### Requests Per Second {/* #requests-per-second */}
 
 AWS accounts have a [default quota](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#apigateway-account-level-limits-table) of 10,000 requests per second in each region **across all API Gateway APIs in the region.**
 
@@ -50,15 +50,15 @@ This quota is typically only hit unexpectedly when sharing a single AWS account 
 AWS Support is hesitant to raise this quota upon request. You'll need to provide detailed use case information to get it raised and the back-and-forth can take a few days. Get it raised _before_ you need it!
 :::
 
-### New Connections Per Second
+### New Connections Per Second {/* #new-connections-per-second */}
 
 The AWS API Gateway service has no limit on concurrent connections, but does have a [soft limit](https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#apigateway-execution-service-websocket-limits-table) of 500 for the number of new WebSocket connections that can be initiated per second.
 
 There's a `AWS/ApiGateway - ConnectCount` CloudWatch metric you can follow, but similar to the requests per second quota, per-second granularity is not available so hitting this quota can be tough to diagnose.
 
-## SQS
+## SQS {/* #sqs */}
 
-### SQS Requests Per Second
+### SQS Requests Per Second {/* #sqs-requests-per-second */}
 
 Hotsock uses a [high-throughput FIFO queue](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/high-throughput-fifo.html) for all incoming messages before they are processed by Lambda and published to one or more WebSocket connections.
 
@@ -66,7 +66,7 @@ This queue can handle up to 70,000 incoming messages per second in the US East (
 
 If you're nearing or hitting this limit, it may be time to consider splitting your application tenancy across multiple installations.
 
-## Multiple Installations
+## Multiple Installations {/* #multiple-installations */}
 
 If your application requires it, you can always create multiple Hotsock installations across multiple AWS accounts and/or AWS regions to accommodate for immense scaling requirements or tenant boundaries.
 

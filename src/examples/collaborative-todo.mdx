@@ -8,11 +8,11 @@ The two panels below share a to-do list. Although they are on the same screen fo
 
 Get the code for this example and run it yourself [from the GitHub repository](https://github.com/hotsock/website/tree/main/examples/collaborative-todo).
 
-## How it works
+## How it works {/* #how-it-works */}
 
 This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect two users to the same channel where they collaboratively manage a to-do list using stored client messages and the [Client HTTP API](/docs/connections/client-http-api/) for loading message history. Below is a walkthrough of each piece.
 
-### Session persistence
+### Session persistence {/* #session-persistence */}
 
 Each to-do list has a session ID that maps to a Hotsock channel. The session ID is stored in both `localStorage` and the URL hash so that lists persist across page loads and can be shared via link.
 
@@ -35,7 +35,7 @@ function saveSessionId(id) {
 
 On load, the client checks for an existing session — first from the URL hash (for shared links), then from localStorage (for returning visitors). If neither exists, the backend generates a new session ID and the client saves it for next time.
 
-### Authentication
+### Authentication {/* #authentication */}
 
 Each user needs a [connect token](/docs/connections/authentication/) with permission to subscribe, publish multiple event types, and access message history. The key additions compared to the chat example are [`store`](/docs/connections/claims/#channels.messages.store) for message persistence and [`historyStart`](/docs/connections/claims/#channels.historyStart) for loading past messages:
 
@@ -60,7 +60,7 @@ Each user needs a [connect token](/docs/connections/authentication/) with permis
 
 Three event types handle the to-do operations. Each has `echo: true` so the sender receives confirmation, and `store: 86400` to retain messages for 24 hours. The `historyStart: 0` claim grants access to the full message history for replaying state on connect.
 
-### Loading history on connect
+### Loading history on connect {/* #loading-history-on-connect */}
 
 When the WebSocket connects, the [`hotsock.connected`](/docs/connections/client-http-api/#authentication) message provides `connectionId` and `connectionSecret` credentials. After subscribing to the channel, the client uses these credentials to call the [Client HTTP API's `connection/listMessages`](/docs/connections/client-http-api/#connection/listMessages) endpoint to load stored messages and replay them into the current to-do list state:
 
@@ -125,7 +125,7 @@ const loadHistory = async (connId, connSecret) => {
 
 This event-sourcing pattern means the to-do list state is fully reconstructable from its stored message history — no separate database needed.
 
-### Multiple client event types
+### Multiple client event types {/* #multiple-client-event-types */}
 
 Each to-do operation maps to a different event name. The client binds handlers for all three so that real-time updates from other users are applied immediately:
 
@@ -157,7 +157,7 @@ channel.bind("delete-item", (message) => {
 })
 ```
 
-### Sending actions
+### Sending actions {/* #sending-actions */}
 
 Each interaction publishes the corresponding event:
 
@@ -178,7 +178,7 @@ const handleDelete = (id) => {
 }
 ```
 
-### Cleanup
+### Cleanup {/* #cleanup */}
 
 When the component unmounts, terminate both clients to close the WebSocket connections:
 
@@ -191,7 +191,7 @@ useEffect(() => {
 }, [])
 ```
 
-## Putting it all together
+## Putting it all together {/* #putting-it-all-together */}
 
 The full flow is: the client resolves a session ID (from URL hash, localStorage, or a fresh one from the backend), connects both users with tokens granting publish and history access, loads existing items by paginating through stored messages via the Client HTTP API and replaying them, then publishes add/toggle/delete events that are both delivered in real time and stored for future connections. The session persists automatically — returning visitors rejoin their list, and sharing the URL lets others collaborate on the same list.
 

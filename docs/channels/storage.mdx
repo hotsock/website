@@ -2,7 +2,7 @@
 
 Channel storage provides persistent, per-key state on any channel. Storage entries are key-value pairs that live alongside the channel, surviving disconnects and reconnects. This gives clients a way to read, write, and observe shared state without round-tripping through your backend.
 
-## When to use storage
+## When to use storage {/* #when-to-use-storage */}
 
 Storage is a good fit for state that should be immediately available to anyone who joins a channel:
 
@@ -14,11 +14,11 @@ Storage is a good fit for state that should be immediately available to anyone w
 
 Storage is not a general-purpose database. Each entry is a single key with a JSON value, scoped to a channel. For ordered, append-only data (like chat history), use [message storage](../connections/claims.mdx#channels.messages.store) instead.
 
-## How it works
+## How it works {/* #how-it-works */}
 
 Each channel can have any number of storage entries. Each entry has a **key** (a string up to 128 characters) and a **data** value (any valid JSON, up to 32 KiB). Entries also track `meta` — the `uid` and `umd` of the last writer — so observers always know who set a value.
 
-### Permissions
+### Permissions {/* #permissions */}
 
 Storage access is controlled per-key in [JWT claims](../connections/claims.mdx#channels.storage) using the `storage` directive inside channel entries. Keys support wildcards (`*`) and regex patterns (`#regex:`) for flexible matching.
 
@@ -63,7 +63,7 @@ Six directives control what a connection can do with matching keys:
 Storage operations do not require an active channel subscription. Connect token permissions alone are sufficient for `get` and `set`.
 :::
 
-## Writing storage entries
+## Writing storage entries {/* #writing-storage-entries */}
 
 Clients write storage entries by sending a `hotsock.channelStorageSet` message on the WebSocket:
 
@@ -75,7 +75,7 @@ Writes that don't change the value are detected automatically and skip subscribe
 
 Also available via the Client HTTP API at [`connection/channelStorageSet`](../connections/client-http-api.mdx#connection/channelStorageSet).
 
-### Server-side writes
+### Server-side writes {/* #server-side-writes */}
 
 Storage entries can be set from your backend using the [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) or [HTTP](../server-api/publish-messages.mdx#publish-with-http-url) publish APIs by specifying `"event": "hotsock.channelStorageSet"` with a [`key`](../server-api/publish-messages.mdx#message-format.key) field. Server-side writes bypass client permission checks, making them useful for initializing channel state before any clients connect.
 
@@ -88,7 +88,7 @@ Storage entries can be set from your backend using the [Lambda](../server-api/pu
 }
 ```
 
-### Scheduled writes
+### Scheduled writes {/* #scheduled-writes */}
 
 Storage writes can be scheduled for future delivery using `scheduleExpression`, just like [scheduled messages](../server-api/publish-messages.mdx#message-format.scheduleExpression). This works on the WebSocket, the [Client HTTP API](../connections/client-http-api.mdx#connection/channelStorageSet.scheduleExpression), and the server-side [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) and [HTTP](../server-api/publish-messages.mdx#publish-with-http-url) publish APIs. Client-initiated scheduled storage writes require the [`scheduleBefore`](../connections/claims.mdx#channels.storage.scheduleBefore) permission on the matching storage key.
 
@@ -96,7 +96,7 @@ Storage writes can be scheduled for future delivery using `scheduleExpression`, 
 > {"event":"hotsock.channelStorageSet", "channel":"game.lobby", "key":"round-state", "data":"finished", "scheduleExpression":"at(2026-04-08T15:00:00)"}
 ```
 
-## Reading storage entries
+## Reading storage entries {/* #reading-storage-entries */}
 
 Clients read a single entry by sending a `hotsock.channelStorageGet` message:
 
@@ -120,7 +120,7 @@ If no value has been set for the key, `data` and `meta` are `null`.
 
 Also available via the Client HTTP API at [`connection/channelStorageGet`](../connections/client-http-api.mdx#connection/channelStorageGet). To list multiple entries at once, use [`connection/channelStorageList`](../connections/client-http-api.mdx#connection/channelStorageList).
 
-## Observing storage entries
+## Observing storage entries {/* #observing-storage-entries */}
 
 When a key has `observe` enabled, two things happen:
 
@@ -142,7 +142,7 @@ When a key has `observe` enabled, two things happen:
 Unlike message echo behavior, `hotsock.channelStorageUpdated` is always delivered back to the connection that set the value (when that connection observes the key). Storage updates are state notifications, not message echoes.
 :::
 
-## TTL and expiration
+## TTL and expiration {/* #ttl-and-expiration */}
 
 By default, storage entries are retained forever. The [`store`](../connections/claims.mdx#channels.storage.store) directive sets a TTL in seconds for entries written by a connection. Server-side writes can also specify a `store` value to control TTL.
 
@@ -150,11 +150,11 @@ When an entry expires, it is removed from storage. WebSocket observers are **not
 
 If you need observers to be notified when a value expires, explicitly set the storage entry to `null` at the desired time — either by publishing a [scheduled storage write](#scheduled-writes) or by invoking a `hotsock.channelStorageSet` from your backend when the expiration should take effect.
 
-## Backend events
+## Backend events {/* #backend-events */}
 
 When the [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) directive is enabled, storage value changes emit a [`hotsock.channelStorageUpdated`](../server-api/events.mdx#hotsock.channelStorageUpdated) event to SNS/EventBridge. This includes creates, updates, deletes, and TTL expirations. The event includes the current value, the previous value, and expiration metadata.
 
-## Server-side access
+## Server-side access {/* #server-side-access */}
 
 The admin API provides read access to channel storage:
 
