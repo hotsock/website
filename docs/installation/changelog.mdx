@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.12.0 - April 8, 2026 {#v1.12.0}
+## v1.12.0 - April 8, 2026 {/* #v1.12.0 */}
 
 - Add [channel storage](../connections/claims.mdx#channels.storage), a per-key persistent key-value store on channels. Storage permissions are configured per-key with wildcard and regex pattern support. Entries have independent TTLs, are delivered to [`observe`](../connections/claims.mdx#channels.storage.observe) subscribers on join, and skip fan-out when the value hasn't changed. Clients interact with storage via [`hotsock.channelStorageSet`](../connections/claims.mdx#channels.storage.set) / [`hotsock.channelStorageGet`](../connections/claims.mdx#channels.storage.get) on the WebSocket or the [`connection/channelStorageGet`](../connections/client-http-api.mdx#connection/channelStorageGet), [`connection/channelStorageSet`](../connections/client-http-api.mdx#connection/channelStorageSet), and [`connection/channelStorageList`](../connections/client-http-api.mdx#connection/channelStorageList) Client HTTP API endpoints. Storage operations do not require an active channel subscription. Server-side writes are available via the Lambda and HTTP publish APIs using `"event": "hotsock.channelStorageSet"` with a `key` field.
 - Add [`hotsock.channelStorageUpdated`](../server-api/events.mdx#hotsock.channelStorageUpdated) pub/sub event to SNS/EventBridge when storage entry values change, gated by the [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) storage key directive for client writes or the `emitPubSubEvent` field for server writes.
@@ -16,7 +16,7 @@
 - Build with Go 1.26.2.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-04-08](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-04-08)).
 
-## v1.11.0 - March 19, 2026 {#v1.11.0}
+## v1.11.0 - March 19, 2026 {/* #v1.11.0 */}
 
 - Add [regex pattern support](../connections/claims.mdx#channels--regex) for channel name patterns in JWT claims. Channel keys can now use the `#regex:` prefix for [Go regular expression](https://pkg.go.dev/regexp/syntax) matching, enabling fine-grained permission control for dynamically-named channels where wildcards are not precise enough.
 - Add [regex pattern support](../connections/claims.mdx#channels.messages--regex) for event name patterns in JWT message claims. Event keys inside `messages` can use the same `#regex:` prefix for matching event names. Regex patterns are validated at token parse time.
@@ -25,11 +25,11 @@
 - Fix a panic in the logging library when writing failed error logs.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-03-13](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-03-13)).
 
-## v1.10.1 - March 10, 2026 {#v1.10.1}
+## v1.10.1 - March 10, 2026 {/* #v1.10.1 */}
 
 - Doubles the channel name limit from 128 to 256 characters to accommodate real-world use cases approaching the limit.
 
-## v1.10.0 - March 5, 2026 {#v1.10.0}
+## v1.10.0 - March 5, 2026 {/* #v1.10.0 */}
 
 - Add automatic message publishing fan-out for channels with more than 250 subscribers. When a channel exceeds 250 subscribers, message delivery is distributed across multiple Lambda invocations in batches of 250 connections, significantly improving delivery performance and latency for large channels.
 - Randomize connection IDs before batching for fan-out, preventing connections with certain ID patterns from consistently receiving messages earlier or later than others.
@@ -39,11 +39,11 @@
 - Build with Go 1.26.1.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-03-05](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-03-05)).
 
-## v1.9.1 - February 27, 2026 {#v1.9.1}
+## v1.9.1 - February 27, 2026 {/* #v1.9.1 */}
 
 - Add `hotsockVersion` to the `metadata` object of all pub-sub events.
 
-## v1.9.0 - February 26, 2026 {#v1.9.0}
+## v1.9.0 - February 26, 2026 {/* #v1.9.0 */}
 
 - Fresh [Web Console](../server-api/web-console.mdx) UI with JSON message syntax highlighting and formatting, improved responsive mobile support, full-viewport layout, and message filtering.
 - Add `disconnectedAt` to the pub-sub event for connections ([`hotsock.connected`](../server-api/events.mdx#hotsock.connected) and [`hotsock.disconnected`](../server-api/events.mdx#hotsock.disconnected)). The value is `null` for connected events and a RFC3339 timestamp for disconnected events.
@@ -51,93 +51,93 @@
 - Fix incorrect error log message for too-large EventBridge payloads that previously indicated it was an SNS related error.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-02-26](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-02-26)).
 
-## v1.8.11 - February 18, 2026 {#v1.8.11}
+## v1.8.11 - February 18, 2026 {/* #v1.8.11 */}
 
 - When a JWT token specifies a `kid` header, the validation now allows any `kid` if the signing key ID parameter is blank. Previously, a blank `SigningKey1IdParameter` would reject tokens with a `kid` header, even though a blank key ID should mean "accept any `kid`". Now blank signing key IDs accept any token `kid` value while still enforcing strict matching when both are specified.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-02-18](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-02-18)).
 
-## v1.8.10 - February 12, 2026 {#v1.8.10}
+## v1.8.10 - February 12, 2026 {/* #v1.8.10 */}
 
 - Build with Go 1.26.0.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-02-11](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-02-11)).
 
-## v1.8.9 - January 16, 2026 {#v1.8.9}
+## v1.8.9 - January 16, 2026 {/* #v1.8.9 */}
 
 - Allow disabling the CloudWatch overview monitoring dashboard, which reduces monthly costs if you're beyond free tier CloudWatch Dashboard usage and/or you have a lot of non-production Hotsock installations running that do not need to be monitored. This dashboard can be disabled or enabled at any time, and continues to be enabled by default.
 - Build with Go 1.25.6.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-01-15](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-01-15)).
 
-## v1.8.8 - December 2, 2025 {#v1.8.8}
+## v1.8.8 - December 2, 2025 {/* #v1.8.8 */}
 
 - Build with Go 1.25.5.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-12-02](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-12-02)).
 
-## v1.8.7 - November 24, 2025 {#v1.8.7}
+## v1.8.7 - November 24, 2025 {/* #v1.8.7 */}
 
 - As of [v1.8.0](#v1.8.0), the message data table has a global secondary index (GSI) for querying on channel and event name, sorted by message timestamp. This release includes a `MessageDataTableChannelEventGSIParameter` configuration parameter that allows enabling or disabling this GSI for an installation. It is disabled by default for new installations.
 
-## v1.8.6 - November 23, 2025 {#v1.8.6}
+## v1.8.6 - November 23, 2025 {/* #v1.8.6 */}
 
 - New and upgraded installations now use [AWS IAM Outbound Identity Federation](https://aws.amazon.com/blogs/aws/simplify-access-to-external-services-using-aws-iam-outbound-identity-federation/) for installation source identity validation.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-11-21](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-11-21)).
 
-## v1.8.5 - November 12, 2025 {#v1.8.5}
+## v1.8.5 - November 12, 2025 {/* #v1.8.5 */}
 
 - Build with Go 1.25.4.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-11-11](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-11-11)).
 
-## v1.8.4 - November 1, 2025 {#v1.8.4}
+## v1.8.4 - November 1, 2025 {/* #v1.8.4 */}
 
 - Reduce the quantity of metrics on the monitoring dashboard to be fewer than 50, so the dashboard qualifies for the AWS Free Tier.
 - Disable pre-warm invocations on the messages table stream processor function, which is currently not in use but reserved for future functionality.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-10-31](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-10-31)).
 
-## v1.8.3 - October 27, 2025 {#v1.8.3}
+## v1.8.3 - October 27, 2025 {/* #v1.8.3 */}
 
 - Implement the [updated authorization model for Lambda Function URLs](https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html), which requires that both the `lambda:InvokeFunctionUrl` and `lambda:InvokeFunction` actions are allowed in function resource policies. New installations require this permissions model in October 2025. Existing installations must update to use this model by November 2026.
 
-## v1.8.2 - October 24, 2025 {#v1.8.2}
+## v1.8.2 - October 24, 2025 {/* #v1.8.2 */}
 
 - Fix an issue where function-level errors that cause Lambda functions to exit were being logged as `INFO`-level logs instead of `ERROR`, which would be suppressed when `ERROR`-level logging was configured. Improve the logged stack trace in cases where a function error is the result of a `panic`.
 - Set `MaximumEventAgeInSeconds` to `120` (2 minutes) for `ConnectedFunction` invocation async events. In response to the [recent AWS outage](https://aws.amazon.com/message/101925/), there's little chance of meaningful success for events older than a few seconds, so after 2 minutes these events will be dropped on the floor.
 - Build with Go 1.25.3
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-10-24](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-10-24)).
 
-## v1.8.1 - October 7, 2025 {#v1.8.1}
+## v1.8.1 - October 7, 2025 {/* #v1.8.1 */}
 
 - Build with Go 1.25.2.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-10-07](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-10-07)).
 
-## v1.8.0 - October 1, 2025 {#v1.8.0}
+## v1.8.0 - October 1, 2025 {/* #v1.8.0 */}
 
 - Add the ability to query stored messages by channel and event name, sorted by timestamp. This data is written to a keys-only global secondary index (GSI).
 - Add `ConnectionID`, `SourceIP`, `UserAgent`, and `Trigger` attributes to stored messages (and equivalent `connectionId`, `sourceIp`, `userAgent`, and `trigger` to pub-sub event metadata). `Trigger` is set to one of "client.websocket", "client.http", "server.http", or "server.lambda", depending on what triggered the message.
 - The built-in CloudWatch Dashboard for all installations has been completely overhauled and now includes version info and links to useful resources. It's also grouped into sections to make it easier to find relevant metrics.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-10-01](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-10-01)).
 
-## v1.7.0 - September 23, 2025 {#v1.7.0}
+## v1.7.0 - September 23, 2025 {/* #v1.7.0 */}
 
 - Add the ability to specify [`autoSubscribe`](../connections/claims.mdx#channels.autoSubscribe) in channel claims, which will automatically subscribe specified channels upon a successful connection.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-09-22](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-09-22)).
 
-## v1.6.0 - September 19, 2025 {#v1.6.0}
+## v1.6.0 - September 19, 2025 {/* #v1.6.0 */}
 
 - Allow clients to publish messages to channels where they are not subscribed. Set the [`broadcast`](../connections/claims.mdx#channels.messages.broadcast) claim to `true` for messages that are permitted. Supported for both WebSocket and Client HTTP messages.
 - Stop writing empty `ScheduleExpression` or `ScheduleExpressionTimezone` attributes to stored messages in DynamoDB.
 - Build with Go 1.25.1.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-09-19](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-09-19)).
 
-## v1.5.2 - August 21, 2025 {#v1.5.2}
+## v1.5.2 - August 21, 2025 {/* #v1.5.2 */}
 
 - Build with Go 1.25.0.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-08-21](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-08-21)).
 
-## v1.5.1 - August 9, 2025 {#v1.5.1}
+## v1.5.1 - August 9, 2025 {/* #v1.5.1 */}
 
 - Build with Go 1.24.6.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-08-08](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-08-08)).
 
-## v1.5.0 - July 23, 2025 {#v1.5.0}
+## v1.5.0 - July 23, 2025 {/* #v1.5.0 */}
 
 - Add support for scheduling messages for future delivery. Specify [`scheduleExpression`](../server-api/publish-messages.mdx#message-format.scheduleExpression) and, optionally, [`scheduleExpressionTimezone`](../server-api/publish-messages.mdx#message-format.scheduleExpressionTimezone) when publishing messages with Lambda, HTTP URL, or client WebSocket or HTTP. For client requests, the event-level [`scheduleBefore`](../connections/claims.mdx#channels.messages.scheduleBefore) permission claim is required. This feature is backed by [Amazon EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html) and allows scheduling one-time message events (recurring schedules are not currently supported in Hotsock).
 - Server-initiated message publishing requests now return more helpful error info in the HTTP or Lambda response body.
@@ -145,7 +145,7 @@
 - The web console now displays a timestamp alongside messages so you can see when each message was sent or received.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-07-22](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-07-22)).
 
-## v1.4.0 - July 15, 2025 {#v1.4.0}
+## v1.4.0 - July 15, 2025 {/* #v1.4.0 */}
 
 - Add the ability to disable connection count tracking for channel subscriptions with [`omitFromSubCount`](../connections/claims.mdx#channels.omitFromSubCount). This is an optional cost reduction measure for cases where the count of subscribers in a channel changes frequently and tracking that count is unneeded.
 - Fix an issue where some item remove events were not triggering event bus events.
@@ -153,19 +153,19 @@
 - Build with Go 1.24.5.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-07-15](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-07-15)).
 
-## v1.3.2 - April 2, 2025 {#v1.3.2}
+## v1.3.2 - April 2, 2025 {/* #v1.3.2 */}
 
 - Work around known bug in API Gateway where `GoneException` is occasionally returned when a connection is still alive.
 - Build with Go 1.24.2.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2025-04-02](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2025-04-02)).
 
-## v1.3.1 - February 12, 2025 {#v1.3.1}
+## v1.3.1 - February 12, 2025 {/* #v1.3.1 */}
 
 - Fix an issue where the `connectedAt` timestamp on a stored `ConnectionItem` did not match API Gateway's connection timestamp - it was off by a few milliseconds. These values are now synchronized.
 - Build with Go 1.24.0.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions.
 
-## v1.3.0 - October 14, 2024 {#v1.3.0}
+## v1.3.0 - October 14, 2024 {/* #v1.3.0 */}
 
 - Add long-term message storage. Set the [`store`](../server-api/publish-messages.mdx#message-format.store) parameter for server-initiated message publishes or set the [`store`](../connections/claims.mdx#channels.messages.store) claim for client-initiated messages to an integer number in seconds to specify how long messages should be retained.
 - Include `connectionSecret` in `hotsock.connected` message, which when combined with the connection ID is an API key that can make HTTP requests to the HTTP API to list and publish messages for a channel.
@@ -177,18 +177,18 @@
 - Improve log redaction of API keys and connection secrets.
 - Add stream processor metrics that are published from logs using CloudWatch Embedded Metric Format (EMF).
 
-## v1.2.0 - September 23, 2024 {#v1.2.0}
+## v1.2.0 - September 23, 2024 {/* #v1.2.0 */}
 
 - Switch from AWS Managed KMS Key to AWS Owned Key for DynamoDB table encryption to avoid cost issues with concurrent UpdateItem calls trigging tons of `kms:Decrypt` operations. A future release can offer KMS/CMK as an explicit opt-in where such costs are acceptable.
 - Change the main table batch size for DynamoDB Stream processing from 100 to 1000 and add a filter pattern so only specific keys are processed.
 - Always use SNS `PublishBatch()` instead of single `Publish()` calls to maximize throughput.
 
-## v1.1.0 - August 29, 2024 {#v1.1.0}
+## v1.1.0 - August 29, 2024 {/* #v1.1.0 */}
 
 - Add a "Pre-warm environment" (`PreWarmEnvironmentParameter`) CloudFormation option to keep all time-sensitive, user-facing Lambda functions warm using a one-per-minute scheduled invocation. Designed for staging or demo environments where traffic often drops to zero, but where you don't want noticeable cold starts when usage resumes.
 - Set `MemorySize: 1769` for the main table stream processor to give it a full vCPU.
 
-## v1.0.0 - August 27, 2024 {#v1.0.0}
+## v1.0.0 - August 27, 2024 {/* #v1.0.0 */}
 
 Initial public release! 🎉
 

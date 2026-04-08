@@ -13,7 +13,7 @@ Each member has two fields:
 Presence channel names must have a `presence.` prefix.
 :::
 
-## Limits
+## Limits {/* #limits */}
 
 Every time a member joins, leaves, or updates their metadata, all members receive the full member list. Because of this, there is a size constraint on the channel.
 
@@ -24,7 +24,7 @@ Every time a member joins, leaves, or updates their metadata, all members receiv
 
 Attempting to subscribe when the channel is at capacity returns a `PRESENCE_CHANNEL_CAPACITY_REACHED` error.
 
-## Subscribe
+## Subscribe {/* #subscribe */}
 
 Once connected with a token authorizing subscribe on a presence channel, subscribe by sending a message on the WebSocket:
 
@@ -45,7 +45,7 @@ You'll receive a `hotsock.subscribed` message with the current `members` list in
 }
 ```
 
-### When another member joins
+### When another member joins {/* #when-another-member-joins */}
 
 When Dwight subscribes from another connection, he receives his own `hotsock.subscribed` message with both members listed. You receive a `hotsock.memberAdded` message:
 
@@ -66,11 +66,11 @@ When Dwight subscribes from another connection, he receives his own `hotsock.sub
 - `member` — the member who just joined
 - `members` — the full, current member list (including the new member)
 
-### Duplicate connections with the same `uid`
+### Duplicate connections with the same `uid` {/* #duplicate-connections-with-the-same-uid */}
 
 If a user connects from a second device or browser tab with the same `uid`, the `hotsock.memberAdded` event is suppressed since they're already in the member list. However, if the new connection has different `umd`, a [`hotsock.memberUpdated`](#member-updated) event is sent so other members learn about the metadata change. If the `umd` is the same, no event is sent.
 
-## Member Updated {#member-updated}
+## Member Updated {/* #member-updated */}
 
 When a member's `umd` changes, all members (including the one who made the change) receive a `hotsock.memberUpdated` message:
 
@@ -98,7 +98,7 @@ This event is triggered in two scenarios:
 
 This is useful for status indicators, typing notifications, or any per-user state that changes during a session without requiring a reconnect.
 
-## Unsubscribe
+## Unsubscribe {/* #unsubscribe */}
 
 To leave a presence channel, send a `hotsock.unsubscribe` message:
 
@@ -124,7 +124,7 @@ Remaining members receive a `hotsock.memberRemoved` message:
 
 When a WebSocket connection disconnects, `hotsock.unsubscribe` is called automatically for all subscribed channels, so remaining members are always notified.
 
-## Event Summary
+## Event Summary {/* #event-summary */}
 
 | Event                   | When                           | Delivered to                          |
 | ----------------------- | ------------------------------ | ------------------------------------- |

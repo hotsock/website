@@ -2,7 +2,7 @@
 
 When you create a Hotsock installation, the default WebSockets URL your clients need to use looks something like `wss://1ycut2oy9h.execute-api.us-east-1.amazonaws.com/v1/`. You can customize this by using a subdomain on a domain you already own, allowing your clients to use something like `wss://real-time.example.com` instead.
 
-## Request and verify a certificate
+## Request and verify a certificate {/* #request-and-verify-a-certificate */}
 
 Before you can use your domain, you must request a certificate and verify ownership of your domain.
 
@@ -23,7 +23,7 @@ Once DNS validation is complete and the certificate shows as "Issued", click the
 
 ![Certifcate issued successfully](../../static/img/screenshots/custom-domains-certificate-issued.png)
 
-## Update your Hotsock installation
+## Update your Hotsock installation {/* #update-your-hotsock-installation */}
 
 Sign into your AWS account as a principal with administrative permissions and open the CloudFormation console. Find the root Hotsock stack and click on its radio button. There are many Hotsock stacks marked as "nested", you'll want to ignore those and find the root stack that is _not_ marked as nested.
 
@@ -49,11 +49,11 @@ Once you're satisfied with your choices, you can update the stack with these new
 
 Once the stack update is complete, open [your stack's Outputs](./initial-setup.mdx#stack-outputs-and-endpoints) and find the values for [`WebSocketsCustomDomainRegionalDomainName`](./initial-setup.mdx#WebSocketsCustomDomainRegionalDomainName), [`WebSocketsCustomDomainRegionalHostedZoneId`](./initial-setup.mdx#WebSocketsCustomDomainRegionalHostedZoneId), and [`WebSocketsCustomDomainWssUrl`](./initial-setup.mdx#WebSocketsCustomDomainWssUrl). You'll use these to configure DNS below.
 
-## Configure DNS
+## Configure DNS {/* #configure-dns */}
 
 After updating your Hotsock installation, you need to configure DNS to use your custom domain for WebSockets. You can do this by setting up either an ALIAS record (for Route 53) or a CNAME record (for other DNS providers).
 
-### Using Route 53 (ALIAS Record)
+### Using Route 53 (ALIAS Record) {/* #using-route-53-alias-record */}
 
 1. Sign into the AWS Management Console and open the Route 53 console.
 2. In the left navigation pane, choose "Hosted zones".
@@ -67,7 +67,7 @@ After updating your Hotsock installation, you need to configure DNS to use your 
    - **API Gateway**: Choose `Regional` and then select the domain name for your WebSocket API from the drop-down list (e.g., `d-zv7jqttrkl.execute-api.us-east-1.amazonaws.com`). The console automatically populates the Hosted Zone ID, so you won't need that unless you're creating an ALIAS record using the Route53 SDK/API.
 5. Click "Create records".
 
-### Using Other DNS Providers (CNAME Record)
+### Using Other DNS Providers (CNAME Record) {/* #using-other-dns-providers-cname-record */}
 
 1. Log into the DNS management console for your domain.
 2. Navigate to the DNS settings or DNS management page for your domain.
@@ -78,7 +78,7 @@ After updating your Hotsock installation, you need to configure DNS to use your 
 
 4. Save your changes.
 
-### Verify DNS Configuration
+### Verify DNS Configuration {/* #verify-dns-configuration */}
 
 After configuring DNS, you can verify that it's correctly set up:
 
@@ -97,6 +97,6 @@ After configuring DNS, you can verify that it's correctly set up:
 
 You should see a response that points to a collection of IP addresses (for ALIAS records) or to your WebSocket API regional domain name (e.g., `d-zv7jqttrkl.execute-api.us-east-1.amazonaws.com` for CNAME records).
 
-### Conclusion
+### Conclusion {/* #conclusion */}
 
 Once your DNS settings are configured and propagated, your clients can connect to your WebSockets API using your custom domain (e.g., `wss://real-time.example.com`).

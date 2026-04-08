@@ -28,7 +28,7 @@ A decoded token might look something like this.
 
 The top section containing `alg` and `typ` are the token headers. `typ` must be "JWT" and `alg` must be the algorithm used during signing. Any JWT generation library will handle this for you by default.
 
-## Signing methods
+## Signing methods {/* #signing-methods */}
 
 Hotsock can verify tokens signed using any of the following methods.
 
@@ -38,7 +38,7 @@ Hotsock can verify tokens signed using any of the following methods.
 - [ECDSA](https://datatracker.ietf.org/doc/html/rfc7518#section-3.4) (ES256, ES384, ES512)
 - [EdDSA](https://datatracker.ietf.org/doc/html/rfc8037#section-3.1)
 
-## Choose a signing method
+## Choose a signing method {/* #choose-a-signing-method */}
 
 If you're evaluating or trying things out for the first time, start with HMAC (HS256). HMAC uses a single secret key (can be any string value) for both signing and verification. Once you're ready to sign tokens for a production workload, consider an asymmetric option so Hotsock never has the private secret (nor do other tools verifying your tokens).
 
@@ -46,19 +46,19 @@ Single key or "symmetric" signing methods work well when both producers and cons
 
 Asymmetric signing methods, such as ECDSA and RSA, use separate keys for signing and verifying tokens. This makes it possible to issue tokens with a private key, and freely allow _any_ consumer to access the public key and use it for verifying tokens. Since Hotsock is a separate system, an asymmetric signing method is ideal because it only ever verifies tokens &mdash; it never issues them.
 
-## Set signing method in Hotsock
+## Set signing method in Hotsock {/* #set-signing-method-in-hotsock */}
 
 Once you've chosen a signing method and have either the asymmetric keypair or a symmetric shared key, you'll need to configure Hotsock to use it for token verification.
 
-### HMAC
+### HMAC {/* #hmac */}
 
 If you've chosen HMAC, you'll need to Base64 encode your chosen raw shared key value. If, for example, the secret key is `bazinga`, the Base64 encoded value is `YmF6aW5nYQ==`. Make sure you generate your own secret, ensure it has plenty of entropy, and don't actually use bazinga!
 
-### RSA / ECDSA / EdDSA
+### RSA / ECDSA / EdDSA {/* #rsa--ecdsa--eddsa */}
 
 If you've chosen one of the asymmetric options, **you'll need to Base64 encode the PEM-formatted public key**. Do not supply the private key! Use the private key to sign tokens in your backend and keep it secret!
 
-#### Generate a secure signing key
+#### Generate a secure signing key {/* #generate-a-secure-signing-key */}
 
 You can generate a new private key using OpenSSL. **Do not use these keys. Generate your own.**
 
@@ -99,7 +99,7 @@ Base64 is an _encoding_, it is **not** a form of _encryption_. When you paste an
 This is yet another reason why asymmetric key options are recommended. Passing around a shared HMAC secret has risks, but sharing a public key is harmless!
 :::
 
-### Update the stack
+### Update the stack {/* #update-the-stack */}
 
 Open the AWS CloudFormation console in the account and region where you installed Hotsock. Click on the root Hotsock stack and click the "Update" button.
 
@@ -137,7 +137,7 @@ Lastly on the "Review Hotsock" screen, check the boxes in the "Capabilities" sec
 
 Once the stack update completes, you can immediately begin using tokens issued with this key for this Hotsock installation.
 
-## Issuing tokens
+## Issuing tokens {/* #issuing-tokens */}
 
 Implementations of JWT signing and issuing vary depending on the needs of your application, programming language choice, framework, client device, etc.
 

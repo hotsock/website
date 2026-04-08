@@ -15,7 +15,7 @@ By installing Hotsock, you consent to agreeing to our [Terms of Service](/legal/
 
 [Uninstalling](./uninstallation.mdx) is also painless if you change your mind!
 
-## Requirements
+## Requirements {/* #requirements */}
 
 You'll need administrator access to an AWS account. An account in your [AWS Organization](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html) dedicated to Hotsock is recommended, but not required. You'll also need to [choose an AWS region](./region-support.mdx) for the installation.
 
@@ -23,7 +23,7 @@ You'll need administrator access to an AWS account. An account in your [AWS Orga
 Using a dedicated AWS account provides both **security isolation** and **billing clarity**. You can enforce the principal of least privilege by only granting access to those who need it and you'll know exactly what your Hotsock installation costs over time.
 :::
 
-## Installer Permissions Stack {#installer-permissions-stack}
+## Installer Permissions Stack {/* #installer-permissions-stack */}
 
 Before creating the main Hotsock stack, you'll first create a stack that configures roles and a permissions policy that the main stack will use, limiting the permissions that it can have. The main Hotsock stack creates IAM roles, so having this in place puts a permissions boundary around those roles, ensuring that they cannot elevate their own permissions.
 
@@ -42,7 +42,7 @@ You can further limit permissions using [Service Control Policies (SCPs)](https:
 If you have or plan to have multiple Hotsock installations in the same AWS account, you'll only want a single installer permissions stack. Attempts to configure additional installer permissions stacks in the same account will result in CloudFormation errors caused by resource naming collisions.
 :::
 
-### Command line installation {#installer-permissions-stack-cli}
+### Command line installation {/* #installer-permissions-stack-cli */}
 
 Create the Installer Permissions stack using the AWS CLI from [AWS CloudShell](https://docs.aws.amazon.com/cloudshell/latest/userguide/welcome.html) using the following steps.
 
@@ -73,7 +73,7 @@ aws cloudformation describe-stacks \
 
 Within a minute or so, this command will return `"CREATE_COMPLETE"` and you can move on to the [main stack CLI installation](#main-stack-cli).
 
-### AWS Console installation {#installer-permissions-stack-console}
+### AWS Console installation {/* #installer-permissions-stack-console */}
 
 Configure the Installer Permissions stack in the following steps.
 
@@ -104,11 +104,11 @@ Wait for the CloudFormation stack to finish creating and indicating a `CREATE_CO
 
 Within a minute or so, this command will return `"CREATE_COMPLETE"` and you can move on to the [main stack console installation](#main-stack-console).
 
-## Main Hotsock Stack Installation {#main-stack}
+## Main Hotsock Stack Installation {/* #main-stack */}
 
 This stack stands up a complete Hotsock application in your account. Like the installer permissions stack, you can use either a CLI command or the AWS Console.
 
-### Command line installation {#main-stack-cli}
+### Command line installation {/* #main-stack-cli */}
 
 Create the main stack using the AWS CLI from [AWS CloudShell](https://docs.aws.amazon.com/cloudshell/latest/userguide/welcome.html) using the following steps.
 
@@ -145,7 +145,7 @@ During the creation process it will create and connect [a lot of resources](#aws
 
 Once the stack creation completes, installation was successful. Next you'll likely want to [configure Authentication](../connections/authentication.mdx).
 
-### AWS Console installation {#main-stack-console}
+### AWS Console installation {/* #main-stack-console */}
 
 1. Ensure that you have already installed the [installer permissions stack](#installer-permissions-stack-console).
 1. Sign into your AWS account as an administrator user or role.
@@ -211,7 +211,7 @@ During the creation process it will create and connect [a lot of resources](#aws
 
 Once the stack creation completes, installation was successful. Next you'll likely want to [configure Authentication](../connections/authentication.mdx).
 
-## Stack outputs and endpoints
+## Stack outputs and endpoints {/* #stack-outputs-and-endpoints */}
 
 Upon successful creation of your Hotsock stack, the root CloudFormation stack has an "Outputs" tab with a list of variables specific to your installation.
 
@@ -219,7 +219,7 @@ Upon successful creation of your Hotsock stack, the root CloudFormation stack ha
 ![Outputs tab items](../../static/img/screenshots/initial-setup-outputs-tab.png)
 :::
 
-### HttpApiSecretKey1ConsoleUrl {#HttpApiSecretKey1ConsoleUrl}
+### HttpApiSecretKey1ConsoleUrl {/* #HttpApiSecretKey1ConsoleUrl */}
 
 This is the URL where you can find the primary secret key value for API calls to the `PublishHttpApiUrl`. To access the secret value, go to this URL and click the "Show" link by the "Value" label, which will reveal a 40-character secret key that must be used as a Bearer token in the Authorization header of all HTTP API requests.
 
@@ -227,7 +227,7 @@ This is the URL where you can find the primary secret key value for API calls to
 ![HttpApiSecretKey1ConsoleUrl example output](../../static/img/screenshots/initial-setup-outputs-HttpApiSecretKey1ConsoleUrl.png)
 :::
 
-### HttpApiSecretKey2ConsoleUrl {#HttpApiSecretKey2ConsoleUrl}
+### HttpApiSecretKey2ConsoleUrl {/* #HttpApiSecretKey2ConsoleUrl */}
 
 This is the URL where you can find the secondary secret key value for API calls to the `PublishHttpApiUrl`. To access the secret value, go to this URL and click the "Show" link by the "Value" label, which will reveal a 40-character secret key that must be used as a Bearer token in the Authorization header of all HTTP API requests.
 
@@ -237,7 +237,7 @@ This secondary key exists to allow for zero-downtime secret key rotation. You ca
 ![HttpApiSecretKey2ConsoleUrl example output](../../static/img/screenshots/initial-setup-outputs-HttpApiSecretKey2ConsoleUrl.png)
 :::
 
-### HttpApiUrl {#HttpApiUrl}
+### HttpApiUrl {/* #HttpApiUrl */}
 
 This is the base URL for all HTTP API endpoints.
 
@@ -245,7 +245,7 @@ This is the base URL for all HTTP API endpoints.
 ![HttpApiUrl example output](../../static/img/screenshots/initial-setup-outputs-HttpApiUrl.png)
 :::
 
-### InstallationVersion {#InstallationVersion}
+### InstallationVersion {/* #InstallationVersion */}
 
 This is the version of this installation.
 
@@ -253,7 +253,7 @@ This is the version of this installation.
 ![InstallationVersion example output](../../static/img/screenshots/initial-setup-outputs-InstallationVersion.png)
 :::
 
-### LicensingUrl {#LicensingUrl}
+### LicensingUrl {/* #LicensingUrl */}
 
 Installations are initially configured with [Free Tier](../licensing/pricing.mdx#free-tier) licensing. Follow this URL to adopt the installation as part of a [Paid Tier upgrade](../licensing/paid-tier-upgrade.mdx) or to manage this installation's license if already adopted.
 
@@ -263,7 +263,7 @@ If this URL's value is blank, the installation is already adopted by a Hotsock a
 ![LicensingUrl example output](../../static/img/screenshots/initial-setup-outputs-LicensingUrl.png)
 :::
 
-### MonitoringOverviewDashboardUrl {#MonitoringOverviewDashboardUrl}
+### MonitoringOverviewDashboardUrl {/* #MonitoringOverviewDashboardUrl */}
 
 The URL of a CloudWatch Dashboard that combines important metrics about your installation in a single place.
 
@@ -271,7 +271,7 @@ The URL of a CloudWatch Dashboard that combines important metrics about your ins
 ![LicensingUrl example output](../../static/img/screenshots/initial-setup-outputs-LicensingUrl.png)
 :::
 
-### PublishFunctionArn {#PublishFunctionArn}
+### PublishFunctionArn {/* #PublishFunctionArn */}
 
 This is the Arn of the Lambda function that your backend systems can use to publish messages using the AWS SDK or from other AWS services (such as EventBridge). This is the recommended way to publish messages from your backend systems.
 
@@ -279,7 +279,7 @@ This is the Arn of the Lambda function that your backend systems can use to publ
 ![PublishFunctionArn example output](../../static/img/screenshots/initial-setup-outputs-PublishFunctionArn.png)
 :::
 
-### PublishHttpApiUrl {#PublishHttpApiUrl}
+### PublishHttpApiUrl {/* #PublishHttpApiUrl */}
 
 This is the URL that your backend systems uses to publish messages if using HTTP with static API keys.
 
@@ -287,7 +287,7 @@ This is the URL that your backend systems uses to publish messages if using HTTP
 ![PublishHttpApiUrl example output](../../static/img/screenshots/initial-setup-outputs-PublishHttpApiUrl.png)
 :::
 
-### PubSubBusArn {#PubSubBusArn}
+### PubSubBusArn {/* #PubSubBusArn */}
 
 This is the Amazon Resource Name (Arn) for the EventBridge event bus that is used for messages published via [pub/sub](../server-api/events.mdx).
 
@@ -295,7 +295,7 @@ This is the Amazon Resource Name (Arn) for the EventBridge event bus that is use
 ![PubSubBusArn example output](../../static/img/screenshots/initial-setup-outputs-PubSubBusArn.png)
 :::
 
-### PubSubTopicArn {#PubSubTopicArn}
+### PubSubTopicArn {/* #PubSubTopicArn */}
 
 This is the Amazon Resource Name (Arn) for the SNS topic used for messages published via [pub/sub](../server-api/events.mdx).
 
@@ -303,7 +303,7 @@ This is the Amazon Resource Name (Arn) for the SNS topic used for messages publi
 ![PubSubTopicArn example output](../../static/img/screenshots/initial-setup-outputs-PubSubTopicArn.png)
 :::
 
-### WebConsoleHttpUrl {#WebConsoleHttpUrl}
+### WebConsoleHttpUrl {/* #WebConsoleHttpUrl */}
 
 This is a link to your installation's web console where you can debug and test WebSocket auth tokens, connections, subscriptions, and messages.
 
@@ -313,7 +313,7 @@ This URL is public by design. It's a static HTML page that contains no resources
 ![WebConsoleHttpUrl example output](../../static/img/screenshots/initial-setup-outputs-WebConsoleHttpUrl.png)
 :::
 
-### WebSocketsAwsWssUrl {#WebSocketsAwsWssUrl}
+### WebSocketsAwsWssUrl {/* #WebSocketsAwsWssUrl */}
 
 This is the URL that your clients will use when making WebSocket connections. This URL remains functional regardless of custom domain settings.
 
@@ -321,7 +321,7 @@ This is the URL that your clients will use when making WebSocket connections. Th
 ![WebSocketsAwsWssUrl example output](../../static/img/screenshots/initial-setup-outputs-WebSocketsAwsWssUrl.png)
 :::
 
-### WebSocketsCustomDomainRegionalDomainName {#WebSocketsCustomDomainRegionalDomainName}
+### WebSocketsCustomDomainRegionalDomainName {/* #WebSocketsCustomDomainRegionalDomainName */}
 
 If you've enabled a custom domain for your WebSockets endpoint, this is the value that your CNAME or ALIAS record must point to when configuring DNS. See the [custom domains](./custom-domains.mdx) documentation for more details.
 
@@ -331,7 +331,7 @@ This value is blank if a custom domain is not configured.
 ![WebSocketsCustomDomainRegionalDomainName example output](../../static/img/screenshots/initial-setup-outputs-WebSocketsCustomDomainRegionalDomainName.png)
 :::
 
-### WebSocketsCustomDomainRegionalHostedZoneId {#WebSocketsCustomDomainRegionalHostedZoneId}
+### WebSocketsCustomDomainRegionalHostedZoneId {/* #WebSocketsCustomDomainRegionalHostedZoneId */}
 
 If you've enabled a custom domain for your WebSockets endpoint, this is the AWS Hosted Zone ID that must be used if configuring an ALIAS record in Route53. This is not needed for a CNAME. See the [custom domains](./custom-domains.mdx) documentation for more details.
 
@@ -341,7 +341,7 @@ This value is blank if a custom domain is not configured.
 ![WebSocketsCustomDomainRegionalHostedZoneId example output](../../static/img/screenshots/initial-setup-outputs-WebSocketsCustomDomainRegionalHostedZoneId.png)
 :::
 
-### WebSocketsCustomDomainWssUrl {#WebSocketsCustomDomainWssUrl}
+### WebSocketsCustomDomainWssUrl {/* #WebSocketsCustomDomainWssUrl */}
 
 If you've enabled a custom domain for your WebSockets endpoint, this is the URL that your clients can use when making WebSocket connections (in place of [WebSocketsAwsWssUrl](#WebSocketsAwsWssUrl)).
 
@@ -351,48 +351,48 @@ This value is blank if a custom domain is not configured.
 ![WebSocketsCustomDomainWssUrl example output](../../static/img/screenshots/initial-setup-outputs-WebSocketsCustomDomainWssUrl.png)
 :::
 
-## AWS Services
+## AWS Services {/* #aws-services */}
 
 A Hotsock installation configures several AWS resources in your account. This list may not be comprehensive, but should paint the majority of the picture.
 
 Hotsock aims to use exclusively Serverless services in the purest sense of the word. Running an idle installation of Hotsock shouldn't cost you anything and you shouldn't need to turn any knobs to scale up or down.
 
-### API Gateway WebSockets
+### API Gateway WebSockets {/* #api-gateway-websockets */}
 
 This service manages the WebSocket connections to your clients. Messages are sent to connected clients with Lambda and messages received by connected clients are passed to Lambda by API Gateway.
 
-### Lambda
+### Lambda {/* #lambda */}
 
 All logic is run in Lambda using functions written in Go using the `provided.al2023` (Amazon Linux 2023) runtime on `arm64` (Graviton2). It's wicked fast and stable. The best language on the best runtime. :)
 
 Lambda is also the entry-point for all backend-initated messages. It then immediately passes those messages to SQS for further processing.
 
-### DynamoDB & DynamoDB Streams
+### DynamoDB & DynamoDB Streams {/* #dynamodb--dynamodb-streams */}
 
 Any data that needs to be persisted - connection information, channel subscriptions, etc. - is stored in DynamoDB. Hotsock makes an effort to keep the database lean by expiring/deleting most items once they are no longer needed.
 
 As things are written to the table, changes are sent via DynamoDB Streams to a Lambda function that can act on them and often publish them as events to SNS and/or EventBridge.
 
-### Simple Queue Service (SQS)
+### Simple Queue Service (SQS) {/* #simple-queue-service-sqs */}
 
 SQS acts as a buffer for all messages as they arrive. It keeps messages in order and allows them to be processed in batches if they're coming in fast enough.
 
-### Simple Notification Service (SNS)
+### Simple Notification Service (SNS) {/* #simple-notification-service-sns */}
 
 Things that happen (events) in Hotsock are published to SNS and subscribed to by listeners who care about specific types of events (often other Lambda functions). SNS is also used for all Hotsock-internal events.
 
-### EventBridge Event Bus
+### EventBridge Event Bus {/* #eventbridge-event-bus */}
 
 Things that happen (events) in Hotsock can optionally be [published to an EventBridge event bus](../server-api/events.mdx) and subscribed to by various listeners in your applications or by [other AWS services](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html). You can also use EventBridge [API Destinations](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-api-destinations.html) to send events as webhooks to any HTTP endpoint you wish based on event rules and can transform the request shape to match your target systems.
 
-### EventBridge Scheduler
+### EventBridge Scheduler {/* #eventbridge-scheduler */}
 
 Messages can be scheduled for future delivery using [EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html). When you publish a message with a `scheduleExpression`, Hotsock creates a one-time schedule that will trigger message delivery at the specified time. This allows you to send messages at precise future timestamps, with optional timezone support.
 
-### Systems Manager Parameter Store
+### Systems Manager Parameter Store {/* #systems-manager-parameter-store */}
 
 If you're using HTTP to publish messages from your backend, the (secret) API keys are stored here.
 
-### CloudWatch
+### CloudWatch {/* #cloudwatch */}
 
 All the logs go here for debugging and you can keep an eye on the health of the stack using metrics, alarms, and dashboards.

@@ -8,11 +8,11 @@ The two windows below allow chatting with one another. Although they are on the 
 
 Get the code for this example and run it yourself [from the GitHub repository](https://github.com/hotsock/website/tree/main/examples/real-time-chat).
 
-## How it works
+## How it works {/* #how-it-works */}
 
 This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect two users to the same channel, exchange messages in real time, and persist chat history using stored messages and the [Client HTTP API](/docs/connections/client-http-api/). Below is a walkthrough of each piece.
 
-### Session persistence
+### Session persistence {/* #session-persistence */}
 
 Each chat session has an ID that maps to a Hotsock channel. The session ID is stored in both `localStorage` and the URL hash so that conversations persist across page loads and can be shared via link.
 
@@ -35,7 +35,7 @@ function saveSessionId(id) {
 
 On load, the client checks for an existing session — first from the URL hash (for shared links), then from localStorage (for returning visitors). If neither exists, the backend generates a new session ID and the client saves it for next time.
 
-### Authentication
+### Authentication {/* #authentication */}
 
 Before connecting, each user needs a [connect token](/docs/connections/authentication/) — a signed JWT that grants permission to subscribe to a channel, publish specific message events, and access message history.
 
@@ -75,7 +75,7 @@ const connectTokenFn = async () => {
 }
 ```
 
-### Connecting
+### Connecting {/* #connecting */}
 
 Each user creates their own `HotsockClient` instance with the WebSocket URL and their token function:
 
@@ -90,7 +90,7 @@ const client = new HotsockClient(
 
 The client handles the WebSocket lifecycle automatically — connecting, reconnecting on failure, and calling `connectTokenFn` to get fresh tokens as needed.
 
-### Loading message history
+### Loading message history {/* #loading-message-history */}
 
 When the WebSocket connects, the [`hotsock.connected`](/docs/connections/client-http-api/#authentication) message provides `connectionId` and `connectionSecret` credentials. After subscribing to the channel, the client uses these credentials to call the [Client HTTP API's `connection/listMessages`](/docs/connections/client-http-api/#connection/listMessages) endpoint to load stored chat messages:
 
@@ -154,7 +154,7 @@ const loadHistory = async (connId, connSecret) => {
 
 History messages get their timestamps from the message ID — Hotsock message IDs are [ULIDs](https://github.com/ulid/spec), which encode the creation time in their first 10 characters. Only `chat` events are loaded; ephemeral `is-typing` events are not stored.
 
-### Subscribing and receiving messages
+### Subscribing and receiving messages {/* #subscribing-and-receiving-messages */}
 
 Once connected, subscribe to a channel by name. The `hotsock.subscribed` event fires when the subscription is confirmed, and then handlers for each event type process incoming messages:
 
@@ -185,7 +185,7 @@ channel.bind("is-typing", (message) => {
 
 The `channel.uid` property contains the user's identifier from their token, making it easy to distinguish your own messages from others and align them left or right in the UI.
 
-### Sending messages
+### Sending messages {/* #sending-messages */}
 
 Publish messages to the channel using `sendMessage`. The first argument is the event name (which must match a permitted event in your token), and the second is an optional data payload:
 
@@ -198,7 +198,7 @@ const handleSend = (e) => {
 }
 ```
 
-### Typing indicators
+### Typing indicators {/* #typing-indicators */}
 
 The demo throttles typing indicator events to avoid flooding the channel. A timestamp tracks when the last `is-typing` event was sent, and new events are only published if enough time has passed:
 
@@ -218,7 +218,7 @@ const handleTyping = (e) => {
 
 On the receiving end, typing indicators are shown temporarily and cleared after a short timeout. Since `is-typing` has no `store` claim, these events are purely ephemeral — only delivered to users who are currently connected.
 
-### Cleanup
+### Cleanup {/* #cleanup */}
 
 When the component unmounts, terminate both clients to close the WebSocket connections:
 
@@ -231,7 +231,7 @@ useEffect(() => {
 }, [])
 ```
 
-## Putting it all together
+## Putting it all together {/* #putting-it-all-together */}
 
 The full flow is: the client resolves a session ID (from URL hash, localStorage, or a fresh one from the backend), connects both users with tokens granting publish and history access, loads existing chat messages by paginating through stored history via the Client HTTP API, then publishes and receives messages in real time. Chat messages are stored for 24 hours while typing indicators remain ephemeral. The session persists automatically — returning visitors see their previous conversation, and sharing the URL lets others join the same chat.
 

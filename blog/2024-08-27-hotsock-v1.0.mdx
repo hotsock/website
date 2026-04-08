@@ -14,7 +14,7 @@ Starting today, you can install a full-featured, real-time WebSockets service **
 
 {/* truncate */}
 
-### What's in the box
+### What's in the box {/* #whats-in-the-box */}
 
 It includes these features and so much more &mdash;
 
@@ -30,7 +30,7 @@ With support for regions across the globe, your customers can connect with the l
 
 Hotsock provides powerful, intuitive, and [stable](/docs/installation/versioning/) APIs for building real-time applications while standing on the shoulders of a giant &mdash; AWS.
 
-### Publish real-time messages
+### Publish real-time messages {/* #publish-real-time-messages */}
 
 Use the AWS SDK you're already familiar with to [publish messages via AWS Lambda](/docs/server-api/publish-messages#publish-with-lambda) &mdash; in any supported language. Here's a Python example, but you can easily do the same with Go, Ruby, Java, JavaScript, Node.js, .NET, PHP, Rust, C++, the AWS CLI, and more.
 
@@ -47,7 +47,7 @@ lambda_client.invoke(
 
 You can also [publish via good ol' HTTP](/docs/server-api/publish-messages#publish-with-http-url) if that's your preference.
 
-### Subscribe your clients
+### Subscribe your clients {/* #subscribe-your-clients */}
 
 For browser-based clients, you can get up and running quickly with [Hotsock JS](https://github.com/hotsock/hotsock-js).
 
@@ -71,7 +71,7 @@ function handleMessage(messageObj) {
 
 For mobile applications, consider using [URLSessionWebSocketTask](https://developer.apple.com/documentation/foundation/urlsessionwebsockettask) on iOS/macOS and [javax.websocket](https://docs.oracle.com/javaee/7/api/index.html?javax/websocket/package-summary.html) (Java) or [WebSocket](https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-web-socket/) from stdlib (Kotlin) on Android. [Hotsock JS](https://github.com/hotsock/hotsock-js) also supports React Native. Official Hotsock client SDKs for iOS/macOS and Android are on the roadmap for the future.
 
-### Combining the best of fully-managed with self-hosted
+### Combining the best of fully-managed with self-hosted {/* #combining-the-best-of-fully-managed-with-self-hosted */}
 
 - If it's fully-managed, isn't the data accessible by another provider? Nope!
 - If I have to self-host it, don't I have to allocate time to manage it? Nope!
@@ -82,7 +82,7 @@ For mobile applications, consider using [URLSessionWebSocketTask](https://develo
 
 **Installation requires just two AWS CLI commands, doesn't require a sign up, is fully automated with CloudFormation (infrastructure-as-code), and takes less than 20 minutes.** Updates to Hotsock are fully automated, further reducing any ongoing management burden to your staff.
 
-### Helper tools and libraries
+### Helper tools and libraries {/* #helper-tools-and-libraries */}
 
 Alongside this launch, there are a few other tools and libraries that are now available &mdash;
 
@@ -91,7 +91,7 @@ Alongside this launch, there are a few other tools and libraries that are now av
 - [hotsock-ruby](https://github.com/hotsock/hotsock-ruby): A server library for publishing messages and signing Hotsock JWTs from your Ruby/Rails application.
 - [installer-permissions](https://github.com/hotsock/installer-permissions): The CloudFormation template containing the [IAM roles and policies needed](/docs/installation/initial-setup/#installer-permissions-stack) when creating a Hotsock installation.
 
-### Licensing
+### Licensing {/* #licensing */}
 
 The [Free Tier](/docs/licensing/pricing#free-tier) includes 1 million WebSocket messages per month &mdash; **forever**. Upgrade your installation to the [Paid Tier](/docs/licensing/pricing#paid-tier) for production applications needing more messages, multiple AWS accounts and regions, and dedicated support.
 

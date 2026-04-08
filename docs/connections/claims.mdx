@@ -16,7 +16,7 @@ At minimum, a token must have an [`exp`](#exp) claim specifying when the token e
 }
 ```
 
-## `aud` - Audience {#aud}
+## `aud` - Audience {/* #aud */}
 
 `String` or `Array[String]` (optional, recommended) - The audience claim is [optionally required by `TokenAudienceParameter`](./authentication.mdx#update-the-stack) when installing or updating the Hotsock stack. If enabled, every issued token must include it with the value set in the installation settings. Its purpose is to ensure that tokens issued by the same signer are not used across multiple services unintentionally.
 
@@ -36,7 +36,7 @@ Per the JWT spec, `aud` can also be an array of audiences, where the installatio
 }
 ```
 
-## `channels` {#channels}
+## `channels` {/* #channels */}
 
 `Object` (optional) - The `channels` claim specifies the channel permissions granted and channel directives assigned to this connection. Each object key is the name of a channel and can include asterisks (\*) anywhere in the string to denote wildcards. Keys can also use the `#regex:` prefix to specify a regular expression pattern for matching channel names. Each object value is another object with the settings for that channel or channel pattern.
 
@@ -72,7 +72,7 @@ For wildcards that overlap, any explicit `false` is used as the value and cannot
 }
 ```
 
-#### Regex patterns {#channels--regex}
+#### Regex patterns {/* #channels--regex */}
 
 In addition to wildcards, channel keys can use the `#regex:` prefix to specify a [Go regular expression](https://pkg.go.dev/regexp/syntax) pattern. This enables fine-grained permission control for dynamically-named channels where wildcards are not precise enough.
 
@@ -97,7 +97,7 @@ Regex patterns cannot have an [`alias`](#channels.alias) or [`autoSubscribe`](#c
 
 Each object inside the channels object accepts [`alias`](#channels.alias), [`autoSubscribe`](#channels.autoSubscribe), [`getInfo`](#channels.getInfo), [`historyStart`](#channels.historyStart), [`messages`](#channels.messages), [`omitFromSubCount`](#channels.omitFromSubCount), [`storage`](#channels.storage), [`subscribe`](#channels.subscribe), and [`umdUpdate`](#channels.umdUpdate) attributes.
 
-### `alias` {#channels.alias}
+### `alias` {/* #channels.alias */}
 
 `String` (optional) - Defines a friendly name that clients can use instead of the real channel name when subscribing, unsubscribing, and publishing messages. This is useful for hiding internal channel naming from clients or providing stable client-side references when channel names contain dynamic IDs.
 
@@ -148,7 +148,7 @@ The alias appears in `meta.channelAlias` on `hotsock.subscribed` and `hotsock.un
 }
 ```
 
-### `autoSubscribe` {#channels.autoSubscribe}
+### `autoSubscribe` {/* #channels.autoSubscribe */}
 
 `Boolean` (optional) - When set to `true`, automatically subscribes to this channel upon a successful connection without requiring a separate subscribe request. This claim is supported for connect-scoped tokens only and non-wildcard (`*`) channel directives only. Default is `false`.
 
@@ -187,7 +187,7 @@ Some situations where this is particularly useful:
 If using `autoSubscribe` on a [presence](../channels/presence.mdx) channel, be sure to include a [`uid`](#uid) claim (required for presence), otherwise the connection will receive a `PRESENCE_CHANNEL_USER_ID_REQUIRED` subscribe error message once connected.
 :::
 
-### `getInfo` {#channels.getInfo}
+### `getInfo` {/* #channels.getInfo */}
 
 `Boolean` (optional) - Controls whether this connection can retrieve channel info (subscription count and, for presence channels, the deduplicated member list) via the Client HTTP API [`connection/getChannelInfo`](./client-http-api.mdx#connection/getChannelInfo) endpoint. An active channel subscription is not required. Default is `false`.
 
@@ -202,7 +202,7 @@ If using `autoSubscribe` on a [presence](../channels/presence.mdx) channel, be s
 }
 ```
 
-### `historyStart` {#channels.historyStart}
+### `historyStart` {/* #channels.historyStart */}
 
 `NumericDate` (optional) - Allows the connection to make HTTP API requests to load past messages stored on the channel prior to the time when the current connection's channel subscription was created, where the specified time is the oldest retrievable message. If supplied, the history start time must be expressed as a Unix timestamp - the number of seconds since the Unix epoch. By default, stored message retreval is limited to messages that were published during the lifetime of the active channel subscription.
 
@@ -222,13 +222,13 @@ The following allows retieving stored messages going back to `2024-10-11 00:00:0
 
 If you wanted to allow access to the entire message history of a channel without specifying a particular time, setting `historyStart` to `0` will do the trick.
 
-### `messages` {#channels.messages}
+### `messages` {/* #channels.messages */}
 
 `Object` (optional) - Manages the permissions and directives for client-initiated messages that are published directly to the WebSocket on the channel(s) for the specified events. Each object key is the name of an event and can include asterisks (\*) anywhere in the string to denote wildcards. Keys can also use the `#regex:` prefix to specify a regular expression pattern for matching event names. Each object value is another object with the settings for that event or event pattern.
 
 Each object inside the messages object accepts [`broadcast`](#channels.messages.broadcast), [`echo`](#channels.messages.echo), [`emitPubSubEvent`](#channels.messages.emitPubSubEvent), [`publish`](#channels.messages.publish), [`scheduleBefore`](#channels.messages.scheduleBefore), and [`store`](#channels.messages.store) attributes.
 
-#### Regex patterns {#channels.messages--regex}
+#### Regex patterns {/* #channels.messages--regex */}
 
 In addition to wildcards, event keys can use the `#regex:` prefix to specify a [Go regular expression](https://pkg.go.dev/regexp/syntax) pattern. This enables fine-grained permission control for event names where wildcards are not precise enough.
 
@@ -255,7 +255,7 @@ The following allows the connection to publish `move` events and any event match
 
 Regex patterns in event keys are compiled and validated when the token is parsed. Invalid patterns cause the token to be rejected. Regex patterns follow the same precedence rules as wildcards — an explicit `false` from any matching pattern always wins.
 
-#### `broadcast` {#channels.messages.broadcast}
+#### `broadcast` {/* #channels.messages.broadcast */}
 
 `Boolean` (optional) - Controls whether this connection can publish client-initiated messages to the channel for the specified event without requiring the connection be subscribed to the chnanel. If a client should only send messages to the channel while subscribed, use [`publish`](#channels.messages.publish). `publish` _must not_ be explicitly set to `false` for this to have any effect. Only relevant for connect-scoped tokens, has no effect in subscribe tokens. Default is `false`.
 
@@ -286,7 +286,7 @@ Priority rules for `broadcast` and `publish`:
 - `broadcast: true`, `publish: false`: Deny any message publishing - `publish` takes precedence
   :::
 
-#### `echo` {#channels.messages.echo}
+#### `echo` {/* #channels.messages.echo */}
 
 `Boolean` (optional) - If [publish](#channels.messages.publish) is permitted for this channel and event, the `echo` attribute specifies whether or not this connection that is sending these messages will receive a copy of the message on the channel. Default is `false`. Has no effect if `publish` resolves to `false`.
 
@@ -314,7 +314,7 @@ In the following example, a copy of all `chat` client event messages will be sen
 }
 ```
 
-#### `emitPubSubEvent` {#channels.messages.emitPubSubEvent}
+#### `emitPubSubEvent` {/* #channels.messages.emitPubSubEvent */}
 
 `Boolean` (optional) - If [client-initiated messages](#channels.messages.publish) are permitted for this channel and event, the `emitPubSubEvent` attribute specifies whether or not these events will trigger a [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). Default is `false`. Has no effect if `publish` resolves to `false`. Also has no effect if both SNS and EventBridge events are disabled globally.
 
@@ -340,7 +340,7 @@ In the following example, `chat` client event messages will trigger server-side 
 }
 ```
 
-#### `publish` {#channels.messages.publish}
+#### `publish` {/* #channels.messages.publish */}
 
 `Boolean` (optional) - Controls whether this connection can publish client-initiated messages to the channel for the specified event when subscribed to the channel. If a client needs to send a message to a channel while unsubscribed, use [`broadcast`](#channels.messages.broadcast). Default is `false`.
 
@@ -405,7 +405,7 @@ In the following example, since `chat.*` includes `chat.admin`, this connection 
 
 :::
 
-#### `scheduleBefore` {#channels.messages.scheduleBefore}
+#### `scheduleBefore` {/* #channels.messages.scheduleBefore */}
 
 `NumericDate` (optional) - If [client-initiated message publishing](#channels.messages.publish) is permitted for this channel and event, the `scheduleBefore` attribute specifies the furthest out future time that this connection can schedule messages for delivery. If supplied, the schedule before time must be expressed as a Unix timestamp - the number of seconds since the Unix epoch. By default, or if `scheduleBefore` is provided as `0` or any timestamp in the past, scheduled message publishing is not permitted.
 
@@ -427,7 +427,7 @@ The following allows publishing "reminder" event messages to "mychannel" with sc
 }
 ```
 
-#### `store` {#channels.messages.store}
+#### `store` {/* #channels.messages.store */}
 
 `Integer` (optional) - If [client-initiated message publishing](#channels.messages.publish) is permitted for this channel, the `store` attribute specifies the number of seconds that written messages from this connection are retained in the database after being sent. `0` is the default if unspecified, which does not store the message. `-1` keeps messages forever. The highest number you can specify here is `3155695200`, roughly 100 years.
 
@@ -452,7 +452,7 @@ The following allows sending ephemeral "is-typing" events and saved "chat" event
 }
 ```
 
-### `storage` {#channels.storage}
+### `storage` {/* #channels.storage */}
 
 `Object` (optional) - Manages the permissions and directives for per-key persistent storage on the channel(s). Each object key is the name of a storage key and can include asterisks (\*) anywhere in the string to denote wildcards. Keys can also use the `#regex:` prefix to specify a regular expression pattern for matching storage key names. Each object value is another object with the settings for that storage key or key pattern.
 
@@ -484,7 +484,7 @@ The following grants observe on the `settings` storage key storage key with the 
 }
 ```
 
-#### `emitPubSubEvent` {#channels.storage.emitPubSubEvent}
+#### `emitPubSubEvent` {/* #channels.storage.emitPubSubEvent */}
 
 `Boolean` (optional) - If [`set`](#channels.storage.set) is permitted for matching storage keys, the `emitPubSubEvent` attribute specifies whether or not storage writes from this connection will trigger a [`hotsock.channelStorageUpdated`](../server-api/events.mdx#hotsock.channelStorageUpdated) [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). Default is `false`. Has no effect if `set` resolves to `false`. Also has no effect if both SNS and EventBridge events are disabled globally.
 
@@ -505,7 +505,7 @@ The following grants observe on the `settings` storage key storage key with the 
 }
 ```
 
-#### `get` {#channels.storage.get}
+#### `get` {/* #channels.storage.get */}
 
 `Boolean` (optional) - Controls whether this connection can read the current value of matching storage keys on the channel using a `hotsock.channelStorageGet` message. The response is a `hotsock.channelStorageData` message containing the key, value, and metadata of the last writer. An active channel subscription is not required — connect token permissions alone are sufficient. Default is `false`.
 
@@ -541,7 +541,7 @@ Also available via the Client HTTP API at [`connection/channelStorageGet`](./cli
 
 If no value has been set for the key, `data` and `meta` are `null`.
 
-#### `observe` {#channels.storage.observe}
+#### `observe` {/* #channels.storage.observe */}
 
 `Boolean` (optional) - Controls whether this connection receives real-time `hotsock.channelStorageUpdated` messages when matching storage keys are modified on the channel. When a connection subscribes to a channel, all storage entries matching observed key patterns are delivered as `hotsock.channelStorageUpdated` messages immediately after the `hotsock.subscribed` message. Default is `false`.
 
@@ -571,7 +571,7 @@ When a storage value is set or updated by any client, observers receive:
 Unlike message echo behavior, `hotsock.channelStorageUpdated` is always delivered back to the connection that set the value (when that connection observes the key). Storage updates are state notifications, not message echoes.
 :::
 
-#### `scheduleBefore` {#channels.storage.scheduleBefore}
+#### `scheduleBefore` {/* #channels.storage.scheduleBefore */}
 
 `NumericDate` (optional) - If [`set`](#channels.storage.set) is permitted for matching storage keys, the `scheduleBefore` attribute specifies the furthest out future time that this connection can schedule storage writes for. If supplied, the schedule before time must be expressed as a Unix timestamp — the number of seconds since the Unix epoch. By default, or if `scheduleBefore` is provided as `0` or any timestamp in the past, scheduled storage writes are not permitted.
 
@@ -593,7 +593,7 @@ The following allows setting `session.*` storage keys on "mychannel" with schedu
 }
 ```
 
-#### `set` {#channels.storage.set}
+#### `set` {/* #channels.storage.set */}
 
 `Boolean` (optional) - Controls whether this connection can write values to matching storage keys on the channel using a `hotsock.channelStorageSet` message. Writes that don't change the value skip subscriber fan-out entirely. Setting `data` to `null` or `{}` clears the storage entry. An active channel subscription is not required — connect token permissions alone are sufficient. Default is `false`.
 
@@ -624,7 +624,7 @@ Also available via the Client HTTP API at [`connection/channelStorageSet`](./cli
 
 The `hotsock.channelStorageSet` event can also be published via the server-side [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) and [HTTP URL](../server-api/publish-messages.mdx#publish-with-http-url) publish APIs by specifying `"event": "hotsock.channelStorageSet"` with a `"key"` field. When published via the server API, `set` permissions are not checked — the server is always authorized.
 
-#### `store` {#channels.storage.store}
+#### `store` {/* #channels.storage.store */}
 
 `Integer` (optional) - The retention duration in seconds for storage entries written by this connection to matching keys. `-1` keeps entries forever (the default when `set` is allowed but `store` is not explicitly configured). `0` is not valid for storage entries. The highest number you can specify is `3155695200`, roughly 100 years.
 
@@ -645,7 +645,7 @@ The `hotsock.channelStorageSet` event can also be published via the server-side 
 }
 ```
 
-### `umdUpdate` {#channels.umdUpdate}
+### `umdUpdate` {/* #channels.umdUpdate */}
 
 `Boolean` (optional) - Controls whether this connection can update its user metadata (`umd`) on a per-channel subscription using the `hotsock.umdUpdate` client command. This allows a connected client to change its `umd` on a specific channel without needing to unsubscribe and resubscribe. Requires a [`umd`-scoped](#scope) token. Default is `false`.
 
@@ -671,7 +671,7 @@ To update `umd` on a channel, send a `hotsock.umdUpdate` message on the WebSocke
 > {"event":"hotsock.umdUpdate", "channel":"presence.chat", "data":{"token":"eyJ..."}}
 ```
 
-### `omitFromSubCount` {#channels.omitFromSubCount}
+### `omitFromSubCount` {/* #channels.omitFromSubCount */}
 
 `Boolean` (optional) - By default, subscribing to a channel increments an attribute that tracks the number of connections subscribed to a channel, and unsubscribing decrements that number. Those increment/decrement operations also publish [hotsock.channelUpdated](../server-api/events.mdx#hotsock.channelUpdated) pub/sub events. Many use cases have no need for tracking subscriber counts on a channel, so you can set `omitFromSubCount` to `true` to reduces costs and contention for DynamoDB writes, Lambda invocations for DynamoDB Stream processing, and SNS/EventBridge events. Default is `false`.
 
@@ -697,7 +697,7 @@ Setting `omitFromSubCount` to `true` _does not_ prevent [`hotsock.memberAdded`](
 When mixed usage of this claim occurs on a given channel (some connections omit counts, others do not), channel subscription counts become inconsistent with actual connection counts.
 :::
 
-### `subscribe` {#channels.subscribe}
+### `subscribe` {/* #channels.subscribe */}
 
 `Boolean` (optional) - Whether or not to allow the connection to subscribe to the channel(s) specified by the object key. Default is `false`.
 
@@ -727,7 +727,7 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 }
 ```
 
-## `connectionId` {#connectionId}
+## `connectionId` {/* #connectionId */}
 
 `String` (optional) - If granting additional permissions to an existing connection in a subscribe token, either `connectionId` or `uid` is required. If `connectionId` is specified, the token cannot be used to initiate a new WebSocket connection and can only be used on the existing connection matching the specified connection ID, even if the token has an `connect` scope.
 
@@ -737,7 +737,7 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 }
 ```
 
-## `exp` - Expiration {#exp}
+## `exp` - Expiration {/* #exp */}
 
 `NumericDate` (required) - The token expiration must be expressed as a Unix timestamp - the number of seconds since the Unix epoch. It's recommended that this value be set as low as possible, often just seconds in the future. The token must be used before this expiration, but once used it grants up to 2 hours of connection time and use of the WebSocket.
 
@@ -747,7 +747,7 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 }
 ```
 
-## `iat` - Issued At {#iat}
+## `iat` - Issued At {/* #iat */}
 
 `NumericDate` (optional) - The issued at claim identifies the time when the JWT was issued, expressed as a Unix timestamp. Hotsock does not rely on this claim for authorization, but it's common for issuers to provide it by default which is why it's mentioned here.
 
@@ -757,7 +757,7 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 }
 ```
 
-## `iss` - Issuer {#iss}
+## `iss` - Issuer {/* #iss */}
 
 `String` (optional) - The issuer claim is [optionally set in `TokenIssuerParameter`](./authentication.mdx#update-the-stack) when installing or updating the Hotsock stack. If enabled, every issued token must include it with the value set in the installation settings.
 
@@ -767,7 +767,7 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 }
 ```
 
-## `jti` - JWT ID {#jti}
+## `jti` - JWT ID {/* #jti */}
 
 `String` (optional) - The JWT ID claim provides a unique identifier for the JWT. A UUID is often a good fit.
 
@@ -777,7 +777,7 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 }
 ```
 
-## `keepAlive` {#keepAlive}
+## `keepAlive` {/* #keepAlive */}
 
 `Boolean` (optional) - The keep-alive claim enables server-initiated `hotsock.keepAlive` messages to be sent to the connection to keep the connection alive as long as possible, preventing server-initiated disconnects when no messages are sent or received for more than 10 minutes. Default is `false`.
 
@@ -787,7 +787,7 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 }
 ```
 
-## `nbf` - Not Before {#nbf}
+## `nbf` - Not Before {/* #nbf */}
 
 `NumericDate` (optional) - The not-before claim specifies the earliest time that a token can be used, expressed as a Unix timestamp. This allows you to issue and distribute tokens prior to them being usable. If combined with [`singleUse`](#singleUse) and a failed attempt to use the token before it is valid occurs, it does not count as token use.
 
@@ -797,7 +797,7 @@ You can also explicitly set `subscribe` to `false`, preventing subscriptions to 
 }
 ```
 
-## `scope`
+## `scope` {/* #scope */}
 
 `String` (required) - Space-separated list of scopes for when and where the token can be used. `connect`, `subscribe`, and `umd` are currently supported.
 
@@ -836,7 +836,7 @@ Although Hotsock supports granting multiple scopes, you likely don't want to aut
 Say you issue a token with `{"scope":"connect subscribe","uid":"jim","channels":{...}}` with the purpose of allowing Jim to subscribe to a newly-authorized channel after the WebSocket connection has already been established. Dual scopes here would unnecessarily also allow the issued token to open an additional WebSocket connection alongside the existing one.
 :::
 
-## `singleUse` {#singleUse}
+## `singleUse` {/* #singleUse */}
 
 `Boolean` (optional) - Setting to `true` ensures that this JWT is only used for a single connect operation (when used with a `connect` scope) or a single subscribe operation (when used with a `subscribe` scope). Follow-up attempts to use the same JWT results in denied access. If enabled, `singleUse` also requires the [`jti`](#jti) claim to be set to a unique value (UUID is a good choice). Default is `false`.
 
@@ -847,7 +847,7 @@ Say you issue a token with `{"scope":"connect subscribe","uid":"jim","channels":
 }
 ```
 
-## `umdPropagate` {#umdPropagate}
+## `umdPropagate` {/* #umdPropagate */}
 
 `Boolean` (optional) - When set to `true` alongside [`umdUpdate`](#umdUpdate), a connection-level `hotsock.umdUpdate` (without a channel) will also propagate the updated user metadata to all existing subscriptions on the connection. This causes presence channels to emit [`hotsock.memberUpdated`](../channels/presence.mdx#member-updated) events for each affected subscription. Only effective when `umdUpdate` is also `true`. Default is `false`.
 
@@ -862,7 +862,7 @@ Say you issue a token with `{"scope":"connect subscribe","uid":"jim","channels":
 }
 ```
 
-## `umdUpdate` {#umdUpdate}
+## `umdUpdate` {/* #umdUpdate */}
 
 `Boolean` (optional) - When set to `true`, permits updating the connection's default user metadata without reconnecting by sending a `hotsock.umdUpdate` command without a channel. The connection's stored `UserMetadata` is updated so that future implicit subscriptions (subscriptions authorized by the connect token rather than a separate subscribe token) inherit the updated value. Requires a [`umd`-scoped](#scope) token. Default is `false`.
 
@@ -884,7 +884,7 @@ To update the connection's default user metadata, send a `hotsock.umdUpdate` mes
 > {"event":"hotsock.umdUpdate", "data":{"token":"eyJ..."}}
 ```
 
-## `uid` - User ID {#uid}
+## `uid` - User ID {/* #uid */}
 
 `String` (optional) - The user ID claim identifies the connected user in any channels where they subscribe. It is available to all other subscribers when joining presence channels and included in all published messages that are initated by this connection. Must not exceed 128 characters.
 
@@ -898,7 +898,7 @@ The `uid` claim is required (and must not be empty) when joining a presence chan
 }
 ```
 
-## `umd` - User Metadata {#umd}
+## `umd` - User Metadata {/* #umd */}
 
 `JSON` (optional) - The user metadata claim may contain up to 1 KiB of data about this connected user. It is made available to all other members in subscribed presence channels and is included in all published messages that are initiated by this connection. This can be anything that is valid JSON - object, array, string, number, boolean, or `null`. Binary data must be Base64-encoded to a string.
 

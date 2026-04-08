@@ -4,7 +4,7 @@ Standard channels allow an unlimited number of subscribers to receive and exchan
 
 For channels where subscribers need to know who else is connected, use [presence channels](./presence.mdx).
 
-## Subscribe
+## Subscribe {/* #subscribe */}
 
 Once connected to the WebSocket with a token authorizing subscribe on a channel, subscribe by sending a `hotsock.subscribe` message:
 
@@ -38,7 +38,7 @@ From this point on, any messages published to this channel (by your backend or b
 You can skip the manual subscribe step entirely by setting [`autoSubscribe`](../connections/claims.mdx#channels.autoSubscribe) to `true` in your token claims. The channel is subscribed automatically when the connection is established.
 :::
 
-## Unsubscribe
+## Unsubscribe {/* #unsubscribe */}
 
 To stop receiving messages from a channel, send a `hotsock.unsubscribe` message:
 

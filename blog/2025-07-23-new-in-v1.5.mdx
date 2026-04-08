@@ -10,7 +10,7 @@ The latest Hotsock release is out and allows **scheduling messages for future de
 
 {/* truncate */}
 
-### Scheduling messages
+### Scheduling messages {/* #scheduling-messages */}
 
 In Hotsock v1.5, you can now **schedule messages for future delivery**, backed by [Amazon EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html). This feature is available when publishing messages via Lambda, HTTP URL, or client WebSocket/HTTP, allowing you to publish a message now, but have it wait to send to channel subscribers until a specific time in the future.
 
@@ -60,20 +60,20 @@ For client-initiated scheduled messages, you'll need to grant permission using t
 
 Note that this feature currently supports **one-time scheduled messages only** - recurring schedules are not currently supported in Hotsock.
 
-### Web console improvements
+### Web console improvements {/* #web-console-improvements */}
 
 The [web console](/docs/server-api/web-console/) has received several useful updates to improve your debugging and testing experience.
 
-#### Send messages via HTTP API
+#### Send messages via HTTP API {/* #send-messages-via-http-api */}
 
 You can now **send both standard and raw messages directly from the web console** using the [client HTTP API](/docs/connections/client-http-api/). This makes it easier to test message publishing without needing to write custom client code or use external tools.
 
 The console provides interface options for both message types, allowing you to quickly test your channel permissions, message formatting, and subscriber delivery.
 
-#### Message timestamps
+#### Message timestamps {/* #message-timestamps */}
 
 The [web console](/docs/server-api/web-console/) now **displays timestamps alongside each message** with millisecond precision, so you can see exactly when messages were sent or received. This is particularly helpful when debugging message timing issues or understanding the sequence of events in your channels.
 
-### Wrapping up
+### Wrapping up {/* #wrapping-up */}
 
 Existing installations with auto-update enabled are already running v1.5 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time. A [full changelog](/docs/installation/changelog/#v1.5.0) is available with the complete list of changes included in this release.

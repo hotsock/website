@@ -7,7 +7,7 @@ toc_max_heading_level: 4
 
 In addition to WebSocket interactions, connected clients can also make use of an HTTP API for publishing messages, listing message history, reading and writing channel storage, and updating user metadata. All requests **_must_ be `POST` requests** and **_must_ have URL-encoded `connectionId` and `connectionSecret`** query parameters set.
 
-## Determine your API URL
+## Determine your API URL {/* #determine-your-api-url */}
 
 Your installation's HTTP API URL can be found in your CloudFormation stack outputs screen under [`HttpApiUrl`](../installation/initial-setup.mdx#HttpApiUrl). Example: `https://r6zcm2.lambda-url.us-east-1.on.aws/`
 
@@ -15,7 +15,7 @@ Your installation's HTTP API URL can be found in your CloudFormation stack outpu
 Custom Domains are not currently supported for HTTP API endpoints.
 :::
 
-## Authentication
+## Authentication {/* #authentication */}
 
 In the `hotsock.connected` message received when a WebSocket connection is established, the `data` payload contains the `connectionId` and `connectionSecret`, which can be used to authenticate HTTP API requests.
 
@@ -45,13 +45,13 @@ https://r6zcm2.lambda-url.us-east-1.on.aws/connection/publishMessage?connectionI
 Notice the **%3d** in `JCnTZd_KoAMCF-A%3d`, replacing the **=** in the original connection ID `JCnTZd_KoAMCF-A=`. Connection IDs typically have an equals sign as their suffix, so this value must be URL encoded for the URL to be parsed correctly.
 :::
 
-### Permissions
+### Permissions {/* #permissions */}
 
 HTTP API requests are authorized using the permissions from the connection's connect token. If the connection also has an active channel subscription created via WebSocket (optionally with a [subscribe token](./claims.mdx#scope) that expanded permissions), those additional directives are honored by the HTTP API as well.
 
 There is no way to pass a subscribe token directly to the HTTP API — permissions can only be expanded by subscribing via the WebSocket first.
 
-## `connection/listMessages` {#connection/listMessages}
+## `connection/listMessages` {/* #connection/listMessages */}
 
 List the message history for a channel. By default, a connection can only list messages for channels that they are subscribed to, limited to messages that were published during the timeframe of the active subscription on the current WebSocket connection. If you subscribed to a channel 2 minutes ago, you'll only be able to list message history on that channel for the past 2 minutes.
 
@@ -59,7 +59,7 @@ When issuing a connect or subscribe token, specify the [`historyStart`](./claims
 
 This endpoint will return up to 100 messages or up to 1MB of data, whichever comes first. Fetch subsequent pages using `before` or `after`, depending on your use case.
 
-#### `after` {#connection/listMessages.after}
+#### `after` {/* #connection/listMessages.after */}
 
 String (optional) - Load messages after (newer than) the message with the ID specified here. Has no effect if `reverse` is `true`.
 
@@ -67,7 +67,7 @@ Message IDs are [ULIDs](https://github.com/ulid/spec), making them time-sortable
 
 Example: `01JA3HVNF6E89HDT1ABRFWJ8C8`
 
-#### `before` {#connection/listMessages.before}
+#### `before` {/* #connection/listMessages.before */}
 
 String (optional) - Load messages before (older than) the message with the ID specified here. Has no effect if `reverse` is `false` (which is the default).
 
@@ -75,19 +75,19 @@ Message IDs are [ULIDs](https://github.com/ulid/spec), making them time-sortable
 
 Example: `01JA3HVNF6E89HDT1ABRFWJ8C8`
 
-#### `channel` {#connection/listMessages.channel}
+#### `channel` {/* #connection/listMessages.channel */}
 
 String (required) - The name of the channel to query message history.
 
-#### `reverse` {#connection/listMessages.reverse}
+#### `reverse` {/* #connection/listMessages.reverse */}
 
 Boolean (optional) - If set to `true`, lists messages from newest to oldest. Default is `false`.
 
-### Example {#connection/listMessages--example}
+### Example {/* #connection/listMessages--example */}
 
 The following will load up to 100 of the most recent messages from the `my-channel` channel.
 
-#### Request {#connection/listMessages--example-request}
+#### Request {/* #connection/listMessages--example-request */}
 
 ```javascript
 fetch(
@@ -99,7 +99,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/listMessages--example-response}
+#### Response {/* #connection/listMessages--example-response */}
 
 ```json
 {
@@ -158,7 +158,7 @@ fetch(
 }
 ```
 
-## `connection/publishMessage` {#connection/publishMessage}
+## `connection/publishMessage` {/* #connection/publishMessage */}
 
 Publish a message to a channel. For `publishMessage` requests to succeed, the connection must already be subscribed to the channel and must have [`publish`](./claims.mdx#channels.messages.publish) permissions granted to the client.
 
@@ -168,23 +168,23 @@ You might wonder when it's appropriate to send a message [via the WebSocket](htt
 HTTP API calls give you the control of a full HTTP request/response. If you receive a `202 Accepted` response, you can be certain that the message was received by the server.
 :::
 
-#### `channel` {#connection/publishMessage.channel}
+#### `channel` {/* #connection/publishMessage.channel */}
 
 `String` (required) - The name of the channel where this message will be published. This can be any string up to 256 characters, but must not contain any asterisk (`*`), number sign (`#`), comma (`,`), or whitespace/newline characters.
 
-#### `data` {#connection/publishMessage.data}
+#### `data` {/* #connection/publishMessage.data */}
 
 `JSON` (optional) - Up to 32KiB of custom data specific to your application. This can be anything that is valid JSON - object, array, string, number, boolean, or `null`. Binary data must be Base64-encoded to a string.
 
-#### `eagerIdGeneration` {#connection/publishMessage.eagerIdGeneration}
+#### `eagerIdGeneration` {/* #connection/publishMessage.eagerIdGeneration */}
 
 `Boolean` (optional) - If you need to store a copy of the message ID that is published to the channel for follow-up requests, set this to `true`. Default is `false`. [Learn more](../server-api/publish-messages.mdx#message-format.eagerIdGeneration)
 
-#### `event` {#connection/publishMessage.event}
+#### `event` {/* #connection/publishMessage.event */}
 
 `String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` and must not contain any asterisk (`*`) characters.
 
-#### `scheduleExpression` {#connection/publishMessage.scheduleExpression}
+#### `scheduleExpression` {/* #connection/publishMessage.scheduleExpression */}
 
 `String` (optional) - Schedule the message for future delivery using [EventBridge Scheduler one-time `at()` syntax](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#one-time). The connection must have the [`scheduleBefore`](./claims.mdx#channels.messages.scheduleBefore) permission claim for the channel and event. If specified, the message will be delivered at the scheduled time rather than immediately.
 
@@ -193,7 +193,7 @@ Example values:
 - `"at(2025-07-24T14:30:00)"` - Schedule for July 24, 2025 at 2:30 PM UTC
 - `"at(2025-12-25T09:00:00)"` - Schedule for December 25, 2025 at 9:00 AM UTC
 
-#### `scheduleExpressionTimezone` {#connection/publishMessage.scheduleExpressionTimezone}
+#### `scheduleExpressionTimezone` {/* #connection/publishMessage.scheduleExpressionTimezone */}
 
 `String` (optional) - The timezone for the `scheduleExpression`. Must be a valid [IANA timezone identifier](https://www.iana.org/time-zones). If not specified, the schedule expression is interpreted as UTC. Has no effect if `scheduleExpression` is not provided.
 
@@ -203,11 +203,11 @@ Example values:
 - `"Europe/London"` - British Time
 - `"Asia/Tokyo"` - Japan Standard Time
 
-### Example {#connection/publishMessage--example}
+### Example {/* #connection/publishMessage--example */}
 
 The following will publish a message to the `my-channel` channel.
 
-#### Request {#connection/publishMessage--example-request}
+#### Request {/* #connection/publishMessage--example-request */}
 
 ```javascript
 fetch(
@@ -223,7 +223,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/publishMessage--example-response}
+#### Response {/* #connection/publishMessage--example-response */}
 
 Expect a `202 Accepted` status code for successful publishes.
 
@@ -234,11 +234,11 @@ Expect a `202 Accepted` status code for successful publishes.
 }
 ```
 
-### Scheduled Message Example {#connection/publishMessage--scheduled-example}
+### Scheduled Message Example {/* #connection/publishMessage--scheduled-example */}
 
 The following will schedule a message to be delivered to the `my-channel` channel on July 24, 2025 at 9:00 AM Eastern Time.
 
-#### Request {#connection/publishMessage--scheduled-example-request}
+#### Request {/* #connection/publishMessage--scheduled-example-request */}
 
 ```javascript
 fetch(
@@ -258,7 +258,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/publishMessage--scheduled-example-response}
+#### Response {/* #connection/publishMessage--scheduled-example-response */}
 
 Expect a `202 Accepted` status code for successful scheduled message requests, with a `scheduleArn` value from EventBridge Scheduler that you could use to delete the scheduled message, if needed.
 
@@ -270,21 +270,21 @@ Expect a `202 Accepted` status code for successful scheduled message requests, w
 }
 ```
 
-## `connection/channelStorageGet` {#connection/channelStorageGet}
+## `connection/channelStorageGet` {/* #connection/channelStorageGet */}
 
 Read a channel storage entry value. An active channel subscription is not required — connect token [`get`](./claims.mdx#channels.storage.get) permissions are sufficient.
 
-#### `channel` {#connection/channelStorageGet.channel}
+#### `channel` {/* #connection/channelStorageGet.channel */}
 
 `String` (required) - The name of the channel to read the storage entry from.
 
-#### `key` {#connection/channelStorageGet.key}
+#### `key` {/* #connection/channelStorageGet.key */}
 
 `String` (required) - The storage key to read.
 
-### Example {#connection/channelStorageGet--example}
+### Example {/* #connection/channelStorageGet--example */}
 
-#### Request {#connection/channelStorageGet--example-request}
+#### Request {/* #connection/channelStorageGet--example-request */}
 
 ```javascript
 fetch(
@@ -296,7 +296,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/channelStorageGet--example-response}
+#### Response {/* #connection/channelStorageGet--example-response */}
 
 Expect a `200 OK` status code for successful reads.
 
@@ -312,33 +312,33 @@ Expect a `200 OK` status code for successful reads.
 
 If no value has been set for the key, `data` and `meta` are `null`.
 
-## `connection/channelStorageSet` {#connection/channelStorageSet}
+## `connection/channelStorageSet` {/* #connection/channelStorageSet */}
 
 Write a channel storage entry value. An active channel subscription is not required — connect token [`set`](./claims.mdx#channels.storage.set) permissions are sufficient.
 
-#### `channel` {#connection/channelStorageSet.channel}
+#### `channel` {/* #connection/channelStorageSet.channel */}
 
 `String` (required) - The name of the channel where the storage entry will be written.
 
-#### `key` {#connection/channelStorageSet.key}
+#### `key` {/* #connection/channelStorageSet.key */}
 
 `String` (required) - The storage key to write.
 
-#### `data` {#connection/channelStorageSet.data}
+#### `data` {/* #connection/channelStorageSet.data */}
 
 `JSON` (optional) - The value to store. Setting `data` to `null` or `{}` clears the storage entry.
 
-#### `scheduleExpression` {#connection/channelStorageSet.scheduleExpression}
+#### `scheduleExpression` {/* #connection/channelStorageSet.scheduleExpression */}
 
 `String` (optional) - Schedule the storage write for future delivery using [EventBridge Scheduler one-time `at()` syntax](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#one-time). The connection must have the [`scheduleBefore`](./claims.mdx#channels.storage.scheduleBefore) permission for the matching storage key. If specified, the storage entry will be written at the scheduled time rather than immediately.
 
-#### `scheduleExpressionTimezone` {#connection/channelStorageSet.scheduleExpressionTimezone}
+#### `scheduleExpressionTimezone` {/* #connection/channelStorageSet.scheduleExpressionTimezone */}
 
 `String` (optional) - The timezone for the `scheduleExpression`. Must be a valid [IANA timezone identifier](https://www.iana.org/time-zones). If not specified, the schedule expression is interpreted as UTC. Has no effect if `scheduleExpression` is not provided.
 
-### Example {#connection/channelStorageSet--example}
+### Example {/* #connection/channelStorageSet--example */}
 
-#### Request {#connection/channelStorageSet--example-request}
+#### Request {/* #connection/channelStorageSet--example-request */}
 
 ```javascript
 fetch(
@@ -354,7 +354,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/channelStorageSet--example-response}
+#### Response {/* #connection/channelStorageSet--example-response */}
 
 Expect a `202 Accepted` status code for successful writes.
 
@@ -365,25 +365,25 @@ Expect a `202 Accepted` status code for successful writes.
 }
 ```
 
-## `connection/channelStorageList` {#connection/channelStorageList}
+## `connection/channelStorageList` {/* #connection/channelStorageList */}
 
 List channel storage entries. Returns entries filtered by the connection's per-key [`get`](./claims.mdx#channels.storage.get) permissions. An active channel subscription is not required — connect token permissions are sufficient.
 
-#### `channel` {#connection/channelStorageList.channel}
+#### `channel` {/* #connection/channelStorageList.channel */}
 
 `String` (required) - The name of the channel to list storage entries from.
 
-#### `keys` {#connection/channelStorageList.keys}
+#### `keys` {/* #connection/channelStorageList.keys */}
 
 `Array[String]` (optional) - Specific storage keys to retrieve. If provided, only entries matching these keys (and permitted by `get` permissions) are returned. Maximum of 100 keys per request.
 
-#### `after` {#connection/channelStorageList.after}
+#### `after` {/* #connection/channelStorageList.after */}
 
 `String` (optional) - For pagination, the storage key to start after. Returns entries with keys that sort after this value.
 
-### Example {#connection/channelStorageList--example}
+### Example {/* #connection/channelStorageList--example */}
 
-#### Request {#connection/channelStorageList--example-request}
+#### Request {/* #connection/channelStorageList--example-request */}
 
 ```javascript
 fetch(
@@ -395,7 +395,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/channelStorageList--example-response}
+#### Response {/* #connection/channelStorageList--example-response */}
 
 Expect a `200 OK` status code for successful reads.
 
@@ -418,17 +418,17 @@ Expect a `200 OK` status code for successful reads.
 
 If there are no entries or no entries the connection has `get` permission for, `items` is an empty array.
 
-## `connection/getChannelInfo` {#connection/getChannelInfo}
+## `connection/getChannelInfo` {/* #connection/getChannelInfo */}
 
 Retrieve channel info without requiring an active subscription. Returns the subscription count and, for presence channels, the deduplicated member list. Controlled by the [`getInfo`](./claims.mdx#channels.getInfo) channel directive.
 
-#### `channel` {#connection/getChannelInfo.channel}
+#### `channel` {/* #connection/getChannelInfo.channel */}
 
 `String` (required) - The name of the channel to get info for.
 
-### Example {#connection/getChannelInfo--example}
+### Example {/* #connection/getChannelInfo--example */}
 
-#### Request {#connection/getChannelInfo--example-request}
+#### Request {/* #connection/getChannelInfo--example-request */}
 
 ```javascript
 fetch(
@@ -440,7 +440,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/getChannelInfo--example-response}
+#### Response {/* #connection/getChannelInfo--example-response */}
 
 Expect a `200 OK` status code for successful reads.
 
@@ -462,23 +462,23 @@ Expect a `200 OK` status code for successful reads.
 
 For non-presence channels, the `members` field is omitted from the response.
 
-## `connection/umdUpdate` {#connection/umdUpdate}
+## `connection/umdUpdate` {/* #connection/umdUpdate */}
 
 Update user metadata (`umd`) on a specific channel subscription or on the connection itself. This provides an HTTP alternative to sending the `hotsock.umdUpdate` command over the WebSocket.
 
-#### `channel` {#connection/umdUpdate.channel}
+#### `channel` {/* #connection/umdUpdate.channel */}
 
 `String` (optional) - The name of the channel where the subscription's `umd` should be updated. If omitted, the connection's default user metadata is updated instead (requires the [`umdUpdate`](./claims.mdx#umdUpdate) top-level claim in the token).
 
-#### `token` {#connection/umdUpdate.token}
+#### `token` {/* #connection/umdUpdate.token */}
 
 `String` (required) - A signed JWT with [`umd` scope](./claims.mdx#scope). The token must include either a `connectionId` matching the authenticated connection or a `uid` matching the connection's user ID. For per-channel updates, the token must include [`channels`](./claims.mdx#channels) with the [`umdUpdate`](./claims.mdx#channels.umdUpdate) directive for the target channel. The new `umd` value is taken from the token's [`umd`](./claims.mdx#umd) claim.
 
-### Per-Channel Example {#connection/umdUpdate--channel-example}
+### Per-Channel Example {/* #connection/umdUpdate--channel-example */}
 
 Update user metadata on a specific presence channel subscription.
 
-#### Request {#connection/umdUpdate--channel-example-request}
+#### Request {/* #connection/umdUpdate--channel-example-request */}
 
 ```javascript
 fetch(
@@ -493,7 +493,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/umdUpdate--channel-example-response}
+#### Response {/* #connection/umdUpdate--channel-example-response */}
 
 Expect a `200 OK` status code for successful updates.
 
@@ -501,11 +501,11 @@ Expect a `200 OK` status code for successful updates.
 {}
 ```
 
-### Connection-Level Example {#connection/umdUpdate--connection-example}
+### Connection-Level Example {/* #connection/umdUpdate--connection-example */}
 
 Update the connection's default user metadata. Omit the `channel` field.
 
-#### Request {#connection/umdUpdate--connection-example-request}
+#### Request {/* #connection/umdUpdate--connection-example-request */}
 
 ```javascript
 fetch(
@@ -519,7 +519,7 @@ fetch(
 )
 ```
 
-#### Response {#connection/umdUpdate--connection-example-response}
+#### Response {/* #connection/umdUpdate--connection-example-response */}
 
 Expect a `200 OK` status code for successful updates.
 

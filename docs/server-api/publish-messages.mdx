@@ -9,7 +9,7 @@ import TabItem from "@theme/TabItem"
 
 Sending server-side messages to subscribers on Hotsock channels is the most common way to enable real-time features in your applications. Hotsock allows you to publish messages from your backend by invoking a Lambda function or by making an authenticated HTTP request. Connected clients can also send [client-initiated messages](../channels/client-messages.mdx).
 
-## Publish with Lambda {#publish-with-lambda}
+## Publish with Lambda {/* #publish-with-lambda */}
 
 :::tip
 **This is the recommended method for publishing events from your backend.** If you have the [AWS SDK](https://aws.amazon.com/developer/tools/) available in your backend application or are able to add it as a dependency, take this route.
@@ -147,7 +147,7 @@ aws lambda invoke \
 
 For more complete examples - package imports, configuring the Lambda client, etc., reference the documentation for your preferred SDK.
 
-#### Permissions to invoke Lambda {#publish-with-lambda-permissions}
+#### Permissions to invoke Lambda {/* #publish-with-lambda-permissions */}
 
 In each language-specific example below, `lambdaClient` or `lambda_client` is assumed to be a client configured to run as an IAM role or user that has permission to invoke your installation's publish function. Copy your function Arn from your installation's [`PublishFunctionArn`](../installation/initial-setup.mdx#PublishFunctionArn) output - the permissions assigned to your IAM role or user should look something like this:
 
@@ -166,7 +166,7 @@ In each language-specific example below, `lambdaClient` or `lambda_client` is as
 }
 ```
 
-## Publish with HTTP URL {#publish-with-http-url}
+## Publish with HTTP URL {/* #publish-with-http-url */}
 
 :::warning
 
@@ -179,7 +179,7 @@ There are some downsides to using this publish method. It is and will continue t
 
 :::
 
-#### Access your API keys {#publish-with-http-url-access-api-keys}
+#### Access your API keys {/* #publish-with-http-url-access-api-keys */}
 
 A pair of API keys were created alongside your installation. Their values are available by following the URLs in [HttpApiSecretKey1ConsoleUrl](../installation/initial-setup.mdx#HttpApiSecretKey1ConsoleUrl) and [HttpApiSecretKey2ConsoleUrl](../installation/initial-setup.mdx#HttpApiSecretKey2ConsoleUrl).
 
@@ -187,11 +187,11 @@ A pair of API keys were created alongside your installation. Their values are av
 You can use either key for HTTP-based message publishing. There are two keys to allow for key rotation without downtime - you can change the value of one while continuing to use the other.
 :::
 
-#### Get your publish URL {#publish-with-http-url-get-url}
+#### Get your publish URL {/* #publish-with-http-url-get-url */}
 
 Your HTTP URL is displayed in the [PublishHttpApiUrl](../installation/initial-setup.mdx#PublishHttpApiUrl) stack output of your installation.
 
-#### Make a publish request {#publish-with-http-url-make-request}
+#### Make a publish request {/* #publish-with-http-url-make-request */}
 
 Using any HTTP client in your code, make a `POST` request to your publish URL with the `Authentication` header set to `Bearer YOUR_API_KEY` and a JSON body containing at least an `event` and `channel` to publish to. Refer to the [message format](#message-format) guide below for other available fields.
 
@@ -209,7 +209,7 @@ curl -X "POST" "https://e4zdy87vg9byo4ugvldt3rmn440lflwe.lambda-url.us-east-1.on
 
 You can adapt this for use with any HTTP client library in any programming language.
 
-## Message format {#message-format}
+## Message format {/* #message-format */}
 
 The shape of a message is the same whether you're [invoking Lambda directly](#publish-with-lambda) or using the [HTTP API](#publish-with-http-url). At a minimum all messages must contain a `channel` and an `event`. Additional supported attributes are listed below.
 
@@ -220,15 +220,15 @@ The shape of a message is the same whether you're [invoking Lambda directly](#pu
 }
 ```
 
-### `channel` {#message-format.channel}
+### `channel` {/* #message-format.channel */}
 
 `String` (required) - The name of the channel where this message will be published. This can be any string up to 256 characters, but must not contain any asterisk (`*`), number sign (`#`), comma (`,`), or whitespace/newline characters.
 
-### `data` {#message-format.data}
+### `data` {/* #message-format.data */}
 
 `JSON` (optional) - Up to 32KiB of custom data specific to your application. This can be anything that is valid JSON - object, array, string, number, boolean, or `null`. Binary data must be Base64-encoded to a string.
 
-### `deduplicationId` {#message-format.deduplicationId}
+### `deduplicationId` {/* #message-format.deduplicationId */}
 
 `String` (optional) - If supplied as a non-empty string and if multiple messages with the same `deduplicationId` value are received within 5 minutes of each other, only the first message will be published. Additional copies will be dropped.
 
@@ -238,7 +238,7 @@ If you're publishing from a source that retries upon failure, set this to a valu
 Providing a `deduplicationId` while also enabling `eagerIdGeneration` is not recommended. See [below](#message-format.eagerIdGeneration) for details.
 :::
 
-### `eagerIdGeneration` {#message-format.eagerIdGeneration}
+### `eagerIdGeneration` {/* #message-format.eagerIdGeneration */}
 
 `Boolean` (optional) - If you need to store a backend copy of the message ID that is published to the channel for follow-up requests, set this to `true`. Default is `false`.
 
@@ -257,19 +257,19 @@ Deduplication is handled [internally by SQS](https://docs.aws.amazon.com/AWSSimp
 
 :::
 
-### `emitPubSubEvent` {#message-format.emitPubSubEvent}
+### `emitPubSubEvent` {/* #message-format.emitPubSubEvent */}
 
 `Boolean` (optional) - Whether or not this message will trigger a [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). This setting has no effect if both SNS and EventBridge events are disabled globally. Default is `false`.
 
-### `event` {#message-format.event}
+### `event` {/* #message-format.event */}
 
 `String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` or `#`, and must not contain any asterisk (`*`) characters. The one exception is `hotsock.channelStorageSet`, which can be used to set [channel storage](../connections/claims.mdx#channels.storage) entries from the server side (requires the [`key`](#message-format.key) field).
 
-### `key` {#message-format.key}
+### `key` {/* #message-format.key */}
 
 `String` (conditional) - The storage key to set when publishing a `hotsock.channelStorageSet` event. Required when `event` is `hotsock.channelStorageSet`, ignored otherwise. Storage keys must not be blank, must be no more than 128 characters, and must not contain spaces, asterisks (`*`), number signs (`#`), or commas (`,`). When `store` is not specified, it defaults to `-1` (forever) for storage set operations.
 
-### `scheduleExpression` {#message-format.scheduleExpression}
+### `scheduleExpression` {/* #message-format.scheduleExpression */}
 
 `String` (optional) - Schedule the message for future delivery using [EventBridge Scheduler one-time `at()` syntax](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#one-time). If specified, the message will be delivered at the scheduled time rather than immediately. Currently supports one-time scheduled messages only - recurring schedules are not supported.
 
@@ -278,7 +278,7 @@ Example values:
 - `"at(2025-07-24T14:30:00)"` - Schedule for July 24, 2025 at 2:30 PM UTC
 - `"at(2025-12-25T09:00:00)"` - Schedule for December 25, 2025 at 9:00 AM UTC
 
-### `scheduleExpressionTimezone` {#message-format.scheduleExpressionTimezone}
+### `scheduleExpressionTimezone` {/* #message-format.scheduleExpressionTimezone */}
 
 `String` (optional) - The timezone for the `scheduleExpression`. Must be a valid [IANA timezone identifier](https://www.iana.org/time-zones). If not specified, the schedule expression is interpreted as UTC. Has no effect if `scheduleExpression` is not provided.
 
@@ -288,11 +288,11 @@ Example values:
 - `"Europe/London"` - British Time
 - `"Asia/Tokyo"` - Japan Standard Time
 
-### `store` {#message-format.store}
+### `store` {/* #message-format.store */}
 
 `Integer` (optional) - The message retention duration in seconds. `0` is the default if unspecified, which does not save message data. `-1` keeps the message forever. The highest number you can specify here is `3155695200`, roughly 100 years. For example, setting this to `2592000` (60 seconds \* 60 minutes \* 24 hours \* 30 days) would store the message for 30 days.
 
-## Response format {#response-format}
+## Response format {/* #response-format */}
 
 Publishing messages returns a JSON response containing information about the published message. All responses include the `channel` and `event` that were published. Additional fields are included based on the request parameters.
 
@@ -303,18 +303,18 @@ Publishing messages returns a JSON response containing information about the pub
 }
 ```
 
-### `channel` {#response-format.channel}
+### `channel` {/* #response-format.channel */}
 
 `String` - The name of the channel where the message was published. This matches the `channel` value from the request.
 
-### `event` {#response-format.event}
+### `event` {/* #response-format.event */}
 
 `String` - The name of the event that was published. This matches the `event` value from the request.
 
-### `id` {#response-format.id}
+### `id` {/* #response-format.id */}
 
 `String` (conditional) - The unique message ID generated for this message. This field is only included in the response when [`eagerIdGeneration`](#message-format.eagerIdGeneration) is set to `true` in the request.
 
-### `scheduleArn` {#response-format.scheduleArn}
+### `scheduleArn` {/* #response-format.scheduleArn */}
 
 `String` (conditional) - The Amazon EventBridge Scheduler ARN for the scheduled message. This field is only included in the response when [`scheduleExpression`](#message-format.scheduleExpression) is provided in the request. You can use this ARN to cancel or modify the scheduled message using the EventBridge Scheduler API if needed.

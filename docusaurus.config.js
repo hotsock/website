@@ -8,6 +8,9 @@ const { resolve } = require("path")
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
+  future: {
+    v4: true,
+  },
   title: "Hotsock",
   tagline:
     "Hotsock is a real-time WebSockets service for your web and mobile applications, fully-managed and self-hosted in your AWS account. ",

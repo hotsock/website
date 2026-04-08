@@ -10,13 +10,13 @@ Hotsock v1.12 introduces **channel storage** for persistent per-key state on cha
 
 {/* truncate */}
 
-### Channel storage
+### Channel storage {/* #channel-storage */}
 
 Channels can now have persistent key-value storage entries that subscribers can read, write, and observe in real-time. Storage entries have independent TTLs for flexible data retention and are automatically delivered to observers when they subscribe.
 
 This is useful for any state that should be available to current and future subscribers of a channel — things like configuration, feature flags, room settings, shared cursors, or game state. Instead of fetching this from your backend after subscribing, the client gets it immediately as part of the subscribe flow.
 
-#### Setting up permissions
+#### Setting up permissions {/* #setting-up-permissions */}
 
 Storage permissions are configured per-key using the new [`storage`](/docs/connections/claims/#channels.storage) directive inside channel claims. Keys support wildcards and regex patterns, just like channel names and event names.
 
@@ -54,7 +54,7 @@ Each storage key directive supports these options:
 - [**`store`**](/docs/connections/claims/#channels.storage.store) — TTL in seconds for entries written by this connection
 - [**`emitPubSubEvent`**](/docs/connections/claims/#channels.storage.emitPubSubEvent) — trigger a [`hotsock.channelStorageUpdated`](/docs/server-api/events/#hotsock.channelStorageUpdated) pub/sub event to SNS/EventBridge when a value changes
 
-#### Writing and reading storage
+#### Writing and reading storage {/* #writing-and-reading-storage */}
 
 Clients interact with storage using `hotsock.channelStorageSet` and `hotsock.channelStorageGet` messages on the WebSocket, or via the [Client HTTP API](/docs/connections/client-http-api/#connection/channelStorageGet):
 
@@ -71,27 +71,27 @@ Writes that don't change the value are detected automatically and skip subscribe
 
 For client-initiated writes, storage entries track the [`uid`](/docs/connections/claims/#uid) and [`umd`](/docs/connections/claims/#umd) of the last writer in `meta`, so observers know who set a value.
 
-#### Real-time sync on subscribe
+#### Real-time sync on subscribe {/* #real-time-sync-on-subscribe */}
 
 When a connection subscribes to a channel, all storage entries matching their `observe` patterns are delivered as `hotsock.channelStorageUpdated` messages immediately after the `hotsock.subscribed` message. This means a new subscriber gets the current state without any additional requests — they're caught up the moment they join.
 
-#### Scheduled storage writes
+#### Scheduled storage writes {/* #scheduled-storage-writes */}
 
 Storage writes support [scheduling for future delivery](/docs/channels/storage/#scheduled-writes) using `scheduleExpression`, just like scheduled messages. This is useful for things like expiring a game round, resetting a status after a timeout, or setting up state transitions at known times. Client-initiated scheduled writes require the [`scheduleBefore`](/docs/connections/claims/#channels.storage.scheduleBefore) permission on the matching storage key.
 
-#### Server-side storage writes
+#### Server-side storage writes {/* #server-side-storage-writes */}
 
 Storage entries can also be set from the server side using the existing [Lambda](/docs/server-api/publish-messages/#publish-with-lambda) or [HTTP](/docs/server-api/publish-messages/#publish-with-http-url) publish APIs by specifying `"event": "hotsock.channelStorageSet"` with a [`key`](/docs/server-api/publish-messages/#message-format.key) field. Server-side writes bypass client permission checks, so they're always authorized. This is handy for initializing channel state from your backend before any clients connect.
 
 For a full walkthrough of permissions, TTL behavior, and all the ways to interact with storage, see the [channel storage documentation](/docs/channels/storage/).
 
-### Live user metadata updates
+### Live user metadata updates {/* #live-user-metadata-updates */}
 
 Previously, the only way to change a connection's [`umd`](/docs/connections/claims/#umd) was to disconnect and reconnect with a new token, or unsubscribe and resubscribe with a new subscribe token. Now clients can update their `umd` in place using `hotsock.umdUpdate`.
 
 This works at two levels:
 
-#### Per-channel updates
+#### Per-channel updates {/* #per-channel-updates */}
 
 Update `umd` on a specific channel subscription by sending `hotsock.umdUpdate` with a channel and a [`umd`-scoped](/docs/connections/claims/#scope) token that has the [`umdUpdate`](/docs/connections/claims/#channels.umdUpdate) channel directive:
 
@@ -125,7 +125,7 @@ On [presence channels](/docs/channels/presence/), this triggers a new [`hotsock.
 
 This is great for status indicators, typing states, or any per-user metadata that changes during a session.
 
-#### Connection-level updates
+#### Connection-level updates {/* #connection-level-updates */}
 
 Update the connection's default `umd` by sending `hotsock.umdUpdate` without a channel. This requires the top-level [`umdUpdate`](/docs/connections/claims/#umdUpdate) claim. When [`umdPropagate`](/docs/connections/claims/#umdPropagate) is also enabled, the updated metadata is propagated to all existing subscriptions on the connection, triggering [`hotsock.memberUpdated`](/docs/channels/presence/#member-updated) on any presence channels.
 
@@ -151,10 +151,10 @@ Future subscriptions that are authorized by the connect token (implicit subscrip
 
 Both paths are also available via the Client HTTP API at [`connection/umdUpdate`](/docs/connections/client-http-api/#connection/umdUpdate).
 
-#### New pub/sub event
+#### New pub/sub event {/* #new-pubsub-event */}
 
 A new [`hotsock.connectionUpdated`](/docs/server-api/events/#hotsock.connectionUpdated) pub/sub event is emitted to SNS/EventBridge when a connection's user metadata actually changes, so you can track user state changes on your backend.
 
-### Wrapping up
+### Wrapping up {/* #wrapping-up */}
 
 Existing installations with auto-update enabled are already running v1.12 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time. A [full changelog](/docs/installation/changelog/#v1.12.0) is available with the complete list of changes included in this release.

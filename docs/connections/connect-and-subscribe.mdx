@@ -10,7 +10,7 @@ The purpose of this guide is to demonstrate how the pieces fit together - signin
 
 If you want to try things out with a point-and-click graphical interface instead, check out the [web console](../server-api/web-console.mdx).
 
-## Sign a token
+## Sign a token {/* #sign-a-token */}
 
 First, we'll sign a token with an [`exp`](./claims.mdx#exp) claim, a [`scope`](./claims.mdx#scope) claim, and a [`channels`](./claims.mdx#channels) claim for the "get-started-with-hotsock" channel allowing subscribe.
 
@@ -34,7 +34,7 @@ The signed, encoded token value is `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHA
 
 In a real application, a signed token is safe to give to client applications. If it is tampered with in any way before being used, its signature will no longer be valid and the system will reject it from being used.
 
-## Connect to the WebSocket
+## Connect to the WebSocket {/* #connect-to-the-websocket */}
 
 Using the [`WebSocketsAwsWssUrl`](../installation/initial-setup.mdx#WebSocketsAwsWssUrl) value from the CloudFormation stack output, connect to the WebSocket using [wscat](https://github.com/websockets/wscat). In a real-world application you'd likely connect with a web browser or other client device, but `wscat` demonstrates the process.
 
@@ -49,7 +49,7 @@ Connected (press CTRL+C to quit)
 
 If the token is valid, you'll be connected and will receive an initial `hotsock.connected` message containing the connection ID. 🎉
 
-## Subscribe to a channel
+## Subscribe to a channel {/* #subscribe-to-a-channel */}
 
 You're connected, but are not subscribed to any channels. Until you subscribe, you won't receive any messages (except for [periodic keep-alive messages](./keep-alive.mdx), if enabled).
 
@@ -67,9 +67,9 @@ You'll immediately receive confirmation of the subscription.
 
 Now, any messages sent to the "get-started-with-hotsock" channel will be sent to you, the only current subscriber of this channel.
 
-## Send and receive a message
+## Send and receive a message {/* #send-and-receive-a-message */}
 
-### Lambda direct function invocation
+### Lambda direct function invocation {/* #lambda-direct-function-invocation */}
 
 Using the AWS CLI, we'll invoke the function from [`PublishFunctionArn`](../installation/initial-setup.mdx#PublishFunctionArn) to send a message to our channel. Copy the Arn from the stack output to the function name argument.
 
@@ -91,7 +91,7 @@ Over in your WebSocket connection window, the published message will be received
 
 If you repeatedly invoke the publish function, you'll see additional messages received on the WebSocket.
 
-### HTTP URL
+### HTTP URL {/* #http-url */}
 
 As an alternative to using the AWS SDK to invoke Lambda directly, you can send backend-initiated messages using a standard HTTPS POST request.
 

@@ -8,7 +8,7 @@ You can update your existing Hotsock CloudFormation stack to the latest Hotsock 
 
 Updates typically take 5 minutes or less.
 
-## Automatic updates
+## Automatic updates {/* #automatic-updates */}
 
 By default, installations auto-update daily sometime between 08:00-08:59 UTC. This can be configured by setting the CloudFormation "Automatically update installation" (`AutoUpdateInstallationParameter` via CLI) to `enabled` or `disabled`.
 
@@ -16,7 +16,7 @@ To change the time of day that updates run, set the CloudFormation "Auto-update 
 
 If there are no new releases since the last update, the update operation does not make any changes and there is zero performance impact.
 
-## Manually update installation
+## Manually update installation {/* #manually-update-installation */}
 
 If [automatic updates](#automatic-updates) are disabled, you can update your installation to the latest version by invoking the "Hotsock Installation Updater" Lambda function manually.
 

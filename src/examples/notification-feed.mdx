@@ -8,11 +8,11 @@ A simulated app with a notification bell that receives real-time notifications. 
 
 Get the code for this example and run it yourself [from the GitHub repository](https://github.com/hotsock/website/tree/main/examples/notification-feed).
 
-## How it works
+## How it works {/* #how-it-works */}
 
 This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to demonstrate per-user channels with [channel aliases](/docs/connections/claims/#channels.alias), [`autoSubscribe`](/docs/connections/claims/#channels.autoSubscribe), and server-published notifications. Below is a walkthrough of each piece.
 
-### Authentication
+### Authentication {/* #authentication */}
 
 The token grants subscribe access to a per-user notification channel with several features enabled:
 
@@ -40,7 +40,7 @@ Key claims:
 - **[`historyStart: 0`](/docs/connections/claims/#channels.historyStart)**: Grants access to the full stored message history for loading past notifications.
 - No `messages` claim — notifications are server-published only.
 
-### Auto-subscribing with aliases
+### Auto-subscribing with aliases {/* #auto-subscribing-with-aliases */}
 
 With `autoSubscribe: true`, the client doesn't need to call subscribe explicitly. It just references the channel using the alias and waits for the `hotsock.subscribed` event:
 
@@ -54,7 +54,7 @@ channel.bind("hotsock.subscribed", () => {
 
 The client code only ever references `"notifications"` — it doesn't need to know the real channel name `"notifications-user-1"`. This is useful when channel names contain dynamic IDs that the client shouldn't need to manage.
 
-### Receiving notifications
+### Receiving notifications {/* #receiving-notifications */}
 
 All notifications arrive as a single `notification` event. The notification type (`info`, `success`, `warning`) is included in the data payload and determines how the notification is styled:
 
@@ -78,7 +78,7 @@ channel.bind("notification", (message) => {
 
 Using a single event name with `type` inside the data is simpler than binding to multiple event names — adding new notification types later doesn't require any client code changes.
 
-### Updating multiple UI elements
+### Updating multiple UI elements {/* #updating-multiple-ui-elements */}
 
 A single notification can update multiple parts of the UI. When a deploy notification arrives, the app also extracts the version number and prepends it to the Recent Deploys list:
 
@@ -93,7 +93,7 @@ if (title === "Deploy complete") {
 
 This shows how real-time messages can drive updates across different components simultaneously.
 
-### Per-user channels
+### Per-user channels {/* #per-user-channels */}
 
 Each user has their own dedicated channel (`notifications-user-{id}`). This means notifications are private — only the intended recipient receives them. The server publishes to a specific user's channel using the [Publish Messages](/docs/server-api/publish-messages/) API:
 
@@ -110,7 +110,7 @@ Each user has their own dedicated channel (`notifications-user-{id}`). This mean
 }
 ```
 
-### Cleanup
+### Cleanup {/* #cleanup */}
 
 When the component unmounts, terminate the client to close the WebSocket connection:
 
@@ -122,7 +122,7 @@ useEffect(() => {
 }, [])
 ```
 
-## Putting it all together
+## Putting it all together {/* #putting-it-all-together */}
 
 The full flow is: the user connects with a token that auto-subscribes to their private notification channel via a friendly alias, and receives new notifications in real time as a single `notification` event with the type in the data payload. Deploy notifications also update the Recent Deploys list, showing how one real-time message can drive updates across multiple UI elements. The client never needs to know the real channel name or explicitly subscribe — everything is handled by the token claims.
 
