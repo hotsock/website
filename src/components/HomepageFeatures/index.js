@@ -11,7 +11,7 @@ const features = [
         handle millions of connections and billions of messages for high-volume
         production workloads.
       </>
-    ),
+    )
   },
   {
     title: "Unlimited Everything",
@@ -22,7 +22,7 @@ const features = [
         sense for your applications with unlimited connections, channels, and
         messages.
       </>
-    ),
+    )
   },
   {
     title: "Fully private",
@@ -33,8 +33,8 @@ const features = [
         multi-tenant breach. All services are run privately in <em>your</em> AWS
         account. Your data always remains yours, only accessible by you.
       </>
-    ),
-  },
+    )
+  }
 ]
 
 export default function HomepageFeatures() {

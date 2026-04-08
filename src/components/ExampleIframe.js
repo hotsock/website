@@ -10,7 +10,7 @@ export default function ExampleIframe({ name, height = "500px" }) {
   const sendTheme = (theme) => {
     iframeRef.current?.contentWindow?.postMessage(
       { type: "theme-change", theme },
-      "*",
+      "*"
     )
   }
 
@@ -26,7 +26,7 @@ export default function ExampleIframe({ name, height = "500px" }) {
       style={{
         width: "100%",
         height,
-        border: "none",
+        border: "none"
       }}
     />
   )

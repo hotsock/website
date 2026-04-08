@@ -57,9 +57,9 @@ lambdaClient.send(
     Payload: JSON.stringify({
       channel: "my-channel",
       event: "my-event",
-      data: "👋",
-    }),
-  }),
+      data: "👋"
+    })
+  })
 )
 ```
 
@@ -140,7 +140,7 @@ await lambdaClient.Invoke(new InvokeRequest
 
 ```js
 const hotsock = new HotsockClient("wss://real-time.example.com", {
-  connectTokenFn: () => "eyJhbGciOiJFUzI1NiIsIm...",
+  connectTokenFn: () => "eyJhbGciOiJFUzI1NiIsIm..."
 })
 hotsock.channels("my-channel").bind("my-event", (message) => {
   console.log("Received message:", message)

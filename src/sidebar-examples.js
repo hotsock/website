@@ -3,7 +3,7 @@ const sidebars = {
     {
       type: "doc",
       label: "Overview",
-      id: "overview",
+      id: "overview"
     },
     {
       type: "category",
@@ -13,10 +13,10 @@ const sidebars = {
         "real-time-chat",
         "live-dashboard",
         "collaborative-todo",
-        "notification-feed",
-      ],
-    },
-  ],
+        "notification-feed"
+      ]
+    }
+  ]
 }
 
 module.exports = sidebars
