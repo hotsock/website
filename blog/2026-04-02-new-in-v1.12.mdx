@@ -75,6 +75,10 @@ Storage entries also track the `uid` and `umd` of the last writer in `meta`, so 
 
 When a connection subscribes to a channel, all storage entries matching their `observe` patterns are delivered as `hotsock.channelStorageUpdated` messages immediately after the `hotsock.subscribed` message. This means a new subscriber gets the current state without any additional requests — they're caught up the moment they join.
 
+#### Scheduled storage writes
+
+Storage writes support [scheduling for future delivery](/docs/channels/storage/#scheduled-writes) using `scheduleExpression`, just like scheduled messages. This is useful for things like expiring a game round, resetting a status after a timeout, or setting up state transitions at known times. Client-initiated scheduled writes require the [`scheduleBefore`](/docs/connections/claims/#channels.storage.scheduleBefore) permission on the matching storage key.
+
 #### Server-side storage writes
 
 Storage entries can also be set from the server side using the existing Lambda or HTTP publish APIs by specifying `"event": "hotsock.channelStorageSet"` with a [`key`](/docs/server-api/publish-messages/#message-format.key) field. Server-side writes bypass client permission checks, so they're always authorized. This is handy for initializing channel state from your backend before any clients connect.
