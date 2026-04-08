@@ -51,7 +51,7 @@ Each storage key directive supports these options:
 - [**`observe`**](/docs/connections/claims/#channels.storage.observe) — receive `hotsock.channelStorageUpdated` messages in real-time when the value changes, and get current values automatically on subscribe
 - [**`get`**](/docs/connections/claims/#channels.storage.get) — fetch the current value on demand with `hotsock.channelStorageGet`
 - [**`set`**](/docs/connections/claims/#channels.storage.set) — write values with `hotsock.channelStorageSet`
-- [**`store`**](/docs/connections/claims/#channels.storage.store) — TTL in seconds for entries written by this connection (defaults to `-1`, forever)
+- [**`store`**](/docs/connections/claims/#channels.storage.store) — TTL in seconds for entries written by this connection
 - [**`emitPubSubEvent`**](/docs/connections/claims/#channels.storage.emitPubSubEvent) — trigger a [`hotsock.channelStorageUpdated`](/docs/server-api/events/#hotsock.channelStorageUpdated) pub/sub event to SNS/EventBridge when a value changes
 
 #### Writing and reading storage
