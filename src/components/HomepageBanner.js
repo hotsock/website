@@ -8,17 +8,17 @@ export default function HomepageBanner() {
           <div className="flex items-center flex-1">
             <p className="mb-0 ml-3 font-medium text-white truncate">
               <span className="md:hidden">
-                New in v1.10: channel aliases and large channel fan-out!
+                New in v1.12: channel storage and live user metadata updates!
               </span>
               <span className="hidden md:inline">
-                New in v1.10: channel aliases for friendly client-side names
-                and automatic fan-out for large channels!
+                New in v1.12: persistent channel storage with real-time sync
+                and live user metadata updates without reconnecting!
               </span>
             </p>
           </div>
           <div className="flex-shrink-0 order-3 w-full mt-2 sm:order-2 sm:mt-0 sm:w-auto">
             <Link
-              to="/blog/channel-aliases-and-large-channel-fan-out/"
+              to="/blog/channel-storage-and-umd-updates"
               className="flex items-center justify-center px-4 py-2 text-sm font-medium bg-white border border-transparent rounded-sm shadow-sm text-pink-600 hover:bg-indigo-50"
             >
               Learn more

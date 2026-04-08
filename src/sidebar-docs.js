@@ -49,6 +49,7 @@ const sidebars = {
         "channels/overview",
         "channels/standard",
         "channels/presence",
+        "channels/storage",
         "channels/client-messages",
       ],
       collapsible: false,
@@ -57,6 +58,7 @@ const sidebars = {
       type: "category",
       label: "Server API",
       items: [
+        "server-api/channels",
         "server-api/logging",
         "server-api/publish-messages",
         "server-api/events",

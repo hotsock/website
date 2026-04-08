@@ -1,0 +1,150 @@
+# Channel Storage
+
+Channel storage provides persistent, per-key state on any channel. Storage entries are key-value pairs that live alongside the channel, surviving disconnects and reconnects. This gives clients a way to read, write, and observe shared state without round-tripping through your backend.
+
+## When to use storage
+
+Storage is a good fit for state that should be immediately available to anyone who joins a channel:
+
+- **Room or session settings** — max players, game mode, room name
+- **Shared cursors or selections** — which cell a user is editing in a spreadsheet
+- **Feature flags or configuration** — per-channel toggles that take effect in real-time
+- **User status** — online/away/busy indicators tied to a channel
+- **Last known state** — the most recent value of something that changes over time (current score, latest price, active speaker)
+
+Storage is not a general-purpose database. Each entry is a single key with a JSON value, scoped to a channel. For ordered, append-only data (like chat history), use [message storage](../connections/claims.mdx#channels.messages.store) instead.
+
+## How it works
+
+Each channel can have any number of storage entries. Each entry has a **key** (a string up to 128 characters) and a **data** value (any valid JSON, up to 32 KiB). Entries also track `meta` — the `uid` and `umd` of the last writer — so observers always know who set a value.
+
+### Permissions
+
+Storage access is controlled per-key in [JWT claims](../connections/claims.mdx#channels.storage) using the `storage` directive inside channel entries. Keys support wildcards (`*`) and regex patterns (`#regex:`) for flexible matching.
+
+```json
+{
+  "exp": 1743580800,
+  "scope": "connect",
+  "channels": {
+    "game.lobby": {
+      "subscribe": true,
+      // highlight-start
+      "storage": {
+        "settings": {
+          "observe": true,
+          "get": true
+        },
+        "player.*": {
+          "observe": true,
+          "get": true,
+          "set": true,
+          "store": 86400
+        }
+      }
+      // highlight-end
+    }
+  }
+}
+```
+
+Five directives control what a connection can do with matching keys:
+
+| Directive | Purpose |
+|---|---|
+| [`observe`](../connections/claims.mdx#channels.storage.observe) | Receive real-time updates when the value changes, and get current values on subscribe |
+| [`get`](../connections/claims.mdx#channels.storage.get) | Read the current value on demand |
+| [`set`](../connections/claims.mdx#channels.storage.set) | Write values |
+| [`store`](../connections/claims.mdx#channels.storage.store) | TTL in seconds for entries written by this connection (defaults to forever) |
+| [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) | Trigger a backend [pub/sub event](../server-api/events.mdx#hotsock.channelStorageUpdated) when a value changes |
+
+:::info
+Storage operations do not require an active channel subscription. Connect token permissions alone are sufficient for `get` and `set`.
+:::
+
+## Writing storage entries
+
+Clients write storage entries by sending a `hotsock.channelStorageSet` message on the WebSocket:
+
+```
+> {"event":"hotsock.channelStorageSet", "channel":"game.lobby", "key":"settings", "data":{"maxPlayers":4}}
+```
+
+Writes that don't change the value are detected automatically and skip subscriber fan-out, so clients don't need to deduplicate on their end. Setting `data` to `null` or `{}` clears the entry.
+
+Also available via the Client HTTP API at [`connection/channelStorageSet`](../connections/client-http-api.mdx#connection/channelStorageSet).
+
+### Server-side writes
+
+Storage entries can be set from your backend using the [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) or [HTTP](../server-api/publish-messages.mdx#publish-with-http-url) publish APIs by specifying `"event": "hotsock.channelStorageSet"` with a [`key`](../server-api/publish-messages.mdx#message-format.key) field. Server-side writes bypass client permission checks, making them useful for initializing channel state before any clients connect.
+
+```json
+{
+  "channel": "game.lobby",
+  "event": "hotsock.channelStorageSet",
+  "key": "settings",
+  "data": { "maxPlayers": 4 }
+}
+```
+
+## Reading storage entries
+
+Clients read a single entry by sending a `hotsock.channelStorageGet` message:
+
+```
+> {"event":"hotsock.channelStorageGet", "channel":"game.lobby", "key":"settings"}
+```
+
+The response is a `hotsock.channelStorageData` message:
+
+```json
+{
+  "event": "hotsock.channelStorageData",
+  "channel": "game.lobby",
+  "key": "settings",
+  "data": { "maxPlayers": 4 },
+  "meta": { "uid": "host", "umd": null }
+}
+```
+
+If no value has been set for the key, `data` and `meta` are `null`.
+
+Also available via the Client HTTP API at [`connection/channelStorageGet`](../connections/client-http-api.mdx#connection/channelStorageGet). To list multiple entries at once, use [`connection/channelStorageList`](../connections/client-http-api.mdx#connection/channelStorageList).
+
+## Observing storage entries
+
+When a key has `observe` enabled, two things happen:
+
+1. **On subscribe** — all storage entries matching the connection's `observe` patterns are delivered as `hotsock.channelStorageUpdated` messages immediately after the `hotsock.subscribed` message. New subscribers are caught up the moment they join.
+
+2. **On change** — whenever an observed key's value changes, all observers receive a `hotsock.channelStorageUpdated` message in real-time:
+
+```json
+{
+  "event": "hotsock.channelStorageUpdated",
+  "channel": "game.lobby",
+  "key": "settings",
+  "data": { "maxPlayers": 6 },
+  "meta": { "uid": "host", "umd": null }
+}
+```
+
+:::info
+Unlike message echo behavior, `hotsock.channelStorageUpdated` is always delivered back to the connection that set the value (when that connection observes the key). Storage updates are state notifications, not message echoes.
+:::
+
+## TTL and expiration
+
+By default, storage entries are retained forever. The [`store`](../connections/claims.mdx#channels.storage.store) directive sets a TTL in seconds for entries written by a connection. Server-side writes can also specify a `store` value to control TTL.
+
+When an entry expires, it is removed from DynamoDB. WebSocket observers are **not** notified of TTL expirations — expired entries simply stop appearing in `observe` deliveries on subscribe and in `get` responses. If you need to react to expirations on your backend, enable [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) — the [`hotsock.channelStorageUpdated`](../server-api/events.mdx#hotsock.channelStorageUpdated) pub/sub event includes an `expired` flag that distinguishes TTL deletions from explicit deletes.
+
+## Backend events
+
+When the [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) directive is enabled, storage value changes emit a [`hotsock.channelStorageUpdated`](../server-api/events.mdx#hotsock.channelStorageUpdated) event to SNS/EventBridge. This includes creates, updates, deletes, and TTL expirations. The event includes the current value, the previous value, and expiration metadata.
+
+## Server-side access
+
+The admin API provides read access to channel storage:
+
+- [`GET /channels/{name}/storage`](../server-api/channels.mdx#get-channel-storage) — list all storage entries for a channel, with pagination and specific key retrieval

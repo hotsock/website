@@ -5,7 +5,7 @@ sidebar_label: Publish Messages
 import Tabs from "@theme/Tabs"
 import TabItem from "@theme/TabItem"
 
-# Publish Messages 📝
+# Publish Messages
 
 Sending server-side messages to subscribers on Hotsock channels is the most common way to enable real-time features in your applications. Hotsock allows you to publish messages from your backend by invoking a Lambda function or by making an authenticated HTTP request. Connected clients can also send [client-initiated messages](../channels/client-messages.mdx).
 
@@ -44,7 +44,7 @@ lambdaClient.send(
       event: "my-event",
       data: "👋",
     }),
-  })
+  }),
 )
 ```
 
@@ -263,7 +263,11 @@ Deduplication is handled [internally by SQS](https://docs.aws.amazon.com/AWSSimp
 
 ### `event` {#message-format.event}
 
-`String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` or `#`, and must not contain any asterisk (`*`) characters.
+`String` (required) - The name of the event to publish to the channel. This can be any string up to 128 characters, but must not begin with `hotsock.` or `#`, and must not contain any asterisk (`*`) characters. The one exception is `hotsock.channelStorageSet`, which can be used to set [channel storage](../connections/claims.mdx#channels.storage) entries from the server side (requires the [`key`](#message-format.key) field).
+
+### `key` {#message-format.key}
+
+`String` (conditional) - The storage key to set when publishing a `hotsock.channelStorageSet` event. Required when `event` is `hotsock.channelStorageSet`, ignored otherwise. Storage keys must not be blank, must be no more than 128 characters, and must not contain spaces, asterisks (`*`), number signs (`#`), or commas (`,`). When `store` is not specified, it defaults to `-1` (forever) for storage set operations.
 
 ### `scheduleExpression` {#message-format.scheduleExpression}
 
