@@ -48,11 +48,11 @@ Storage permissions are configured per-key using the new [`storage`](/docs/conne
 
 Each storage key directive supports these options:
 
-- **`observe`** — receive `hotsock.channelStorageUpdated` messages in real-time when the value changes, and get the current value automatically on subscribe
-- **`get`** — fetch the current value on demand with `hotsock.channelStorageGet`
-- **`set`** — write values with `hotsock.channelStorageSet`
-- **`store`** — TTL in seconds for entries written by this connection (defaults to `-1`, forever)
-- **`emitPubSubEvent`** — trigger a [`hotsock.channelStorageUpdated`](/docs/server-api/events/#hotsock.channelStorageUpdated) pub/sub event to SNS/EventBridge when a value changes
+- [**`observe`**](/docs/connections/claims/#channels.storage.observe) — receive `hotsock.channelStorageUpdated` messages in real-time when the value changes, and get current values automatically on subscribe
+- [**`get`**](/docs/connections/claims/#channels.storage.get) — fetch the current value on demand with `hotsock.channelStorageGet`
+- [**`set`**](/docs/connections/claims/#channels.storage.set) — write values with `hotsock.channelStorageSet`
+- [**`store`**](/docs/connections/claims/#channels.storage.store) — TTL in seconds for entries written by this connection (defaults to `-1`, forever)
+- [**`emitPubSubEvent`**](/docs/connections/claims/#channels.storage.emitPubSubEvent) — trigger a [`hotsock.channelStorageUpdated`](/docs/server-api/events/#hotsock.channelStorageUpdated) pub/sub event to SNS/EventBridge when a value changes
 
 #### Writing and reading storage
 
@@ -69,7 +69,7 @@ Clients interact with storage using `hotsock.channelStorageSet` and `hotsock.cha
 
 Writes that don't change the value are detected automatically and skip subscriber fan-out entirely, so you don't need to worry about deduplication on the client side. Setting `data` to `null` or `{}` clears the entry.
 
-Storage entries also track the `uid` and `umd` of the last writer in `meta`, so observers always know who last set a value.
+Storage entries also track the [`uid`](/docs/connections/claims/#uid) and [`umd`](/docs/connections/claims/#umd) of the last writer in `meta`, so observers always know who last set a value.
 
 #### Real-time sync on subscribe
 
@@ -81,13 +81,13 @@ Storage writes support [scheduling for future delivery](/docs/channels/storage/#
 
 #### Server-side storage writes
 
-Storage entries can also be set from the server side using the existing Lambda or HTTP publish APIs by specifying `"event": "hotsock.channelStorageSet"` with a [`key`](/docs/server-api/publish-messages/#message-format.key) field. Server-side writes bypass client permission checks, so they're always authorized. This is handy for initializing channel state from your backend before any clients connect.
+Storage entries can also be set from the server side using the existing [Lambda](/docs/server-api/publish-messages/#publish-with-lambda) or [HTTP](/docs/server-api/publish-messages/#publish-with-http-url) publish APIs by specifying `"event": "hotsock.channelStorageSet"` with a [`key`](/docs/server-api/publish-messages/#message-format.key) field. Server-side writes bypass client permission checks, so they're always authorized. This is handy for initializing channel state from your backend before any clients connect.
 
 For a full walkthrough of permissions, TTL behavior, and all the ways to interact with storage, see the [channel storage documentation](/docs/channels/storage/).
 
 ### Live user metadata updates
 
-Previously, the only way to change a connection's `umd` was to disconnect and reconnect with a new token, or unsubscribe and resubscribe with a new subscribe token. Now clients can update their `umd` in place using `hotsock.umdUpdate`.
+Previously, the only way to change a connection's [`umd`](/docs/connections/claims/#umd) was to disconnect and reconnect with a new token, or unsubscribe and resubscribe with a new subscribe token. Now clients can update their `umd` in place using `hotsock.umdUpdate`.
 
 This works at two levels:
 
@@ -117,7 +117,7 @@ Then send the signed token on the WebSocket:
 > {"event":"hotsock.umdUpdate", "channel":"presence.chat", "data":{"token":"eyJ..."}}
 ```
 
-On presence channels, this triggers a new [`hotsock.memberUpdated`](/docs/channels/presence/#member-updated) event delivered to all members (including the initiator), so everyone sees the change immediately:
+On [presence channels](/docs/channels/presence/), this triggers a new [`hotsock.memberUpdated`](/docs/channels/presence/#member-updated) event delivered to all members (including the initiator), so everyone sees the change immediately:
 
 ```
 < {"event":"hotsock.memberUpdated","channel":"presence.chat","data":{"member":{"uid":"Dwight","umd":{"status":"away"}},"members":[{"uid":"Jim","umd":null},{"uid":"Dwight","umd":{"status":"away"}}]}}
@@ -127,7 +127,7 @@ This is great for status indicators, typing states, or any per-user metadata tha
 
 #### Connection-level updates
 
-Update the connection's default `umd` by sending `hotsock.umdUpdate` without a channel. This requires the top-level [`umdUpdate`](/docs/connections/claims/#umdUpdate) claim. When [`umdPropagate`](/docs/connections/claims/#umdPropagate) is also enabled, the updated metadata is propagated to all existing subscriptions on the connection, triggering `hotsock.memberUpdated` on any presence channels.
+Update the connection's default `umd` by sending `hotsock.umdUpdate` without a channel. This requires the top-level [`umdUpdate`](/docs/connections/claims/#umdUpdate) claim. When [`umdPropagate`](/docs/connections/claims/#umdPropagate) is also enabled, the updated metadata is propagated to all existing subscriptions on the connection, triggering [`hotsock.memberUpdated`](/docs/channels/presence/#member-updated) on any presence channels.
 
 ```json
 {
