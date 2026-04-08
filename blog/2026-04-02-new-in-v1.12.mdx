@@ -153,7 +153,7 @@ Both paths are also available via the Client HTTP API at [`connection/umdUpdate`
 
 #### New pub/sub event
 
-A new [`hotsock.connectionUpdated`](/docs/server-api/events/#hotsock.connectionUpdated) pub/sub event is emitted to SNS/EventBridge whenever a connection's user metadata changes. This event is only sent when `UserMetadata` actually changes, not on heartbeat-only updates, so you can use it to track user state changes on your backend without noise.
+A new [`hotsock.connectionUpdated`](/docs/server-api/events/#hotsock.connectionUpdated) pub/sub event is emitted to SNS/EventBridge when a connection's user metadata actually changes, so you can track user state changes on your backend.
 
 ### Wrapping up
 
