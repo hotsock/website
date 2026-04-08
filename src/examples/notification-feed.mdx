@@ -34,6 +34,7 @@ The token grants subscribe access to a per-user notification channel with severa
 ```
 
 Key claims:
+
 - **[`alias`](/docs/connections/claims/#channels.alias)**: The client uses `"notifications"` as the channel name instead of the real `"notifications-user-1"`. This hides internal naming from client code.
 - **[`autoSubscribe`](/docs/connections/claims/#channels.autoSubscribe)**: The channel subscribes automatically when the connection is established — no explicit subscribe call needed.
 - **[`historyStart: 0`](/docs/connections/claims/#channels.historyStart)**: Grants access to the full stored message history for loading past notifications.
