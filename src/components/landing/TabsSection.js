@@ -72,17 +72,17 @@ function TabsSection() {
             className={`w-full flex cursor-pointer rounded-none ${buttonVariants(
               {
                 variant: selectedGroup === grp.id ? "default" : "outline",
-              }
+              },
             )} ${
               index === 0
                 ? "lg:rounded-l-xl rounded-l-md"
                 : // : index === 3
-                // ? "rounded-tr-xl"
-                // : index === 4
-                // ? "rounded-bl-xl"
-                index === 6
-                ? "lg:rounded-r-xl rounded-r-md"
-                : ""
+                  // ? "rounded-tr-xl"
+                  // : index === 4
+                  // ? "rounded-bl-xl"
+                  index === 6
+                  ? "lg:rounded-r-xl rounded-r-md"
+                  : ""
             }`}
           >
             {grp.title}

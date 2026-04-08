@@ -3,7 +3,7 @@ sidebar_label: Initial Setup
 description: Install Hotsock in your AWS account a few minutes using CloudFormation. Step-by-step guide with AWS CLI and Console options for deploying production-ready infrastructure.
 ---
 
-# Initial Installation & Setup 🪄
+# Initial Installation & Setup
 
 Assuming you already have an AWS account ready to go, installing and configuring your stack should take less than 20 minutes.
 
@@ -215,7 +215,7 @@ Once the stack creation completes, installation was successful. Next you'll like
 
 Upon successful creation of your Hotsock stack, the root CloudFormation stack has an "Outputs" tab with a list of variables specific to your installation.
 
-:::info Example Stack Outputs Values
+:::info[Example Stack Outputs Values]
 ![Outputs tab items](../../static/img/screenshots/initial-setup-outputs-tab.png)
 :::
 
@@ -223,7 +223,7 @@ Upon successful creation of your Hotsock stack, the root CloudFormation stack ha
 
 This is the URL where you can find the primary secret key value for API calls to the `PublishHttpApiUrl`. To access the secret value, go to this URL and click the "Show" link by the "Value" label, which will reveal a 40-character secret key that must be used as a Bearer token in the Authorization header of all HTTP API requests.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![HttpApiSecretKey1ConsoleUrl example output](../../static/img/screenshots/initial-setup-outputs-HttpApiSecretKey1ConsoleUrl.png)
 :::
 
@@ -233,7 +233,7 @@ This is the URL where you can find the secondary secret key value for API calls 
 
 This secondary key exists to allow for zero-downtime secret key rotation. You can always use either key. If you want to allow access from more API keys, you can add additional keys to Parameter Store in the `/hotsock/hotsock/90592770-5584-11ee-b651-0ad7a5b44125/http-api-secret-keys` namespace.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![HttpApiSecretKey2ConsoleUrl example output](../../static/img/screenshots/initial-setup-outputs-HttpApiSecretKey2ConsoleUrl.png)
 :::
 
@@ -241,7 +241,7 @@ This secondary key exists to allow for zero-downtime secret key rotation. You ca
 
 This is the base URL for all HTTP API endpoints.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![HttpApiUrl example output](../../static/img/screenshots/initial-setup-outputs-HttpApiUrl.png)
 :::
 
@@ -249,7 +249,7 @@ This is the base URL for all HTTP API endpoints.
 
 This is the version of this installation.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![InstallationVersion example output](../../static/img/screenshots/initial-setup-outputs-InstallationVersion.png)
 :::
 
@@ -259,7 +259,7 @@ Installations are initially configured with [Free Tier](../licensing/pricing.mdx
 
 If this URL's value is blank, the installation is already adopted by a Hotsock account holder but a direct management URL is not available.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![LicensingUrl example output](../../static/img/screenshots/initial-setup-outputs-LicensingUrl.png)
 :::
 
@@ -267,7 +267,7 @@ If this URL's value is blank, the installation is already adopted by a Hotsock a
 
 The URL of a CloudWatch Dashboard that combines important metrics about your installation in a single place.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![LicensingUrl example output](../../static/img/screenshots/initial-setup-outputs-LicensingUrl.png)
 :::
 
@@ -275,7 +275,7 @@ The URL of a CloudWatch Dashboard that combines important metrics about your ins
 
 This is the Arn of the Lambda function that your backend systems can use to publish messages using the AWS SDK or from other AWS services (such as EventBridge). This is the recommended way to publish messages from your backend systems.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![PublishFunctionArn example output](../../static/img/screenshots/initial-setup-outputs-PublishFunctionArn.png)
 :::
 
@@ -283,7 +283,7 @@ This is the Arn of the Lambda function that your backend systems can use to publ
 
 This is the URL that your backend systems uses to publish messages if using HTTP with static API keys.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![PublishHttpApiUrl example output](../../static/img/screenshots/initial-setup-outputs-PublishHttpApiUrl.png)
 :::
 
@@ -291,7 +291,7 @@ This is the URL that your backend systems uses to publish messages if using HTTP
 
 This is the Amazon Resource Name (Arn) for the EventBridge event bus that is used for messages published via [pub/sub](../server-api/events.mdx).
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![PubSubBusArn example output](../../static/img/screenshots/initial-setup-outputs-PubSubBusArn.png)
 :::
 
@@ -299,7 +299,7 @@ This is the Amazon Resource Name (Arn) for the EventBridge event bus that is use
 
 This is the Amazon Resource Name (Arn) for the SNS topic used for messages published via [pub/sub](../server-api/events.mdx).
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![PubSubTopicArn example output](../../static/img/screenshots/initial-setup-outputs-PubSubTopicArn.png)
 :::
 
@@ -309,7 +309,7 @@ This is a link to your installation's web console where you can debug and test W
 
 This URL is public by design. It's a static HTML page that contains no resources that need protection. The `wssUrl` parameter in the URL tells the page where to make WebSocket connections.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![WebConsoleHttpUrl example output](../../static/img/screenshots/initial-setup-outputs-WebConsoleHttpUrl.png)
 :::
 
@@ -317,7 +317,7 @@ This URL is public by design. It's a static HTML page that contains no resources
 
 This is the URL that your clients will use when making WebSocket connections. This URL remains functional regardless of custom domain settings.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![WebSocketsAwsWssUrl example output](../../static/img/screenshots/initial-setup-outputs-WebSocketsAwsWssUrl.png)
 :::
 
@@ -327,7 +327,7 @@ If you've enabled a custom domain for your WebSockets endpoint, this is the valu
 
 This value is blank if a custom domain is not configured.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![WebSocketsCustomDomainRegionalDomainName example output](../../static/img/screenshots/initial-setup-outputs-WebSocketsCustomDomainRegionalDomainName.png)
 :::
 
@@ -337,7 +337,7 @@ If you've enabled a custom domain for your WebSockets endpoint, this is the AWS 
 
 This value is blank if a custom domain is not configured.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![WebSocketsCustomDomainRegionalHostedZoneId example output](../../static/img/screenshots/initial-setup-outputs-WebSocketsCustomDomainRegionalHostedZoneId.png)
 :::
 
@@ -347,7 +347,7 @@ If you've enabled a custom domain for your WebSockets endpoint, this is the URL 
 
 This value is blank if a custom domain is not configured.
 
-:::info Example Output Value
+:::info[Example Output Value]
 ![WebSocketsCustomDomainWssUrl example output](../../static/img/screenshots/initial-setup-outputs-WebSocketsCustomDomainWssUrl.png)
 :::
 

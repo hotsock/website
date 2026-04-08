@@ -5,7 +5,7 @@ toc_max_heading_level: 4
 
 # Client HTTP API
 
-In addition to WebSocket interactions, connected clients can also make use of an HTTP API for publishing messages and listing message history for channels. All requests **_must_ be `POST` requests** and **_must_ have URL-encoded `connectionId` and `connectionSecret`** query parameters set.
+In addition to WebSocket interactions, connected clients can also make use of an HTTP API for publishing messages, listing message history, reading and writing channel storage, and updating user metadata. All requests **_must_ be `POST` requests** and **_must_ have URL-encoded `connectionId` and `connectionSecret`** query parameters set.
 
 ## Determine your API URL
 
@@ -44,6 +44,12 @@ https://r6zcm2.lambda-url.us-east-1.on.aws/connection/publishMessage?connectionI
 :::tip
 Notice the **%3d** in `JCnTZd_KoAMCF-A%3d`, replacing the **=** in the original connection ID `JCnTZd_KoAMCF-A=`. Connection IDs typically have an equals sign as their suffix, so this value must be URL encoded for the URL to be parsed correctly.
 :::
+
+### Permissions
+
+HTTP API requests are authorized using the permissions from the connection's connect token. If the connection also has an active channel subscription created via WebSocket (optionally with a [subscribe token](./claims.mdx#scope) that expanded permissions), those additional directives are honored by the HTTP API as well.
+
+There is no way to pass a subscribe token directly to the HTTP API — permissions can only be expanded by subscribing via the WebSocket first.
 
 ## `connection/listMessages` {#connection/listMessages}
 
@@ -89,7 +95,7 @@ fetch(
   {
     method: "POST",
     body: JSON.stringify({ channel: "my-channel", reverse: true }),
-  }
+  },
 )
 ```
 
@@ -213,7 +219,7 @@ fetch(
       event: "my-event",
       data: "Hi 👋",
     }),
-  }
+  },
 )
 ```
 
@@ -248,7 +254,7 @@ fetch(
       scheduleExpressionTimezone: "America/New_York",
       // highlight-end
     }),
-  }
+  },
 )
 ```
 
@@ -262,4 +268,261 @@ Expect a `202 Accepted` status code for successful scheduled message requests, w
   "event": "reminder",
   "scheduleArn": "arn:aws:scheduler:us-east-1:111111111111:schedule/Hotsock-Scheduler-1CXU99B3NT-ScheduleGroup-17VG1F14Z7SM6/01K0WF560Z91WTKMSC892S799W"
 }
+```
+
+## `connection/channelStorageGet` {#connection/channelStorageGet}
+
+Read a channel storage entry value. An active channel subscription is not required — connect token [`get`](./claims.mdx#channels.storage.get) permissions are sufficient.
+
+#### `channel` {#connection/channelStorageGet.channel}
+
+`String` (required) - The name of the channel to read the storage entry from.
+
+#### `key` {#connection/channelStorageGet.key}
+
+`String` (required) - The storage key to read.
+
+### Example {#connection/channelStorageGet--example}
+
+#### Request {#connection/channelStorageGet--example-request}
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/channelStorageGet?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({ channel: "mychannel", key: "settings" }),
+  },
+)
+```
+
+#### Response {#connection/channelStorageGet--example-response}
+
+Expect a `200 OK` status code for successful reads.
+
+```json
+{
+  "event": "hotsock.channelStorageData",
+  "channel": "mychannel",
+  "key": "settings",
+  "data": { "theme": "dark" },
+  "meta": { "uid": "12345", "umd": null }
+}
+```
+
+If no value has been set for the key, `data` and `meta` are `null`.
+
+## `connection/channelStorageSet` {#connection/channelStorageSet}
+
+Write a channel storage entry value. An active channel subscription is not required — connect token [`set`](./claims.mdx#channels.storage.set) permissions are sufficient.
+
+#### `channel` {#connection/channelStorageSet.channel}
+
+`String` (required) - The name of the channel where the storage entry will be written.
+
+#### `key` {#connection/channelStorageSet.key}
+
+`String` (required) - The storage key to write.
+
+#### `data` {#connection/channelStorageSet.data}
+
+`JSON` (optional) - The value to store. Setting `data` to `null` or `{}` clears the storage entry.
+
+#### `scheduleExpression` {#connection/channelStorageSet.scheduleExpression}
+
+`String` (optional) - Schedule the storage write for future delivery using [EventBridge Scheduler one-time `at()` syntax](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html#one-time). The connection must have the [`scheduleBefore`](./claims.mdx#channels.storage.scheduleBefore) permission for the matching storage key. If specified, the storage entry will be written at the scheduled time rather than immediately.
+
+#### `scheduleExpressionTimezone` {#connection/channelStorageSet.scheduleExpressionTimezone}
+
+`String` (optional) - The timezone for the `scheduleExpression`. Must be a valid [IANA timezone identifier](https://www.iana.org/time-zones). If not specified, the schedule expression is interpreted as UTC. Has no effect if `scheduleExpression` is not provided.
+
+### Example {#connection/channelStorageSet--example}
+
+#### Request {#connection/channelStorageSet--example-request}
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/channelStorageSet?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({
+      channel: "mychannel",
+      key: "settings",
+      data: { theme: "dark" },
+    }),
+  },
+)
+```
+
+#### Response {#connection/channelStorageSet--example-response}
+
+Expect a `202 Accepted` status code for successful writes.
+
+```json
+{
+  "channel": "mychannel",
+  "event": "hotsock.channelStorageSet"
+}
+```
+
+## `connection/channelStorageList` {#connection/channelStorageList}
+
+List channel storage entries. Returns entries filtered by the connection's per-key [`get`](./claims.mdx#channels.storage.get) permissions. An active channel subscription is not required — connect token permissions are sufficient.
+
+#### `channel` {#connection/channelStorageList.channel}
+
+`String` (required) - The name of the channel to list storage entries from.
+
+#### `keys` {#connection/channelStorageList.keys}
+
+`Array[String]` (optional) - Specific storage keys to retrieve. If provided, only entries matching these keys (and permitted by `get` permissions) are returned. Maximum of 100 keys per request.
+
+#### `after` {#connection/channelStorageList.after}
+
+`String` (optional) - For pagination, the storage key to start after. Returns entries with keys that sort after this value.
+
+### Example {#connection/channelStorageList--example}
+
+#### Request {#connection/channelStorageList--example-request}
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/channelStorageList?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({ channel: "mychannel" }),
+  },
+)
+```
+
+#### Response {#connection/channelStorageList--example-response}
+
+Expect a `200 OK` status code for successful reads.
+
+```json
+{
+  "items": [
+    {
+      "key": "settings",
+      "data": { "theme": "dark" },
+      "meta": { "uid": "12345", "umd": null }
+    },
+    {
+      "key": "status",
+      "data": "online",
+      "meta": { "uid": "12345", "umd": null }
+    }
+  ]
+}
+```
+
+If there are no entries or no entries the connection has `get` permission for, `items` is an empty array.
+
+## `connection/getChannelInfo` {#connection/getChannelInfo}
+
+Retrieve channel info without requiring an active subscription. Returns the subscription count and, for presence channels, the deduplicated member list. Controlled by the [`getInfo`](./claims.mdx#channels.getInfo) channel directive.
+
+#### `channel` {#connection/getChannelInfo.channel}
+
+`String` (required) - The name of the channel to get info for.
+
+### Example {#connection/getChannelInfo--example}
+
+#### Request {#connection/getChannelInfo--example-request}
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/getChannelInfo?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({ channel: "presence.chat" }),
+  },
+)
+```
+
+#### Response {#connection/getChannelInfo--example-response}
+
+Expect a `200 OK` status code for successful reads.
+
+```json
+{
+  "channel": "presence.chat",
+  "subscriptionsCount": 4,
+  "members": [
+    { "uid": "Jim", "umd": null },
+    { "uid": "Dwight", "umd": { "status": "available" } },
+    { "uid": "Pam", "umd": null }
+  ]
+}
+```
+
+:::note
+`subscriptionsCount` reflects the total number of subscriptions on the channel, while `members` is deduplicated by `uid`. If a user is connected from multiple devices, they appear once in `members` but count as multiple subscriptions.
+:::
+
+For non-presence channels, the `members` field is omitted from the response.
+
+## `connection/umdUpdate` {#connection/umdUpdate}
+
+Update user metadata (`umd`) on a specific channel subscription or on the connection itself. This provides an HTTP alternative to sending the `hotsock.umdUpdate` command over the WebSocket.
+
+#### `channel` {#connection/umdUpdate.channel}
+
+`String` (optional) - The name of the channel where the subscription's `umd` should be updated. If omitted, the connection's default user metadata is updated instead (requires the [`umdUpdate`](./claims.mdx#umdUpdate) top-level claim in the token).
+
+#### `token` {#connection/umdUpdate.token}
+
+`String` (required) - A signed JWT with [`umd` scope](./claims.mdx#scope). The token must include either a `connectionId` matching the authenticated connection or a `uid` matching the connection's user ID. For per-channel updates, the token must include [`channels`](./claims.mdx#channels) with the [`umdUpdate`](./claims.mdx#channels.umdUpdate) directive for the target channel. The new `umd` value is taken from the token's [`umd`](./claims.mdx#umd) claim.
+
+### Per-Channel Example {#connection/umdUpdate--channel-example}
+
+Update user metadata on a specific presence channel subscription.
+
+#### Request {#connection/umdUpdate--channel-example-request}
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/umdUpdate?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({
+      channel: "presence.chat",
+      token: "eyJ...",
+    }),
+  },
+)
+```
+
+#### Response {#connection/umdUpdate--channel-example-response}
+
+Expect a `200 OK` status code for successful updates.
+
+```json
+{}
+```
+
+### Connection-Level Example {#connection/umdUpdate--connection-example}
+
+Update the connection's default user metadata. Omit the `channel` field.
+
+#### Request {#connection/umdUpdate--connection-example-request}
+
+```javascript
+fetch(
+  "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/umdUpdate?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
+  {
+    method: "POST",
+    body: JSON.stringify({
+      token: "eyJ...",
+    }),
+  },
+)
+```
+
+#### Response {#connection/umdUpdate--connection-example-response}
+
+Expect a `200 OK` status code for successful updates.
+
+```json
+{}
 ```

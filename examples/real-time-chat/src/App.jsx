@@ -44,9 +44,9 @@ const connectTokenFn = async () => {
         "content-type": "application/json",
       },
       body: JSON.stringify(
-        initialSessionId ? { sessionId: initialSessionId } : {}
+        initialSessionId ? { sessionId: initialSessionId } : {},
       ),
-    }
+    },
   )
     .then((resp) => resp.json())
     .then((data) => {
@@ -91,14 +91,14 @@ function App() {
       new HotsockClient(wssUrl, {
         connectTokenFn: jimConnectTokenFn,
         logLevel: "debug",
-      })
+      }),
   )
   const [pamClient] = useState(
     () =>
       new HotsockClient(wssUrl, {
         connectTokenFn: pamConnectTokenFn,
         logLevel: "debug",
-      })
+      }),
   )
 
   useEffect(() => {
@@ -142,7 +142,9 @@ function App() {
           >
             {copied ? "Copied!" : "Copy link"}
           </button>
-          <span className="text-xs text-gray-300 dark:text-gray-600">&bull;</span>
+          <span className="text-xs text-gray-300 dark:text-gray-600">
+            &bull;
+          </span>
           <button
             onClick={handleNewChat}
             className="text-xs text-[#FE337E] hover:text-[#FE0B64] font-medium"
@@ -152,14 +154,8 @@ function App() {
         </div>
       </div>
       <section className="grid grid-cols-2 gap-4 w-full flex-1 min-h-0 p-4">
-        <ChatPanel
-          hotsockClient={jimClient}
-          channelName={channelName}
-        />
-        <ChatPanel
-          hotsockClient={pamClient}
-          channelName={channelName}
-        />
+        <ChatPanel hotsockClient={jimClient} channelName={channelName} />
+        <ChatPanel hotsockClient={pamClient} channelName={channelName} />
       </section>
     </div>
   )
@@ -199,7 +195,7 @@ function ChatPanel({ hotsockClient, channelName }) {
           {
             method: "POST",
             body: JSON.stringify(body),
-          }
+          },
         )
         const { messages } = await resp.json()
         if (messages && messages.length > 0) {
@@ -218,13 +214,15 @@ function ChatPanel({ hotsockClient, channelName }) {
             .map((msg) => ({
               sender: msg.meta.uid,
               content: msg.data,
-              time: formatTime(new Date(msg.id ? decodUlidTime(msg.id) : Date.now())),
-            }))
+              time: formatTime(
+                new Date(msg.id ? decodUlidTime(msg.id) : Date.now()),
+              ),
+            })),
         )
       }
       setLoading(false)
     },
-    [channelName]
+    [channelName],
   )
 
   useEffect(() => {
@@ -244,7 +242,7 @@ function ChatPanel({ hotsockClient, channelName }) {
       if (connectionInfo.current) {
         loadHistory(
           connectionInfo.current.connectionId,
-          connectionInfo.current.connectionSecret
+          connectionInfo.current.connectionSecret,
         )
       } else {
         setLoading(false)

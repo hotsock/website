@@ -85,13 +85,15 @@ Stat cards compare the current value to the previous value to show trend arrows.
 The chart accumulates the last 20 data points and renders proportional bars using simple CSS:
 
 ```jsx
-{chartHistory.map((point, i) => (
-  <div
-    key={i}
-    style={{ height: `${(point.requests / maxRequests) * 100}%` }}
-    className="bg-blue-500 rounded-t"
-  />
-))}
+{
+  chartHistory.map((point, i) => (
+    <div
+      key={i}
+      style={{ height: `${(point.requests / maxRequests) * 100}%` }}
+      className="bg-blue-500 rounded-t"
+    />
+  ))
+}
 ```
 
 ### Cleanup

@@ -400,3 +400,109 @@ This is always `hotsock.unsubscribed`.
 ### `dataType` {#hotsock.unsubscribed--dataType}
 
 The data object type for this event is `subscription`.
+
+## `hotsock.connectionUpdated` {#hotsock.connectionUpdated}
+
+This event is sent whenever a connection's user metadata changes via a connection-level [`umdUpdate`](../connections/claims.mdx#umdUpdate). This event is only emitted when `UserMetadata` actually changes, not on heartbeat-only updates.
+
+### `type` {#hotsock.connectionUpdated--type}
+
+This is always `hotsock.connectionUpdated`.
+
+### `metadata` {#hotsock.connectionUpdated--metadata}
+
+- `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
+
+```json
+{
+  "hotsockVersion": "1.12.0"
+}
+```
+
+### `data` {#hotsock.connectionUpdated--data}
+
+- `id` (String): The identifier for this connection.
+- `connectedAt` (String): The ISO3339 timestamp for when the connection was established.
+- `disconnectedAt` (String | null): The ISO3339 timestamp for when the connection was terminated.
+- `keepAlive` (Boolean): Whether or not the [`keepAlive` claim](../connections/claims.mdx#keepAlive) is enabled for this connection.
+- `sourceIp` (String | null): The source IP address that was used by the client when the connection was established.
+- `uid` (String | null): The user ID specified in the [`uid` claim](../connections/claims.mdx#uid) for this connection.
+- `umd` (JSON | null): The user metadata specified in the [`umd` claim](../connections/claims.mdx#umd) for this connection, reflecting the updated value.
+- `userAgent` (String | null): The value of the User-Agent header that was used when the client established the connection.
+
+```json
+{
+  "id": "IDnAdd9kIAMCEsQ=",
+  "connectedAt": "2024-05-31T15:47:45.231141792Z",
+  "disconnectedAt": null,
+  "keepAlive": true,
+  "sourceIp": "12.34.56.78",
+  "uid": "12345",
+  "umd": { "name": "Dwight", "status": "away" },
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+}
+```
+
+### `dataType` {#hotsock.connectionUpdated--dataType}
+
+The data object type for this event is `connection`.
+
+## `hotsock.channelStorageUpdated` {#hotsock.channelStorageUpdated}
+
+This event is sent whenever a [channel storage](../connections/claims.mdx#channels.storage) entry value changes and the [`emitPubSubEvent`](../connections/claims.mdx#channels.storage.emitPubSubEvent) storage key directive is enabled. This event is only emitted when the stored value actually changes — writes that set the same value are suppressed. Clearing a storage entry (setting `data` to `null` or `{}`) and TTL-based expiration also trigger this event.
+
+For client-initiated storage writes, the `emitPubSubEvent` directive must be set to `true` on the matching storage key pattern in the token claims. For server-initiated writes (Lambda or HTTP API), set `emitPubSubEvent` to `true` in the publish payload.
+
+### `type` {#hotsock.channelStorageUpdated--type}
+
+This is always `hotsock.channelStorageUpdated`.
+
+### `metadata` {#hotsock.channelStorageUpdated--metadata}
+
+- `channel` (String): The name of the channel where the storage entry was updated.
+- `connectionId` (String): The identifier for the connection that updated the storage entry. This field is only present for updates initiated by a WebSocket client or Client HTTP API.
+- `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
+- `key` (String): The storage key that was updated.
+- `sourceIp` (String): The IP address of the client that updated the storage entry. This field is only present if an IP address is known.
+- `trigger` (String): The kind of update initiator, set to one of `client.websocket`, `client.http`, `server.lambda`, or `server.http`.
+- `userAgent` (String): The User-Agent of the client that updated the storage entry. This field is only present if a user agent is known.
+
+SNS filter attributes are limited to `channel`, `key`, and `trigger`.
+
+```json
+{
+  "channel": "my-channel",
+  "connectionId": "IDnAdd9kIAMCEsQ=",
+  "hotsockVersion": "1.12.0",
+  "key": "status",
+  "sourceIp": "12.34.56.78",
+  "trigger": "client.websocket",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+}
+```
+
+### `data` {#hotsock.channelStorageUpdated--data}
+
+- `channel` (String): The name of the channel where the storage entry was updated.
+- `key` (String): The storage key that was updated.
+- `data` (JSON): The new value of the storage entry. `null` for delete events.
+- `dataPrevious` (JSON): The previous value of the storage entry. `null` for create events (first write to a key).
+- `expired` (Boolean): Whether the entry was deleted by TTL expiration. `true` for TTL-based deletes, `false` for all other changes.
+- `expiresAt` (String | null): The RFC3339 timestamp when the entry expires, or `null` if the entry has no TTL.
+- `meta` (Object): Metadata about the last writer, including `uid` and `umd`.
+
+```json
+{
+  "channel": "my-channel",
+  "key": "status",
+  "data": "online",
+  "dataPrevious": "away",
+  "expired": false,
+  "expiresAt": "2026-04-03T12:00:00Z",
+  "meta": { "uid": "12345", "umd": null }
+}
+```
+
+### `dataType` {#hotsock.channelStorageUpdated--dataType}
+
+The data object type for this event is `channelStorage`.

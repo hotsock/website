@@ -46,6 +46,7 @@ const config = {
         },
         blog: {
           blogSidebarTitle: "All our posts",
+          blogSidebarCount: "ALL",
           showReadingTime: true,
         },
         theme: {

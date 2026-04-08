@@ -1,0 +1,112 @@
+---
+sidebar_label: Channels
+---
+
+# Channels API
+
+The Channels API provides server-side read access to channel metadata and storage entries. These endpoints are authenticated with the same API keys used for [HTTP message publishing](./publish-messages.mdx#publish-with-http-url).
+
+## Authentication
+
+All requests **must include an `Authorization` header** with a Bearer token set to one of your installation's API keys, available at [HttpApiSecretKey1ConsoleUrl](../installation/initial-setup.mdx#HttpApiSecretKey1ConsoleUrl) or [HttpApiSecretKey2ConsoleUrl](../installation/initial-setup.mdx#HttpApiSecretKey2ConsoleUrl).
+
+Your base URL is available in your installation's [HttpApiUrl](../installation/initial-setup.mdx#HttpApiUrl) stack output.
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+## `GET /channels/{name}` {#get-channel}
+
+Retrieve metadata for a channel, including the current subscription count.
+
+### Example {#get-channel--example}
+
+#### Request {#get-channel--example-request}
+
+```bash
+curl "https://r6zcm2.lambda-url.us-east-1.on.aws/channels/my-channel" \
+  -H 'Authorization: Bearer JAnzQFqRXsBgV0kKvd2DYhJMk77IhL8j9J2sLi5b'
+```
+
+#### Response {#get-channel--example-response}
+
+```json
+{
+  "name": "my-channel",
+  "subscriptionsCount": 12
+}
+```
+
+For presence channels, the response includes a deduplicated `members` array:
+
+```json
+{
+  "name": "presence.chat",
+  "subscriptionsCount": 4,
+  "members": [
+    { "uid": "Jim", "umd": null },
+    { "uid": "Dwight", "umd": { "status": "available" } },
+    { "uid": "Pam", "umd": null }
+  ]
+}
+```
+
+:::note
+`subscriptionsCount` reflects the total number of subscriptions on the channel, while `members` is deduplicated by `uid`. If a user is connected from multiple devices, they appear once in `members` but count as multiple subscriptions.
+:::
+
+If the channel has no active subscriptions or has never been used, `subscriptionsCount` is `0`. For presence channels with no members, `members` is an empty array.
+
+## `GET /channels/{name}/storage` {#get-channel-storage}
+
+List storage entries for a channel. Returns a paginated list of all storage entries, or specific entries when keys are requested.
+
+### Query parameters {#get-channel-storage--params}
+
+#### `after` {#get-channel-storage.after}
+
+`String` (optional) - For pagination, the storage key to start after. Returns entries with keys that sort after this value.
+
+#### `keys` {#get-channel-storage.keys}
+
+`String` (optional) - Comma-separated list of specific storage keys to retrieve. Maximum of 100 keys per request.
+
+### Example {#get-channel-storage--example}
+
+#### Request {#get-channel-storage--example-request}
+
+List all storage entries for a channel:
+
+```bash
+curl "https://r6zcm2.lambda-url.us-east-1.on.aws/channels/my-channel/storage" \
+  -H 'Authorization: Bearer JAnzQFqRXsBgV0kKvd2DYhJMk77IhL8j9J2sLi5b'
+```
+
+Fetch specific keys:
+
+```bash
+curl "https://r6zcm2.lambda-url.us-east-1.on.aws/channels/my-channel/storage?keys=settings,status" \
+  -H 'Authorization: Bearer JAnzQFqRXsBgV0kKvd2DYhJMk77IhL8j9J2sLi5b'
+```
+
+#### Response {#get-channel-storage--example-response}
+
+```json
+{
+  "items": [
+    {
+      "key": "settings",
+      "data": { "theme": "dark" },
+      "meta": { "uid": "12345", "umd": null }
+    },
+    {
+      "key": "status",
+      "data": "online",
+      "meta": { "uid": "12345", "umd": null }
+    }
+  ]
+}
+```
+
+If there are no storage entries, `items` is an empty array.
