@@ -50,7 +50,6 @@
     "node": ">=16.14"
   },
   "prettier": {
-    "semi": false,
-    "trailingComma": "none"
+    "semi": false
   }
 }

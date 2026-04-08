@@ -18,7 +18,7 @@ const FEATURES = [
         <strong className="text-primary">only accessible by you</strong>.
       </>
     ),
-    target: "/docs/installation/security/"
+    target: "/docs/installation/security/",
   },
   // {
   //   title: "Unlimited Everything",
@@ -44,7 +44,7 @@ const FEATURES = [
         awareness of other active participants.
       </>
     ),
-    target: "/docs/channels/presence/"
+    target: "/docs/channels/presence/",
   },
   {
     title: "Custom Domains",
@@ -55,7 +55,7 @@ const FEATURES = [
         connections on your own domain name.
       </>
     ),
-    target: "/docs/installation/custom-domains/"
+    target: "/docs/installation/custom-domains/",
   },
   {
     title: "Web Console",
@@ -66,7 +66,7 @@ const FEATURES = [
         subscriptions, and messages.
       </>
     ),
-    target: "/docs/server-api/web-console"
+    target: "/docs/server-api/web-console",
   },
   {
     title: "Serverless",
@@ -84,8 +84,8 @@ const FEATURES = [
         of messages for high-volume production workloads.
       </>
     ),
-    target: "/docs/installation/initial-setup/#aws-services"
-  }
+    target: "/docs/installation/initial-setup/#aws-services",
+  },
 ]
 
 function NewFeatures() {
@@ -110,7 +110,7 @@ function FeatureAnimation({ idx, feature }) {
     <motion.div
       className={clsx(
         "flex  items-center space-x-0 md:space-x-8",
-        idx % 2 !== 0 ? "flex-col md:flex-row" : "flex-col md:flex-row-reverse"
+        idx % 2 !== 0 ? "flex-col md:flex-row" : "flex-col md:flex-row-reverse",
       )}
       key={idx}
       initial={{ opacity: 0, x: idx % 2 === 0 ? -100 : 100 }}

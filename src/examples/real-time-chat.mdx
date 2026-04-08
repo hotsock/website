@@ -68,7 +68,7 @@ const connectTokenFn = async () => {
   const resp = await fetch("https://your-backend.example.com/tokens", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({})
+    body: JSON.stringify({}),
   })
   const data = await resp.json()
   return data.token
@@ -84,7 +84,7 @@ import { HotsockClient } from "@hotsock/hotsock-js"
 
 const client = new HotsockClient(
   "wss://your-hotsock-url.execute-api.us-east-1.amazonaws.com/v1",
-  { connectTokenFn }
+  { connectTokenFn },
 )
 ```
 
@@ -98,7 +98,7 @@ When the WebSocket connects, the [`hotsock.connected`](/docs/connections/client-
 hotsockClient.bind("hotsock.connected", (message) => {
   connectionInfo.current = {
     connectionId: message.data.connectionId,
-    connectionSecret: message.data.connectionSecret
+    connectionSecret: message.data.connectionSecret,
   }
 })
 
@@ -106,7 +106,7 @@ channel.bind("hotsock.subscribed", () => {
   if (connectionInfo.current) {
     loadHistory(
       connectionInfo.current.connectionId,
-      connectionInfo.current.connectionSecret
+      connectionInfo.current.connectionSecret,
     )
   }
 })
@@ -118,7 +118,7 @@ The `listMessages` endpoint returns up to 100 messages per request. If a full pa
 const loadHistory = async (connId, connSecret) => {
   const params = new URLSearchParams({
     connectionId: connId,
-    connectionSecret: connSecret
+    connectionSecret: connSecret,
   })
   const allMessages = []
   let after = undefined
@@ -127,7 +127,7 @@ const loadHistory = async (connId, connSecret) => {
     if (after) body.after = after
     const resp = await fetch(
       `${httpApiUrl}/connection/listMessages?${params}`,
-      { method: "POST", body: JSON.stringify(body) }
+      { method: "POST", body: JSON.stringify(body) },
     )
     const { messages } = await resp.json()
     if (messages && messages.length > 0) {
@@ -146,8 +146,8 @@ const loadHistory = async (connId, connSecret) => {
       .map((msg) => ({
         sender: msg.meta.uid,
         content: msg.data,
-        time: formatTime(new Date(decodeUlidTime(msg.id)))
-      }))
+        time: formatTime(new Date(decodeUlidTime(msg.id))),
+      })),
   )
 }
 ```
@@ -171,8 +171,8 @@ channel.bind("chat", (message) => {
     {
       sender: message.meta.uid,
       content: message.data,
-      time: formatTime(new Date())
-    }
+      time: formatTime(new Date()),
+    },
   ])
 })
 

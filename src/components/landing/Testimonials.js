@@ -12,29 +12,29 @@ const TESTIMONIALS = [
     title: "X's Developer",
     image: "/img/logo.svg",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo."
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.",
   },
   {
     name: "John Doe",
     image: "/img/logo.svg",
     title: "X's Developer",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo."
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.",
   },
   {
     name: "John Doe",
     image: "/img/logo.svg",
     title: "X's Developer",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo."
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.",
   },
   {
     image: "/img/logo.svg",
     name: "John Doe",
     title: "X's Developer",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo."
-  }
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.",
+  },
 ]
 
 function Testimonials() {
@@ -52,18 +52,18 @@ function Testimonials() {
             modules={[Autoplay, Pagination]}
             spaceBetween={20}
             autoplay={{
-              delay: 3000
+              delay: 3000,
             }}
             pagination={{
-              clickable: true
+              clickable: true,
             }}
             breakpoints={{
               640: {
-                slidesPerView: 1
+                slidesPerView: 1,
               },
               1024: {
-                slidesPerView: 2
-              }
+                slidesPerView: 2,
+              },
             }}
             // onSlideChange={() => console.log("slide change")}
             // onSwiper={(swiper) => console.log(swiper)}

@@ -94,8 +94,8 @@ fetch(
   "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/listMessages?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
   {
     method: "POST",
-    body: JSON.stringify({ channel: "my-channel", reverse: true })
-  }
+    body: JSON.stringify({ channel: "my-channel", reverse: true }),
+  },
 )
 ```
 
@@ -217,9 +217,9 @@ fetch(
     body: JSON.stringify({
       channel: "my-channel",
       event: "my-event",
-      data: "Hi 👋"
-    })
-  }
+      data: "Hi 👋",
+    }),
+  },
 )
 ```
 
@@ -251,10 +251,10 @@ fetch(
       data: "Don't forget about your meeting!",
       // highlight-start
       scheduleExpression: "at(2025-07-24T09:00:00)",
-      scheduleExpressionTimezone: "America/New_York"
+      scheduleExpressionTimezone: "America/New_York",
       // highlight-end
-    })
-  }
+    }),
+  },
 )
 ```
 
@@ -291,8 +291,8 @@ fetch(
   "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/channelStorageGet?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
   {
     method: "POST",
-    body: JSON.stringify({ channel: "mychannel", key: "settings" })
-  }
+    body: JSON.stringify({ channel: "mychannel", key: "settings" }),
+  },
 )
 ```
 
@@ -348,9 +348,9 @@ fetch(
     body: JSON.stringify({
       channel: "mychannel",
       key: "settings",
-      data: { theme: "dark" }
-    })
-  }
+      data: { theme: "dark" },
+    }),
+  },
 )
 ```
 
@@ -390,8 +390,8 @@ fetch(
   "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/channelStorageList?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
   {
     method: "POST",
-    body: JSON.stringify({ channel: "mychannel" })
-  }
+    body: JSON.stringify({ channel: "mychannel" }),
+  },
 )
 ```
 
@@ -435,8 +435,8 @@ fetch(
   "https://r6zcm2.lambda-url.us-east-1.on.aws/connection/getChannelInfo?connectionId=fjlb_eHLIAMCKRg%3d&connectionSecret=SZy32Etv0KIbe4Jod6KH",
   {
     method: "POST",
-    body: JSON.stringify({ channel: "presence.chat" })
-  }
+    body: JSON.stringify({ channel: "presence.chat" }),
+  },
 )
 ```
 
@@ -487,9 +487,9 @@ fetch(
     method: "POST",
     body: JSON.stringify({
       channel: "presence.chat",
-      token: "eyJ..."
-    })
-  }
+      token: "eyJ...",
+    }),
+  },
 )
 ```
 
@@ -513,9 +513,9 @@ fetch(
   {
     method: "POST",
     body: JSON.stringify({
-      token: "eyJ..."
-    })
-  }
+      token: "eyJ...",
+    }),
+  },
 )
 ```
 

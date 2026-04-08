@@ -22,8 +22,8 @@ const config = {
   trailingSlash: true,
   markdown: {
     hooks: {
-      onBrokenMarkdownLinks: "warn"
-    }
+      onBrokenMarkdownLinks: "warn",
+    },
   },
 
   // Even if you don't use internalization, you can use this field to set useful
@@ -31,7 +31,7 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "en",
-    locales: ["en"]
+    locales: ["en"],
   },
 
   presets: [
@@ -42,18 +42,18 @@ const config = {
         docs: {
           path: "docs",
           sidebarPath: require.resolve("./src/sidebar-docs.js"),
-          editUrl: "https://github.com/hotsock/website/tree/main"
+          editUrl: "https://github.com/hotsock/website/tree/main",
         },
         blog: {
           blogSidebarTitle: "All our posts",
           blogSidebarCount: "ALL",
-          showReadingTime: true
+          showReadingTime: true,
         },
         theme: {
-          customCss: require.resolve("./src/css/custom.css")
-        }
-      })
-    ]
+          customCss: require.resolve("./src/css/custom.css"),
+        },
+      }),
+    ],
   ],
 
   themeConfig:
@@ -64,41 +64,41 @@ const config = {
       algolia: {
         apiKey: "effce19400e6bae01c419d64f036c353",
         appId: "9I8Q94BXAI",
-        indexName: "hotsock"
+        indexName: "hotsock",
       },
       navbar: {
         logo: {
           alt: "Hotsock",
-          src: "img/hotsock-side-by-side.svg"
+          src: "img/hotsock-side-by-side.svg",
         },
         items: [
           {
             type: "doc",
             docId: "introduction",
             position: "left",
-            label: "Documentation"
+            label: "Documentation",
           },
           {
             to: "/examples/",
             position: "left",
-            label: "Examples"
+            label: "Examples",
           },
           {
             to: "/blog/",
             label: "Blog & Updates",
-            position: "left"
+            position: "left",
           },
           {
             href: "https://licensing.hotsock.io",
             label: "Licensing Login",
-            position: "right"
+            position: "right",
           },
           {
             href: "https://github.com/hotsock/website",
             label: "GitHub",
-            position: "right"
-          }
-        ]
+            position: "right",
+          },
+        ],
       },
       footer: {
         style: "light",
@@ -109,9 +109,9 @@ const config = {
                 html: `
                   <img src="/img/hotsock-side-by-side.svg" alt="logo" width="114" height="51" />
                   <p style="font-size: smaller;">Copyright © ${new Date().getFullYear()} JK Tech, Inc.</p>
-                `
-              }
-            ]
+                `,
+              },
+            ],
           },
           {},
 
@@ -120,42 +120,42 @@ const config = {
             items: [
               {
                 label: "Docs",
-                to: "/docs/"
+                to: "/docs/",
               },
               {
                 label: "Support",
-                to: "/docs/licensing/support/"
-              }
-            ]
+                to: "/docs/licensing/support/",
+              },
+            ],
           },
           {
             title: "COMPANY",
             items: [
               {
                 label: "Blog",
-                to: "/blog/"
-              }
-            ]
+                to: "/blog/",
+              },
+            ],
           },
           {
             title: "LEGAL",
             items: [
               {
                 label: "Terms & Conditions",
-                to: "/legal/terms/"
+                to: "/legal/terms/",
               },
               {
                 label: "Privacy Policy",
-                to: "/legal/privacy/"
+                to: "/legal/privacy/",
               },
               {
                 label: "End User License Agreement",
-                to: "/legal/eula/"
-              }
-            ]
-          }
+                to: "/legal/eula/",
+              },
+            ],
+          },
         ],
-        copyright: "h"
+        copyright: "h",
       },
       prism: {
         additionalLanguages: [
@@ -165,11 +165,11 @@ const config = {
           "csharp",
           "php",
           "java",
-          "ruby"
+          "ruby",
         ],
         theme: lightTheme,
-        darkTheme: darkTheme
-      }
+        darkTheme: darkTheme,
+      },
     }),
 
   plugins: [
@@ -180,8 +180,8 @@ const config = {
         path: "./src/examples",
         routeBasePath: "examples",
         sidebarPath: resolve("./src/sidebar-examples.js"),
-        breadcrumbs: false
-      }
+        breadcrumbs: false,
+      },
     ],
     async function tailwindPlugin(_context, _options) {
       return {
@@ -191,9 +191,9 @@ const config = {
           postcssOptions.plugins.push(require("tailwindcss"))
           postcssOptions.plugins.push(require("autoprefixer"))
           return postcssOptions
-        }
+        },
       }
-    }
+    },
   ],
 
   scripts: [
@@ -201,9 +201,9 @@ const config = {
       defer: true,
       "data-site": "QJMVJIST",
       "data-spa": "auto",
-      src: "https://cdn.usefathom.com/script.js"
-    }
-  ]
+      src: "https://cdn.usefathom.com/script.js",
+    },
+  ],
 }
 
 module.exports = config

@@ -8,52 +8,52 @@ import CodeBlock from "./CodeBlock.mdx"
 const GROUPS = [
   {
     title: "Python",
-    id: "py"
+    id: "py",
   },
   {
     title: "JS",
-    id: "js"
+    id: "js",
   },
   {
     title: "Go",
-    id: "go"
+    id: "go",
   },
   {
     title: "Java",
-    id: "java"
+    id: "java",
   },
   {
     title: "Ruby",
-    id: "ruby"
+    id: "ruby",
   },
   {
     title: "PHP",
-    id: "php"
+    id: "php",
   },
   {
     title: "C#",
-    id: "csharp"
-  }
+    id: "csharp",
+  },
 ]
 
 const DATA = [
   {
     title: "First Fct",
     description: "Install in just 2 AWS CLI commands.",
-    tab: 0
+    tab: 0,
   },
   {
     title: "Second Fct",
     description:
       " Publish messages from your backend in any language with the AWS SDK you already use.",
-    tab: 1
+    tab: 1,
   },
   {
     title: "Third Fct",
     description:
       "Connect and subscribe to messages using the Hotsock JS library or using any WebSockets client.",
-    tab: 2
-  }
+    tab: 2,
+  },
 ]
 
 function TabsSection() {
@@ -71,8 +71,8 @@ function TabsSection() {
             onClick={() => handleGroupChange(grp.id)}
             className={`w-full flex cursor-pointer rounded-none ${buttonVariants(
               {
-                variant: selectedGroup === grp.id ? "default" : "outline"
-              }
+                variant: selectedGroup === grp.id ? "default" : "outline",
+              },
             )} ${
               index === 0
                 ? "lg:rounded-l-xl rounded-l-md"

@@ -14,7 +14,7 @@ const FEATURES = [
         multi-tenant breach. All services are run privately in <em>your</em> AWS
         account. Your data always remains yours, only accessible by you.
       </>
-    )
+    ),
   },
   {
     title: "Unlimited Everything",
@@ -25,7 +25,7 @@ const FEATURES = [
         sense for your applications with unlimited connections, channels, and
         messages.
       </>
-    )
+    ),
   },
   {
     title: "Serverless",
@@ -37,8 +37,8 @@ const FEATURES = [
         handle millions of connections and billions of messages for high-volume
         production workloads.
       </>
-    )
-  }
+    ),
+  },
 ]
 
 function Features() {
@@ -74,8 +74,8 @@ function Features() {
                   className={` max-lg:w-full flex flex-row items-center group ${buttonVariants(
                     {
                       size: "sm",
-                      variant: "link"
-                    }
+                      variant: "link",
+                    },
                   )}`}
                   href="/"
                 >

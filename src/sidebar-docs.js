@@ -26,9 +26,9 @@ const sidebars = {
         "installation/security",
         "installation/changelog",
         "installation/versioning",
-        "installation/uninstallation"
+        "installation/uninstallation",
       ],
-      collapsible: false
+      collapsible: false,
     },
     {
       type: "category",
@@ -38,9 +38,9 @@ const sidebars = {
         "connections/claims",
         "connections/client-http-api",
         "connections/connect-and-subscribe",
-        "connections/keep-alive"
+        "connections/keep-alive",
       ],
-      collapsible: false
+      collapsible: false,
     },
     {
       type: "category",
@@ -50,9 +50,9 @@ const sidebars = {
         "channels/standard",
         "channels/presence",
         "channels/storage",
-        "channels/client-messages"
+        "channels/client-messages",
       ],
-      collapsible: false
+      collapsible: false,
     },
     {
       type: "category",
@@ -62,9 +62,9 @@ const sidebars = {
         "server-api/logging",
         "server-api/publish-messages",
         "server-api/events",
-        "server-api/web-console"
+        "server-api/web-console",
       ],
-      collapsible: false
+      collapsible: false,
     },
     {
       type: "category",
@@ -72,17 +72,17 @@ const sidebars = {
       items: [
         "licensing/paid-tier-upgrade",
         "licensing/pricing",
-        "licensing/support"
+        "licensing/support",
       ],
-      collapsible: false
+      collapsible: false,
     },
     {
       type: "category",
       label: "Performance",
       items: ["performance/limits-and-scaling"],
-      collapsible: false
-    }
-  ]
+      collapsible: false,
+    },
+  ],
 }
 
 module.exports = sidebars

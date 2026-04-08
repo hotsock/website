@@ -62,7 +62,7 @@ channel.bind("chart-data", (message) => {
 channel.bind("alert", (message) => {
   setAlerts((prev) => [
     { ...message.data, timestamp: Date.now() },
-    ...prev.slice(0, 4)
+    ...prev.slice(0, 4),
   ])
 })
 ```
