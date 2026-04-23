@@ -7,81 +7,87 @@ import Link from "@docusaurus/Link"
 
 const FEATURES = [
   {
-    title: "Security on your terms",
+    title: "Privacy is the default",
     imageUrl: "/img/private.png",
     description: (
       <>
-        No one wants to learn their data was used for AI training or part of a
-        multi-tenant breach. All services are run privately in <em>your</em> AWS
-        account. Your data{" "}
-        <strong className="text-primary">always remains yours</strong>,{" "}
+        No one wants to learn their data was used for AI training or caught in a
+        multi-tenant breach. Every byte flows through services that run
+        privately in <em>your</em> AWS account. Your data{" "}
+        <strong className="text-primary">always remains yours</strong>, and is{" "}
         <strong className="text-primary">only accessible by you</strong>.
       </>
     ),
     target: "/docs/installation/security/",
   },
-  // {
-  //   title: "Unlimited Everything",
-  //   imageUrl: "/img/unlimited.png",
-  //   description: (
-  //     <>
-  //       Design and incorporate{" "}
-  //       <strong className="text-primary">real-time messaging</strong> the way
-  //       that makes the most sense for your applications with{" "}
-  //       <strong className="text-primary">unlimited</strong> connections,
-  //       channels, and messages.
-  //     </>
-  //   ),
-  //   target: "",
-  // },
   {
-    title: "Presence Channels",
+    title: "Presence, out of the box",
     imageUrl: "/img/chat.png",
     description: (
       <>
-        Track who's online or what devices are currently subscribed to the same
-        channel. Great for chat rooms and document collaboration where you need
-        awareness of other active participants.
+        Know <strong className="text-primary">who</strong> is online,{" "}
+        <strong className="text-primary">where</strong>, and on{" "}
+        <strong className="text-primary">what device</strong>. You never have to
+        build a presence service yourself. Per-member metadata can be updated
+        live, and every member gets an event when someone joins, leaves, or
+        changes state.
       </>
     ),
     target: "/docs/channels/presence/",
   },
   {
-    title: "Custom Domains",
+    title: "Persistent channel storage",
+    imageUrl: "/img/unlimited.png",
+    description: (
+      <>
+        Channels can now carry{" "}
+        <strong className="text-primary">persistent key-value state</strong>{" "}
+        that every subscriber reads on join. Keep configuration, room settings,
+        feature flags, shared cursors, or game state on the channel and stop
+        round-tripping to your backend. Each key has its own TTL and permission
+        scope.
+      </>
+    ),
+    target: "/docs/channels/storage/",
+  },
+  {
+    title: "Your domain, your branding",
     imageUrl: "/img/domains.png",
     description: (
       <>
-        Maintain consistent branding and customer trust by keeping WebSocket
-        connections on your own domain name.
+        Host WebSocket connections on your own domain. Your customers never see
+        a third-party host, your TLS certificate is managed by ACM, and
+        switching providers later is a DNS change away.
       </>
     ),
     target: "/docs/installation/custom-domains/",
   },
   {
-    title: "Web Console",
+    title: "Web console for everything",
     imageUrl: "/img/console.png",
     description: (
       <>
-        Easily debug and test JWT validation, token claims, connections, channel
-        subscriptions, and messages.
+        A built-in console for JWTs, connections, subscriptions, channel
+        storage, and publishing. It ships with JSON syntax highlighting, mobile
+        support, and message filtering. Debugging a real-time bug should not
+        require building your own test harness.
       </>
     ),
     target: "/docs/server-api/web-console",
   },
   {
-    title: "Serverless",
+    title: "Serverless to the core",
     imageUrl: "/img/serverless.png",
     description: (
       <>
-        Powered by on-demand services such as{" "}
-        <strong className="text-primary">API Gateway</strong>,{" "}
+        Built on <strong className="text-primary">API Gateway</strong>,{" "}
         <strong className="text-primary">DynamoDB</strong>,{" "}
         <strong className="text-primary">Lambda</strong>,{" "}
         <strong className="text-primary">EventBridge</strong>,{" "}
         <strong className="text-primary">SNS</strong>, and{" "}
-        <strong className="text-primary">SQS</strong>. It scales to zero when
-        you're not using it or can handle millions of connections and billions
-        of messages for high-volume production workloads.
+        <strong className="text-primary">SQS</strong>. Scales to zero while
+        idle, fans out to millions of connections and billions of messages under
+        production load, and costs only what AWS charges you.
       </>
     ),
     target: "/docs/installation/initial-setup/#aws-services",
@@ -92,10 +98,13 @@ function NewFeatures() {
   return (
     <Wrapper>
       <div className="space-y-8 my-12">
-        <div className="text-center">
-          <h1 className="text-3xl m-0 text-center lg:text-4xl">
-            Just some of the features...
-          </h1>
+        <div className="text-center max-w-3xl mx-auto py-8">
+          <p className="text-primary text-sm font-semibold uppercase tracking-wider mb-3">
+            A closer look
+          </p>
+          <h2 className="text-3xl lg:text-5xl font-bold tracking-tight m-0">
+            The details that matter in production
+          </h2>
         </div>
         {FEATURES.map((feature, idx) => (
           <FeatureAnimation key={idx} idx={idx} feature={feature} />
