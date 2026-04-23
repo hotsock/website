@@ -204,7 +204,7 @@ function PricingTable() {
               ease-in-out transition-all duration-200
               "
           >
-            Launch your installation
+            Launch your free installation
           </span>{" "}
           <Arrow className="fill-current " />
         </Link>
