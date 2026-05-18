@@ -14,7 +14,7 @@ Hotsock v1.13 introduces **message reactions**, **presence member events on pub/
 
 Clients can now add and remove reactions on stored messages, with real-time delivery to all channel subscribers, aggregated counts in message history, and a separate endpoint to list who reacted with what.
 
-Reactions are gated by a new [`react`](/docs/connections/claims/#channels.messages.react) directive on channel message event patterns, alongside the existing `publish`, `store`, `echo`, and other directives. A connection needs three things to react: an active channel subscription, a [`uid`](/docs/connections/claims/#uid), and a stored target message that hasn't expired.
+Reactions are gated by a new [`react`](/docs/connections/claims/#channels.messages.react) directive on channel message event patterns, alongside the existing [`publish`](/docs/connections/claims/#channels.messages.publish), [`store`](/docs/connections/claims/#channels.messages.store), [`echo`](/docs/connections/claims/#channels.messages.echo), and other directives. A connection needs three things to react: an active channel subscription, a [`uid`](/docs/connections/claims/#uid), and a stored target message that hasn't expired.
 
 #### Setting up permissions {/* #setting-up-permissions */}
 
@@ -94,13 +94,13 @@ You can also fetch reactions for a single message with the dedicated [`connectio
 
 #### Pub/sub events for reactions {/* #pubsub-events-for-reactions */}
 
-[`hotsock.messageReactionAdded`](/docs/server-api/events/#hotsock.messageReactionAdded) and [`hotsock.messageReactionRemoved`](/docs/server-api/events/#hotsock.messageReactionRemoved) events are always emitted to SNS/EventBridge when reactions are added or removed — no `emitPubSubEvent` directive needed. This makes server-side aggregation, moderation, or analytics straightforward.
+[`hotsock.messageReactionAdded`](/docs/server-api/events/#hotsock.messageReactionAdded) and [`hotsock.messageReactionRemoved`](/docs/server-api/events/#hotsock.messageReactionRemoved) events are always emitted to SNS/EventBridge when reactions are added or removed — no [`emitPubSubEvent`](/docs/connections/claims/#channels.messages.emitPubSubEvent) directive needed. This makes server-side aggregation, moderation, or analytics straightforward.
 
 ### Presence member events on pub/sub (SNS/EventBridge) {/* #presence-member-pubsub */}
 
-Presence channel member lifecycle events ([`hotsock.memberAdded`](/docs/server-api/events/#hotsock.memberAdded), [`hotsock.memberRemoved`](/docs/server-api/events/#hotsock.memberRemoved), [`hotsock.memberUpdated`](/docs/server-api/events/#hotsock.memberUpdated)) are now also emitted to SNS/EventBridge, gated by the existing `PublishEventsToSNSParameter` / `PublishEventsToEventBridgeParameter` settings. The pub/sub events are deduplicated by `uid` to match WebSocket fan-out semantics — joining from a second device when you're already present doesn't trigger another `memberAdded`.
+Presence channel member lifecycle events ([`hotsock.memberAdded`](/docs/server-api/events/#hotsock.memberAdded), [`hotsock.memberRemoved`](/docs/server-api/events/#hotsock.memberRemoved), [`hotsock.memberUpdated`](/docs/server-api/events/#hotsock.memberUpdated)) are now also emitted to SNS/EventBridge, gated by the existing [`PublishEventsToSNSParameter` / `PublishEventsToEventBridgeParameter`](/docs/server-api/events/#eventbridge-sns-enable-disable) settings. The pub/sub events are deduplicated by [`uid`](/docs/connections/claims/#uid) to match WebSocket fan-out semantics — joining from a second device when you're already present doesn't trigger another `memberAdded`.
 
-The pub/sub `data` payload uses the same single-entity shape as the rest of the public event types, with `uid`, `umd`, and `members` at the root:
+The pub/sub `data` payload uses the same single-entity shape as the rest of the public event types, with [`uid`](/docs/connections/claims/#uid), [`umd`](/docs/connections/claims/#umd), and `members` at the root:
 
 ```json
 {
@@ -117,7 +117,7 @@ The pub/sub `data` payload uses the same single-entity shape as the rest of the 
 
 ### Server-enforced heartbeats {/* #server-enforced-heartbeats */}
 
-The new [`heartbeatTimeout`](/docs/connections/claims/#heartbeatTimeout) connect-token claim sets a maximum interval between client-initiated `hotsock.heartbeat` messages. If the server doesn't see a heartbeat within that window, the connection is forcefully disconnected:
+The new [`heartbeatTimeout`](/docs/connections/claims/#heartbeatTimeout) connect-token claim sets a maximum interval between client-initiated [`hotsock.heartbeat`](/docs/connections/keep-alive/#send-hotsockheartbeat) messages. If the server doesn't see a heartbeat within that window, the connection is forcefully disconnected:
 
 ```json
 {
