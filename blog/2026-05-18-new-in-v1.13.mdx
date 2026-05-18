@@ -54,7 +54,7 @@ All channel subscribers immediately receive a `hotsock.messageReactionAdded` eve
 < {"id":"01JB4K7M2N...","event":"hotsock.messageReactionAdded","channel":"room.123","data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW","reaction":"thumbsup","action":"add"},"meta":{"uid":"Jim","umd":null}}
 ```
 
-Reaction data can be emoji characters, Slack-style colon-wrapped strings like `:thumbsup:`, or any short string up to 100 bytes. Each user can have one reaction per reaction value per message — adding the same reaction again is a no-op.
+Reaction data can be emoji characters, Slack-style colon-wrapped strings like `:thumbsup:`, or any short string up to 100 bytes. Each user can have one reaction per reaction value per message, and adding the same reaction again is a no-op.
 
 #### Reactions in message history {/* #reactions-in-message-history */}
 
@@ -94,11 +94,11 @@ You can also fetch reactions for a single message with the dedicated [`connectio
 
 #### Pub/sub events for reactions {/* #pubsub-events-for-reactions */}
 
-[`hotsock.messageReactionAdded`](/docs/server-api/events/#hotsock.messageReactionAdded) and [`hotsock.messageReactionRemoved`](/docs/server-api/events/#hotsock.messageReactionRemoved) events are always emitted to SNS/EventBridge when reactions are added or removed — no [`emitPubSubEvent`](/docs/connections/claims/#channels.messages.emitPubSubEvent) directive needed. This makes server-side aggregation, moderation, or analytics straightforward.
+[`hotsock.messageReactionAdded`](/docs/server-api/events/#hotsock.messageReactionAdded) and [`hotsock.messageReactionRemoved`](/docs/server-api/events/#hotsock.messageReactionRemoved) events are always emitted to SNS/EventBridge when reactions are added or removed, with no [`emitPubSubEvent`](/docs/connections/claims/#channels.messages.emitPubSubEvent) directive needed. This makes server-side aggregation, moderation, or analytics straightforward.
 
 ### Presence member events on pub/sub (SNS/EventBridge) {/* #presence-member-pubsub */}
 
-Presence channel member lifecycle events ([`hotsock.memberAdded`](/docs/server-api/events/#hotsock.memberAdded), [`hotsock.memberRemoved`](/docs/server-api/events/#hotsock.memberRemoved), [`hotsock.memberUpdated`](/docs/server-api/events/#hotsock.memberUpdated)) are now also emitted to SNS/EventBridge, gated by the existing [`PublishEventsToSNSParameter` / `PublishEventsToEventBridgeParameter`](/docs/server-api/events/#eventbridge-sns-enable-disable) settings. The pub/sub events are deduplicated by [`uid`](/docs/connections/claims/#uid) to match WebSocket fan-out semantics — joining from a second device when you're already present doesn't trigger another `memberAdded`.
+Presence channel member lifecycle events ([`hotsock.memberAdded`](/docs/server-api/events/#hotsock.memberAdded), [`hotsock.memberRemoved`](/docs/server-api/events/#hotsock.memberRemoved), [`hotsock.memberUpdated`](/docs/server-api/events/#hotsock.memberUpdated)) are now also emitted to SNS/EventBridge, gated by the existing [`PublishEventsToSNSParameter` / `PublishEventsToEventBridgeParameter`](/docs/server-api/events/#eventbridge-sns-enable-disable) settings. The pub/sub events are deduplicated by [`uid`](/docs/connections/claims/#uid) to match WebSocket fan-out semantics, so joining from a second device when you're already present doesn't trigger another `memberAdded`.
 
 The pub/sub `data` payload uses the same single-entity shape as the rest of the public event types, with [`uid`](/docs/connections/claims/#uid), [`umd`](/docs/connections/claims/#umd), and `members` at the root:
 
@@ -127,7 +127,7 @@ The new [`heartbeatTimeout`](/docs/connections/claims/#heartbeatTimeout) connect
 }
 ```
 
-Valid values are 5–600 seconds. This is most useful on [presence channels](/docs/channels/presence/) where accurate detection of dropped clients matters more than waiting for API Gateway's 10-minute idle timeout. The client just needs to send `{"event":"hotsock.heartbeat"}` periodically — the server records receipt and reschedules the next check relative to the last heartbeat, with no reply.
+Valid values are 5 to 600 seconds. This is most useful on [presence channels](/docs/channels/presence/) where accurate detection of dropped clients matters more than waiting for API Gateway's 10-minute idle timeout. The client just needs to send `{"event":"hotsock.heartbeat"}` periodically, and the server records receipt and reschedules the next check relative to the last heartbeat, with no reply.
 
 ### Other improvements {/* #other-improvements */}
 
