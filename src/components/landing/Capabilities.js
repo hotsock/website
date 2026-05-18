@@ -11,12 +11,27 @@ const CAPABILITIES = [
     icon: "◉",
   },
   {
+    title: "Message reactions",
+    description:
+      "Add and remove reactions on stored messages with real-time fan-out and counts in history.",
+    href: "/docs/connections/claims/#channels.messages.react",
+    icon: "♥",
+    badge: "New",
+  },
+  {
+    title: "Server-enforced heartbeats",
+    description:
+      "Set a heartbeat timeout in the token and Hotsock disconnects clients that go silent.",
+    href: "/docs/connections/claims/#heartbeatTimeout",
+    icon: "♡",
+    badge: "New",
+  },
+  {
     title: "Channel storage",
     description:
       "Persistent per-key state delivered to subscribers on join, with independent TTLs.",
     href: "/docs/channels/storage/",
     icon: "▣",
-    badge: "New",
   },
   {
     title: "Live metadata updates",
@@ -24,7 +39,6 @@ const CAPABILITIES = [
       "Change a connection's user metadata on the fly. No reconnecting, no resubscribing.",
     href: "/docs/connections/claims/#umdUpdate",
     icon: "↻",
-    badge: "New",
   },
   {
     title: "Auto-subscribe on connect",
@@ -64,7 +78,7 @@ const CAPABILITIES = [
   {
     title: "Pub/sub to SNS & EventBridge",
     description:
-      "Fan connection, message, and storage events out to the rest of your AWS workload.",
+      "Fan connection, message, presence, and storage events out to the rest of your AWS workload.",
     href: "/docs/server-api/events/",
     icon: "☷",
   },
