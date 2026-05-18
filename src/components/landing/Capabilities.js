@@ -11,6 +11,27 @@ const CAPABILITIES = [
     icon: "◉",
   },
   {
+    title: "Channel storage",
+    description:
+      "Persistent per-key state delivered to subscribers on join, with independent TTLs.",
+    href: "/docs/channels/storage/",
+    icon: "▣",
+  },
+  {
+    title: "Message storage & history",
+    description:
+      "Retain messages per-event and query them by channel and event name, sorted by time.",
+    href: "/docs/connections/client-http-api/",
+    icon: "▦",
+  },
+  {
+    title: "Pub/sub to SNS & EventBridge",
+    description:
+      "Fan connection, message, presence, and storage events out to the rest of your AWS workload.",
+    href: "/docs/server-api/events/",
+    icon: "☷",
+  },
+  {
     title: "Server-enforced heartbeats",
     description:
       "Set a heartbeat timeout in the token and Hotsock disconnects clients that go silent.",
@@ -19,18 +40,18 @@ const CAPABILITIES = [
     badge: "New",
   },
   {
-    title: "Channel storage",
-    description:
-      "Persistent per-key state delivered to subscribers on join, with independent TTLs.",
-    href: "/docs/channels/storage/",
-    icon: "▣",
-  },
-  {
     title: "Live metadata updates",
     description:
       "Change a connection's user metadata on the fly. No reconnecting, no resubscribing.",
     href: "/docs/connections/claims/#umdUpdate",
     icon: "↻",
+  },
+  {
+    title: "Scheduled messages",
+    description:
+      "Publish a message now, deliver it later. Backed by EventBridge Scheduler.",
+    href: "/docs/server-api/publish-messages/#message-format.scheduleExpression",
+    icon: "⏱",
   },
   {
     title: "Auto-subscribe on connect",
@@ -47,32 +68,11 @@ const CAPABILITIES = [
     icon: "⇄",
   },
   {
-    title: "Scheduled messages",
-    description:
-      "Publish a message now, deliver it later. Backed by EventBridge Scheduler.",
-    href: "/docs/server-api/publish-messages/#message-format.scheduleExpression",
-    icon: "⏱",
-  },
-  {
-    title: "Message storage & history",
-    description:
-      "Retain messages per-event and query them by channel and event name, sorted by time.",
-    href: "/docs/connections/client-http-api/",
-    icon: "▦",
-  },
-  {
     title: "Broadcast to unsubscribed",
     description:
       "Publish from a client to any channel it has permission for. No subscription required.",
     href: "/docs/connections/claims/#channels.messages.broadcast",
     icon: "⇡",
-  },
-  {
-    title: "Pub/sub to SNS & EventBridge",
-    description:
-      "Fan connection, message, presence, and storage events out to the rest of your AWS workload.",
-    href: "/docs/server-api/events/",
-    icon: "☷",
   },
   {
     title: "Regex & wildcard claims",
