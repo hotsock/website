@@ -129,11 +129,6 @@ The new [`heartbeatTimeout`](/docs/connections/claims/#heartbeatTimeout) connect
 
 Valid values are 5 to 600 seconds. This is most useful on [presence channels](/docs/channels/presence/) where accurate detection of dropped clients matters more than waiting for API Gateway's 10-minute idle timeout. The client just needs to send `{"event":"hotsock.heartbeat"}` periodically, and the server records receipt and reschedules the next check relative to the last heartbeat, with no reply.
 
-### Other improvements {/* #other-improvements */}
-
-- Faster subscription cleanup when many connections disconnect or unsubscribe at the same time.
-- Updated to the [latest aws-sdk-go-v2 modules](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-05-12).
-
 ### Wrapping up {/* #wrapping-up */}
 
 Existing installations with auto-update enabled are already running v1.13.2 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time. A [full changelog](/docs/installation/changelog/#v1.13.2) is available with the complete list of changes included in this release.
