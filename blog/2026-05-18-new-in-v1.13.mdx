@@ -76,7 +76,7 @@ Reaction data can be emoji characters, Slack-style colon-wrapped strings like `:
 }
 ```
 
-Counts are returned for free — they come from a metadata item adjacent to each message that gets fetched by the same query that loads messages. Pass [`expandReactions: true`](/docs/connections/client-http-api/#connection/listMessages.expandReactions) to also include an `items` array per reaction with the user behind each one:
+Pass [`expandReactions: true`](/docs/connections/client-http-api/#connection/listMessages.expandReactions) to also include an `items` array per reaction with the user behind each one:
 
 ```json
 "reactions": {
