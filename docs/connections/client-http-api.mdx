@@ -83,7 +83,7 @@ String (required) - The name of the channel to query message history.
 
 #### `expandReactions` {/* #connection/listMessages.expandReactions */}
 
-Boolean (optional) - If `true`, the `reactions` object on each returned message is enriched with an `items` array per reaction containing the `userId` and `userMetadata` of each reacting user. Default is `false`, which returns aggregated counts only. Messages with no reactions emit `{}` when `expandReactions` is `true` and omit the field otherwise.
+Boolean (optional) - If `true`, the `reactions` object on each returned message is enriched with an `items` array per reaction containing the `uid` and `umd` of each reacting user. Default is `false`, which returns aggregated counts only. Messages with no reactions emit `{}` when `expandReactions` is `true` and omit the field otherwise.
 
 #### `limit` {/* #connection/listMessages.limit */}
 
@@ -188,13 +188,13 @@ With `expandReactions: true`, each entry also has an `items` array with one elem
         "thumbsup": {
           "count": 2,
           "items": [
-            { "userId": "Jim", "userMetadata": { "name": "Jim Halpert" } },
-            { "userId": "Pam" }
+            { "uid": "Jim", "umd": { "name": "Jim Halpert" } },
+            { "uid": "Pam" }
           ]
         },
         "heart": {
           "count": 1,
-          "items": [{ "userId": "Dwight" }]
+          "items": [{ "uid": "Dwight" }]
         }
       }
       // highlight-end
@@ -241,16 +241,16 @@ Expect a `200 OK` status code for successful reads.
   "reactions": [
     {
       "reaction": "thumbsup",
-      "userId": "Jim",
-      "userMetadata": { "name": "Jim Halpert" }
+      "uid": "Jim",
+      "umd": { "name": "Jim Halpert" }
     },
     {
       "reaction": "thumbsup",
-      "userId": "Pam"
+      "uid": "Pam"
     },
     {
       "reaction": "heart",
-      "userId": "Dwight"
+      "uid": "Dwight"
     }
   ]
 }

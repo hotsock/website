@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.13.1 - May 18, 2026 {/* #v1.13.1 */}
+## v1.13.2 - May 18, 2026 {/* #v1.13.2 */}
 
 - Add [message reactions](../connections/claims.mdx#channels.messages.react). Clients send `hotsock.messageReaction` events with `add` or `remove` actions, gated by a new [`react`](../connections/claims.mdx#channels.messages.react) directive on channel message event patterns. Reactions require an active channel subscription, a [`uid`](../connections/claims.mdx#uid), and a stored target message that hasn't expired. Each user can have one reaction per reaction value per message. Also available via the [Client HTTP API](../connections/client-http-api.mdx) and the server-side [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) and [HTTP URL](../server-api/publish-messages.mdx#publish-with-http-url) publish APIs.
 - Reaction counts are automatically included in [`listMessages`](../connections/client-http-api.mdx#connection/listMessages) responses on each message that has reactions. Pass [`expandReactions: true`](../connections/client-http-api.mdx#connection/listMessages.expandReactions) to also receive a list of reacting users per reaction value.
@@ -15,9 +15,13 @@
 - Build with Go 1.26.3.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-05-12](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-05-12)).
 
+## v1.13.1 - May 18, 2026 {/* #v1.13.1 */}
+
+- Skip this release. See [v1.13.2](#v1.13.2) for the full list of changes.
+
 ## v1.13.0 - May 18, 2026 {/* #v1.13.0 */}
 
-- Skip this release. See [v1.13.1](#v1.13.1) for the full list of changes.
+- Skip this release. See [v1.13.2](#v1.13.2) for the full list of changes.
 
 ## v1.12.0 - April 8, 2026 {/* #v1.12.0 */}
 
