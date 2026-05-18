@@ -92,10 +92,6 @@ Pass [`expandReactions: true`](/docs/connections/client-http-api/#connection/lis
 
 You can also fetch reactions for a single message with the dedicated [`connection/listReactions`](/docs/connections/client-http-api/#connection/listReactions) endpoint.
 
-#### Pub/sub events for reactions {/* #pubsub-events-for-reactions */}
-
-[`hotsock.messageReactionAdded`](/docs/server-api/events/#hotsock.messageReactionAdded) and [`hotsock.messageReactionRemoved`](/docs/server-api/events/#hotsock.messageReactionRemoved) events are always emitted to SNS/EventBridge when reactions are added or removed, with no [`emitPubSubEvent`](/docs/connections/claims/#channels.messages.emitPubSubEvent) directive needed. This makes server-side aggregation, moderation, or analytics straightforward.
-
 ### Presence member events on pub/sub (SNS/EventBridge) {/* #presence-member-pubsub */}
 
 Presence channel member lifecycle events ([`hotsock.memberAdded`](/docs/server-api/events/#hotsock.memberAdded), [`hotsock.memberRemoved`](/docs/server-api/events/#hotsock.memberRemoved), [`hotsock.memberUpdated`](/docs/server-api/events/#hotsock.memberUpdated)) are now also emitted to SNS/EventBridge, gated by the existing [`PublishEventsToSNSParameter` / `PublishEventsToEventBridgeParameter`](/docs/server-api/events/#eventbridge-sns-enable-disable) settings. The pub/sub events are deduplicated by [`uid`](/docs/connections/claims/#uid) to match WebSocket fan-out semantics, so joining from a second device when you're already present doesn't trigger another `memberAdded`.
