@@ -59,7 +59,7 @@ When issuing a connect or subscribe token, specify the [`historyStart`](./claims
 
 This endpoint will return up to `limit` messages (default 100) or up to 1MB of data, whichever comes first. Fetch subsequent pages using `before` or `after`, depending on your use case.
 
-If any returned messages have reactions, a `reactions` object is included on each message, keyed by reaction value with `{count, items?}` per entry. By default only `count` is set. Pass [`expandReactions: true`](#connection/listMessages.expandReactions) to also populate `items` with one entry per reacting user.
+If any returned messages have reactions, a `reactions` object is included on each message, keyed by reaction value with `{count, items?}` per entry. By default only `count` is set. Pass [`expandReactions: true`](#connection/listMessages.expandReactions) to also populate `items` with one entry per reacting user. (Reactions are available in preview as of v1.13.2 — behavior and API shape may change before GA.)
 
 #### `after` {/* #connection/listMessages.after */}
 
@@ -204,6 +204,10 @@ With `expandReactions: true`, each entry also has an `items` array with one elem
 ```
 
 ## `connection/listReactions` {/* #connection/listReactions */}
+
+:::info
+Message reactions are available in preview as of v1.13.2. Behavior and API shape may change before GA.
+:::
 
 List the individual reactions on a specific stored message, including who reacted. The connection must be subscribed to the channel.
 

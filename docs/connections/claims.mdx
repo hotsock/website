@@ -407,6 +407,10 @@ In the following example, since `chat.*` includes `chat.admin`, this connection 
 
 #### `react` {/* #channels.messages.react */}
 
+:::info
+Message reactions are available in preview as of v1.13.2. Behavior and API shape may change before GA.
+:::
+
 `Boolean` (optional) - Controls whether this connection can add or remove reactions on stored messages that match this event pattern. Reactions require an active channel subscription and a [`uid`](#uid) on the connection. Default is `false`.
 
 When a reaction is added or removed, all channel subscribers receive a `hotsock.messageReactionAdded` or `hotsock.messageReactionRemoved` message in real-time. Reaction counts are also included in [`listMessages`](./client-http-api.mdx#connection/listMessages) responses, and individual reactions can be listed with [`listReactions`](./client-http-api.mdx#connection/listReactions).

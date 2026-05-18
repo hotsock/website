@@ -3,14 +3,18 @@ slug: message-reactions-and-presence-pubsub
 title: Message reactions, presence pub/sub, and heartbeat enforcement
 authors: [james]
 tags: [releases, features, channels, presence]
-description: Hotsock v1.13 adds message reactions with per-event permissions and real-time delivery, presence member events to SNS/EventBridge, and a heartbeatTimeout claim for server-enforced connection liveness.
+description: Hotsock v1.13 adds message reactions (preview) with per-event permissions and real-time delivery, presence member events to SNS/EventBridge, and a heartbeatTimeout claim for server-enforced connection liveness.
 ---
 
-Hotsock v1.13 introduces **message reactions**, **presence member events on pub/sub (SNS/EventBridge)**, and a **`heartbeatTimeout` claim** for server-enforced connection liveness.
+Hotsock v1.13 introduces **message reactions (preview)**, **presence member events on pub/sub (SNS/EventBridge)**, and a **`heartbeatTimeout` claim** for server-enforced connection liveness.
 
 {/* truncate */}
 
-### Message reactions {/* #message-reactions */}
+### Message reactions (preview) {/* #message-reactions */}
+
+:::info
+Message reactions are available in preview as of v1.13.2. The feature is functional end to end, but behavior and API shape may change before GA. Try it out and [send feedback](https://github.com/hotsock/hotsock/discussions).
+:::
 
 Clients can now add and remove reactions on stored messages, with real-time delivery to all channel subscribers, aggregated counts in message history, and a separate endpoint to list who reacted with what.
 

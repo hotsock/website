@@ -16,7 +16,7 @@ const CAPABILITIES = [
       "Add and remove reactions on stored messages with real-time fan-out and counts in history.",
     href: "/docs/connections/claims/#channels.messages.react",
     icon: "♥",
-    badge: "New",
+    badge: "Preview",
   },
   {
     title: "Server-enforced heartbeats",
