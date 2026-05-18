@@ -37,24 +37,19 @@ wscat -c   0.20s user 0.07s system 0% cpu 2:00:00.46 total
 
 Clients should not reply to server-initiated `hotsock.keepAlive` events.
 
-{/* ## Send `hotsock.heartbeat`
+## Send `hotsock.heartbeat` {/* #send-hotsockheartbeat */}
 
 Like other TCP-based protocols, WebSockets will happily assume that connections are still alive until proven otherwise or until they are explicitly closed. There are many circumstances, however, where the connection is dead but one side doesn't know it yet. Unexpected network disconnects and computers going to sleep are some examples of where this can happen.
 
-Both [standard](../channels/standard) and [presence](../channels/presence) channels support optional [connection heartbeats](./claims.mdx).
+This is particularly useful for [presence channels](../channels/presence.mdx) when accuracy of connected members is critical and your application cannot withstand a delay in detecting dropped connections.
 
-This is particularly useful for [presence channels](../channels/presence) when accuracy of connected members is critical and your application cannot withstand a delay in detecting dropped connections.
-
-If enabled, the client _must_ send a `hotsock.heartbeat` event on the WebSocket at least as often as specified in the `clientHeartbeatInterval` claim.
-
-The backend records receipt of this message, but does not send a reply. Avoid over-sending heartbeats, as each heartbeat incurs a database write and a billable API Gateway message.
+When the [`heartbeatTimeout` claim](./claims.mdx#heartbeatTimeout) is set, the client _must_ send a `hotsock.heartbeat` event on the WebSocket at least every `heartbeatTimeout` seconds. The server records receipt of this message but does not send a reply. Avoid over-sending heartbeats — each heartbeat incurs a database write and a billable API Gateway message.
 
 ```
 > {"event":"hotsock.heartbeat"}
->
 ```
 
-If the server does not receive a heartbeat message from the client within the timeframe specified by the `clientHeartbeatInterval` claim, that connection is forcefully closed by the server. */}
+If the server does not receive a heartbeat message within the configured timeout, the connection is forcefully closed by the server.
 
 ## `hotsock.ping` and `hotsock.pong` {/* #hotsockping-and-hotsockpong */}
 

@@ -1,0 +1,140 @@
+---
+slug: message-reactions-and-presence-pubsub
+title: Message reactions, presence pub/sub, and heartbeat enforcement
+authors: [james]
+tags: [releases, features, channels, presence]
+description: Hotsock v1.13 adds message reactions with per-event permissions and real-time delivery, presence member events to SNS/EventBridge, and a heartbeatTimeout claim for server-enforced connection liveness.
+---
+
+Hotsock v1.13 introduces **message reactions**, **presence member events on SNS/EventBridge**, and a **`heartbeatTimeout` claim** for server-enforced connection liveness. The release also adds an `expandReactions` flag to `listMessages` so you can fetch reaction details with user attribution in a single call.
+
+{/* truncate */}
+
+### Message reactions {/* #message-reactions */}
+
+Clients can now add and remove reactions on stored messages, with real-time delivery to all channel subscribers, aggregated counts in message history, and a separate endpoint to list who reacted with what.
+
+Reactions are gated by a new [`react`](/docs/connections/claims/#channels.messages.react) directive on channel message event patterns, alongside the existing `publish`, `store`, `echo`, and other directives. A connection needs three things to react: an active channel subscription, a [`uid`](/docs/connections/claims/#uid), and a stored target message that hasn't expired.
+
+#### Setting up permissions {/* #setting-up-permissions */}
+
+```json
+{
+  "exp": 1747574400,
+  "scope": "connect",
+  "uid": "Jim",
+  "channels": {
+    "room.123": {
+      "subscribe": true,
+      "messages": {
+        "chat": {
+          "publish": true,
+          "echo": true,
+          "store": 31536000,
+          // highlight-next-line
+          "react": true
+        }
+      }
+    }
+  }
+}
+```
+
+#### Adding and removing reactions {/* #adding-and-removing-reactions */}
+
+Clients send a `hotsock.messageReaction` message on the WebSocket with the target message ID, the reaction value, and an explicit `add` or `remove` action:
+
+```
+> {"event":"hotsock.messageReaction", "channel":"room.123", "data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW", "reaction":"thumbsup", "action":"add"}}
+```
+
+All channel subscribers immediately receive a `hotsock.messageReactionAdded` event:
+
+```
+< {"id":"01JB4K7M2N...","event":"hotsock.messageReactionAdded","channel":"room.123","data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW","reaction":"thumbsup","action":"add"},"meta":{"uid":"Jim","umd":null}}
+```
+
+Reaction data can be emoji characters, Slack-style colon-wrapped strings like `:thumbsup:`, or any short string up to 100 bytes. Each user can have one reaction per reaction value per message — adding the same reaction again is a no-op.
+
+#### Reactions in message history {/* #reactions-in-message-history */}
+
+[`listMessages`](/docs/connections/client-http-api/#connection/listMessages) responses now include a `reactions` object on each message that has reactions, keyed by reaction value:
+
+```json
+{
+  "messages": [
+    {
+      "id": "01JA3S0P7FB7WVYS67X316M32S",
+      "event": "chat",
+      "channel": "room.123",
+      "data": "Wow. Can we make it a different moment?",
+      "meta": { "uid": "Jim", "umd": null },
+      // highlight-next-line
+      "reactions": { "thumbsup": { "count": 2 }, "heart": { "count": 1 } }
+    }
+  ]
+}
+```
+
+Counts are returned for free — they come from a metadata item adjacent to each message that gets fetched by the same query that loads messages. Pass [`expandReactions: true`](/docs/connections/client-http-api/#connection/listMessages.expandReactions) to also include an `items` array per reaction with the user behind each one:
+
+```json
+"reactions": {
+  "thumbsup": {
+    "count": 2,
+    "items": [
+      { "userId": "Jim", "userMetadata": { "name": "Jim Halpert" } },
+      { "userId": "Pam" }
+    ]
+  }
+}
+```
+
+You can also fetch reactions for a single message with the dedicated [`connection/listReactions`](/docs/connections/client-http-api/#connection/listReactions) endpoint.
+
+#### Pub/sub events for reactions {/* #pubsub-events-for-reactions */}
+
+[`hotsock.messageReactionAdded`](/docs/server-api/events/#hotsock.messageReactionAdded) and [`hotsock.messageReactionRemoved`](/docs/server-api/events/#hotsock.messageReactionRemoved) events are always emitted to SNS/EventBridge when reactions are added or removed — no `emitPubSubEvent` directive needed. This makes server-side aggregation, moderation, or analytics straightforward.
+
+### Presence member events on SNS/EventBridge {/* #presence-member-pubsub */}
+
+Presence channel member lifecycle events ([`hotsock.memberAdded`](/docs/server-api/events/#hotsock.memberAdded), [`hotsock.memberRemoved`](/docs/server-api/events/#hotsock.memberRemoved), [`hotsock.memberUpdated`](/docs/server-api/events/#hotsock.memberUpdated)) are now also emitted to SNS/EventBridge, gated by the existing `PublishEventsToSNSParameter` / `PublishEventsToEventBridgeParameter` settings. The pub/sub events are deduplicated by `uid` to match WebSocket fan-out semantics — joining from a second device when you're already present doesn't trigger another `memberAdded`.
+
+The pub/sub `data` payload uses the same single-entity shape as the rest of the public event types, with `uid`, `umd`, and `members` at the root:
+
+```json
+{
+  "uid": "Dwight",
+  "umd": { "status": "available" },
+  "members": [
+    { "uid": "Jim", "umd": null },
+    { "uid": "Dwight", "umd": { "status": "available" } }
+  ]
+}
+```
+
+`dataType` is `channelMember`, so SNS filter policies and EventBridge rules can target presence events specifically.
+
+### Server-enforced heartbeats {/* #server-enforced-heartbeats */}
+
+The new [`heartbeatTimeout`](/docs/connections/claims/#heartbeatTimeout) connect-token claim sets a maximum interval between client-initiated `hotsock.heartbeat` messages. If the server doesn't see a heartbeat within that window, the connection is forcefully disconnected:
+
+```json
+{
+  "scope": "connect",
+  // highlight-next-line
+  "heartbeatTimeout": 30
+}
+```
+
+Valid values are 5–600 seconds. This is most useful on [presence channels](/docs/channels/presence/) where accurate detection of dropped clients matters more than waiting for API Gateway's 10-minute idle timeout. The client just needs to send `{"event":"hotsock.heartbeat"}` periodically — the server records receipt and reschedules the next check relative to the last heartbeat, with no reply.
+
+### Other improvements {/* #other-improvements */}
+
+- Faster subscription cleanup when many connections disconnect or unsubscribe at the same time.
+- Tighter heartbeat-check scheduling so stale connections are disconnected closer to their actual deadline.
+- Updated to Go 1.26.3 and the [latest aws-sdk-go-v2 modules](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-05-12).
+
+### Wrapping up {/* #wrapping-up */}
+
+Existing installations with auto-update enabled are already running v1.13.1 and have access to these features today. Other installations can be [manually updated](/docs/installation/updates/#manually-update-installation) at any time. A [full changelog](/docs/installation/changelog/#v1.13.1) is available with the complete list of changes included in this release.
