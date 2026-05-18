@@ -2,25 +2,13 @@
 
 ## v1.13.2 - May 18, 2026 {/* #v1.13.2 */}
 
-- Add [message reactions](../connections/claims.mdx#channels.messages.react) (**preview**). Clients send `hotsock.messageReaction` events with `add` or `remove` actions, gated by a new [`react`](../connections/claims.mdx#channels.messages.react) directive on channel message event patterns. Reactions require an active channel subscription, a [`uid`](../connections/claims.mdx#uid), and a stored target message that hasn't expired. Each user can have one reaction per reaction value per message. Also available via the [Client HTTP API](../connections/client-http-api.mdx) and the server-side [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) and [HTTP URL](../server-api/publish-messages.mdx#publish-with-http-url) publish APIs. Behavior and API shape may change before GA.
-- Reaction counts are automatically included in [`listMessages`](../connections/client-http-api.mdx#connection/listMessages) responses on each message that has reactions. Pass [`expandReactions: true`](../connections/client-http-api.mdx#connection/listMessages.expandReactions) to also receive a list of reacting users per reaction value. (Part of the reactions preview.)
-- Add [`connection/listReactions`](../connections/client-http-api.mdx#connection/listReactions) Client HTTP API endpoint to list individual reactions on a single message with user attribution. (Part of the reactions preview.)
-- Add configurable [`limit`](../connections/client-http-api.mdx#connection/listMessages.limit) parameter to [`connection/listMessages`](../connections/client-http-api.mdx#connection/listMessages) (default 100).
 - Publish [`hotsock.memberAdded`](../server-api/events.mdx#hotsock.memberAdded), [`hotsock.memberRemoved`](../server-api/events.mdx#hotsock.memberRemoved), and [`hotsock.memberUpdated`](../server-api/events.mdx#hotsock.memberUpdated) presence channel events to SNS/EventBridge, deduplicated by `uid` to match WebSocket fan-out semantics.
 - Add [`heartbeatTimeout`](../connections/claims.mdx#heartbeatTimeout) connect-token claim for server-enforced connection heartbeats. When set (5–600 seconds), the client must send a [`hotsock.heartbeat`](../connections/keep-alive.mdx#send-hotsockheartbeat) message at least that often or the server will forcefully disconnect. Useful for [presence channels](../channels/presence.mdx) and other applications that need accurate dropped-connection detection beyond what API Gateway's idle timeout provides.
+- Add configurable [`limit`](../connections/client-http-api.mdx#connection/listMessages.limit) parameter to [`connection/listMessages`](../connections/client-http-api.mdx#connection/listMessages) (default 100).
 - Improve subscription cleanup throughput when many connections disconnect or unsubscribe at the same time.
-- Tighten heartbeat-check scheduling so stale connections are disconnected closer to their actual deadline.
 - Update the [Web Console](../server-api/web-console.mdx) to the latest build.
 - Build with Go 1.26.3.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-05-12](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-05-12)).
-
-## v1.13.1 - May 18, 2026 {/* #v1.13.1 */}
-
-- Skip this release. See [v1.13.2](#v1.13.2) for the full list of changes.
-
-## v1.13.0 - May 18, 2026 {/* #v1.13.0 */}
-
-- Skip this release. See [v1.13.2](#v1.13.2) for the full list of changes.
 
 ## v1.12.0 - April 8, 2026 {/* #v1.12.0 */}
 

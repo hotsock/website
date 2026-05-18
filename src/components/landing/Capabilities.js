@@ -11,14 +11,6 @@ const CAPABILITIES = [
     icon: "◉",
   },
   {
-    title: "Message reactions",
-    description:
-      "Add and remove reactions on stored messages with real-time fan-out and counts in history.",
-    href: "/docs/connections/claims/#channels.messages.react",
-    icon: "♥",
-    badge: "Preview",
-  },
-  {
     title: "Server-enforced heartbeats",
     description:
       "Set a heartbeat timeout in the token and Hotsock disconnects clients that go silent.",

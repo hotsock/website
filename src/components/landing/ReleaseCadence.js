@@ -7,10 +7,10 @@ const RELEASES = [
   {
     version: "v1.13",
     date: "May 2026",
-    title: "Message reactions & presence pub/sub",
+    title: "Presence pub/sub & heartbeat enforcement",
     summary:
-      "Add and remove reactions on stored messages, presence events on SNS/EventBridge, and server-enforced heartbeats.",
-    href: "/blog/message-reactions-and-presence-pubsub",
+      "Presence member events on SNS/EventBridge and server-enforced heartbeats for accurate dropped-connection detection.",
+    href: "/blog/presence-pubsub-and-heartbeats",
   },
   {
     version: "v1.12",

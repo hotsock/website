@@ -18,11 +18,11 @@ function Hero() {
       <Wrapper>
         <div className="relative lg:w-10/12 mx-auto">
           <Link
-            to="/blog/message-reactions-and-presence-pubsub"
+            to="/blog/presence-pubsub-and-heartbeats"
             className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary no-underline hover:bg-primary/10 hover:no-underline mb-6"
           >
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            Now available · v1.13 message reactions &amp; presence pub/sub
+            Now available · v1.13 presence pub/sub &amp; heartbeat enforcement
             <Arrow className="fill-current w-3 h-3" />
           </Link>
           <h1 className="lg:text-6xl text-4xl font-bold !leading-[1.1] lg:!leading-[1.1] tracking-tight mb-6">

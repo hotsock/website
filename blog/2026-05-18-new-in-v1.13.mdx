@@ -1,100 +1,14 @@
 ---
-slug: message-reactions-and-presence-pubsub
-title: Message reactions, presence pub/sub, and heartbeat enforcement
+slug: presence-pubsub-and-heartbeats
+title: Presence pub/sub and heartbeat enforcement
 authors: [james]
-tags: [releases, features, channels, presence]
-description: Hotsock v1.13 adds message reactions (preview) with per-event permissions and real-time delivery, presence member events to SNS/EventBridge, and a heartbeatTimeout claim for server-enforced connection liveness.
+tags: [releases, features, presence]
+description: Hotsock v1.13 publishes presence member events to SNS/EventBridge and adds a heartbeatTimeout claim for server-enforced connection liveness.
 ---
 
-Hotsock v1.13 introduces **message reactions (preview)**, **presence member events on pub/sub (SNS/EventBridge)**, and a **`heartbeatTimeout` claim** for server-enforced connection liveness.
+Hotsock v1.13 publishes **presence member events to pub/sub (SNS/EventBridge)** and adds a **`heartbeatTimeout` claim** for server-enforced connection liveness.
 
 {/* truncate */}
-
-### Message reactions (preview) {/* #message-reactions */}
-
-:::info
-Message reactions are available in preview as of v1.13.2. The feature is functional end to end, but behavior and API shape may change before GA. Try it out and [send feedback](https://github.com/hotsock/hotsock/discussions).
-:::
-
-Clients can now add and remove reactions on stored messages, with real-time delivery to all channel subscribers, aggregated counts in message history, and a separate endpoint to list who reacted with what.
-
-Reactions are gated by a new [`react`](/docs/connections/claims/#channels.messages.react) directive on channel message event patterns, alongside the existing [`publish`](/docs/connections/claims/#channels.messages.publish), [`store`](/docs/connections/claims/#channels.messages.store), [`echo`](/docs/connections/claims/#channels.messages.echo), and other directives. A connection needs three things to react: an active channel subscription, a [`uid`](/docs/connections/claims/#uid), and a stored target message that hasn't expired.
-
-#### Setting up permissions {/* #setting-up-permissions */}
-
-```json
-{
-  "exp": 1747574400,
-  "scope": "connect",
-  "uid": "Jim",
-  "channels": {
-    "room.123": {
-      "subscribe": true,
-      "messages": {
-        "chat": {
-          "publish": true,
-          "echo": true,
-          "store": 31536000,
-          // highlight-next-line
-          "react": true
-        }
-      }
-    }
-  }
-}
-```
-
-#### Adding and removing reactions {/* #adding-and-removing-reactions */}
-
-Clients send a `hotsock.messageReaction` message on the WebSocket with the target message ID, the reaction value, and an explicit `add` or `remove` action:
-
-```
-> {"event":"hotsock.messageReaction", "channel":"room.123", "data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW", "reaction":"thumbsup", "action":"add"}}
-```
-
-All channel subscribers immediately receive a `hotsock.messageReactionAdded` event:
-
-```
-< {"id":"01JB4K7M2N...","event":"hotsock.messageReactionAdded","channel":"room.123","data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW","reaction":"thumbsup","action":"add"},"meta":{"uid":"Jim","umd":null}}
-```
-
-Reaction data can be emoji characters, Slack-style colon-wrapped strings like `:thumbsup:`, or any short string up to 100 bytes. Each user can have one reaction per reaction value per message, and adding the same reaction again is a no-op.
-
-#### Reactions in message history {/* #reactions-in-message-history */}
-
-[`listMessages`](/docs/connections/client-http-api/#connection/listMessages) responses now include a `reactions` object on each message that has reactions, keyed by reaction value:
-
-```json
-{
-  "messages": [
-    {
-      "id": "01JA3S0P7FB7WVYS67X316M32S",
-      "event": "chat",
-      "channel": "room.123",
-      "data": "Wow. Can we make it a different moment?",
-      "meta": { "uid": "Jim", "umd": null },
-      // highlight-next-line
-      "reactions": { "thumbsup": { "count": 2 }, "heart": { "count": 1 } }
-    }
-  ]
-}
-```
-
-Pass [`expandReactions: true`](/docs/connections/client-http-api/#connection/listMessages.expandReactions) to also include an `items` array per reaction with the user behind each one:
-
-```json
-"reactions": {
-  "thumbsup": {
-    "count": 2,
-    "items": [
-      { "uid": "Jim", "umd": { "name": "Jim Halpert" } },
-      { "uid": "Pam" }
-    ]
-  }
-}
-```
-
-You can also fetch reactions for a single message with the dedicated [`connection/listReactions`](/docs/connections/client-http-api/#connection/listReactions) endpoint.
 
 ### Presence member events on pub/sub (SNS/EventBridge) {/* #presence-member-pubsub */}
 

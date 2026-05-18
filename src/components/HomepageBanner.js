@@ -8,17 +8,17 @@ export default function HomepageBanner() {
           <div className="flex items-center flex-1">
             <p className="mb-0 ml-3 font-medium text-white truncate">
               <span className="md:hidden">
-                New in v1.13: message reactions and presence pub/sub!
+                New in v1.13: presence pub/sub and heartbeat enforcement!
               </span>
               <span className="hidden md:inline">
-                New in v1.13: message reactions, presence events on pub/sub,
-                and server-enforced heartbeats!
+                New in v1.13: presence events on pub/sub and server-enforced
+                heartbeats!
               </span>
             </p>
           </div>
           <div className="flex-shrink-0 order-3 w-full mt-2 sm:order-2 sm:mt-0 sm:w-auto">
             <Link
-              to="/blog/message-reactions-and-presence-pubsub"
+              to="/blog/presence-pubsub-and-heartbeats"
               className="flex items-center justify-center px-4 py-2 text-sm font-medium bg-white border border-transparent rounded-sm shadow-sm text-pink-600 hover:bg-indigo-50"
             >
               Learn more
