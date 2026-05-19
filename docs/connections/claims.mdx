@@ -226,7 +226,7 @@ If you wanted to allow access to the entire message history of a channel without
 
 `Object` (optional) - Manages the permissions and directives for client-initiated messages that are published directly to the WebSocket on the channel(s) for the specified events. Each object key is the name of an event and can include asterisks (\*) anywhere in the string to denote wildcards. Keys can also use the `#regex:` prefix to specify a regular expression pattern for matching event names. Each object value is another object with the settings for that event or event pattern.
 
-Each object inside the messages object accepts [`broadcast`](#channels.messages.broadcast), [`echo`](#channels.messages.echo), [`emitPubSubEvent`](#channels.messages.emitPubSubEvent), [`publish`](#channels.messages.publish), [`scheduleBefore`](#channels.messages.scheduleBefore), and [`store`](#channels.messages.store) attributes.
+Each object inside the messages object accepts [`broadcast`](#channels.messages.broadcast), [`echo`](#channels.messages.echo), [`emitPubSubEvent`](#channels.messages.emitPubSubEvent), [`publish`](#channels.messages.publish), [`react`](#channels.messages.react), [`scheduleBefore`](#channels.messages.scheduleBefore), and [`store`](#channels.messages.store) attributes.
 
 #### Regex patterns {/* #channels.messages--regex */}
 
@@ -404,6 +404,81 @@ In the following example, since `chat.*` includes `chat.admin`, this connection 
 ```
 
 :::
+
+#### `react` {/* #channels.messages.react */}
+
+`Boolean` or `Array[String]` (optional) - Controls whether this connection can add or remove reactions on stored messages that match this event pattern. Reactions require an active channel subscription and a [`uid`](#uid) on the connection. Default is `false`.
+
+When set to `true`, any reaction value is permitted. When set to an array of strings, only reaction values in the list are allowed. An explicit `false` denies reactions.
+
+When a reaction is added or removed, all channel subscribers receive a `hotsock.messageReactionAdded` or `hotsock.messageReactionRemoved` message in real-time. Reaction counts are included in [`listMessages`](./client-http-api.mdx#connection/listMessages) responses, and individual reactions can be listed with [`listReactions`](./client-http-api.mdx#connection/listReactions).
+
+The following allows any reaction on `chat` messages in the "mychannel" channel:
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      "messages": {
+        "chat": {
+          "publish": true,
+          "echo": true,
+          "store": 31536000,
+          // highlight-next-line
+          "react": true
+        }
+      }
+    }
+  }
+}
+```
+
+To restrict to specific reactions, pass an array:
+
+```json
+{
+  "channels": {
+    "mychannel": {
+      "subscribe": true,
+      "messages": {
+        "chat": {
+          "publish": true,
+          "store": 31536000,
+          // highlight-next-line
+          "react": ["thumbsup", "heart", "laugh"]
+        }
+      }
+    }
+  }
+}
+```
+
+To add a reaction, send a `hotsock.messageReaction` message on the WebSocket:
+
+```
+> {"event":"hotsock.messageReaction", "channel":"mychannel", "data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW", "reaction":"thumbsup", "action":"add"}}
+```
+
+To remove a reaction:
+
+```
+> {"event":"hotsock.messageReaction", "channel":"mychannel", "data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW", "reaction":"thumbsup", "action":"remove"}}
+```
+
+All channel subscribers receive the reaction event:
+
+```
+< {"id":"01JB4K7M2N...","event":"hotsock.messageReactionAdded","channel":"mychannel","data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW","reaction":"thumbsup","action":"add"},"meta":{"uid":"Jim","umd":null}}
+```
+
+Reaction data must not be blank, must be no more than 100 bytes, and must not contain number signs (`#`). Reactions can be emoji characters, Slack-style colon-wrapped strings like `:thumbsup:`, or any other short string.
+
+:::info
+Reactions can only be added to stored messages (messages published with a [`store`](#channels.messages.store) TTL). The target message must exist and not be expired. Each user can have one reaction per reaction value per message.
+:::
+
+Also available via the Client HTTP API at [`connection/publishMessage`](./client-http-api.mdx#connection/publishMessage) using `"event": "hotsock.messageReaction"` with the reaction payload as `data`, or via the server-side [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) and [HTTP URL](../server-api/publish-messages.mdx#publish-with-http-url) publish APIs.
 
 #### `scheduleBefore` {/* #channels.messages.scheduleBefore */}
 

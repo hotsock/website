@@ -507,6 +507,97 @@ SNS filter attributes are limited to `channel`, `key`, and `trigger`.
 
 The data object type for this event is `channelStorage`.
 
+## `hotsock.messageReactionAdded` {/* #hotsock.messageReactionAdded */}
+
+This event is sent whenever a reaction is added to a stored message. Reaction pub/sub events are emitted from the DynamoDB stream processor after the reaction is persisted. They are gated by the [`emitPubSubEvent`](../connections/claims.mdx#channels.messages.emitPubSubEvent) directive on the matching message event pattern (always enabled for WebSocket-initiated reactions).
+
+### `type` {/* #hotsock.messageReactionAdded--type */}
+
+This is always `hotsock.messageReactionAdded`.
+
+### `metadata` {/* #hotsock.messageReactionAdded--metadata */}
+
+- `channel` (String): The name of the channel where the reaction was added.
+- `connectionId` (String): The identifier for the connection that added the reaction. Only present for client-initiated reactions.
+- `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
+- `reaction` (String): The reaction value that was added.
+- `sourceIp` (String): The IP address of the client. Only present if known.
+- `trigger` (String): The kind of initiator, set to one of `client.websocket`, `client.http`, `server.lambda`, or `server.http`.
+- `userAgent` (String): The User-Agent of the client. Only present if known.
+
+```json
+{
+  "channel": "my-channel",
+  "connectionId": "IDnAdd9kIAMCEsQ=",
+  "hotsockVersion": "1.13.2",
+  "reaction": "thumbsup",
+  "sourceIp": "12.34.56.78",
+  "trigger": "client.websocket",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+}
+```
+
+### `data` {/* #hotsock.messageReactionAdded--data */}
+
+- `channel` (String): The name of the channel where the reaction was added.
+- `messageId` (String): The ID of the message that was reacted to.
+- `id` (String): The unique ID of this reaction ([ULID](https://github.com/ulid/spec)).
+- `reaction` (String): The reaction value.
+- `uid` (String): The user ID of the user who added the reaction.
+- `umd` (JSON | null): The user metadata of the user who added the reaction.
+- `createdAt` (String): The ISO3339 timestamp when the reaction was created.
+- `expiresAt` (String | null): The RFC3339 timestamp when the reaction expires (inherits the parent message's TTL), or `null` if the message has no TTL.
+
+```json
+{
+  "channel": "my-channel",
+  "messageId": "01JA3S0TNEC2QBYMZRBMCEXGNW",
+  "id": "01JB4K7M2NC8QBYMZRBMCEXGNW",
+  "reaction": "thumbsup",
+  "uid": "Jim",
+  "umd": null,
+  "createdAt": "2026-05-18T19:30:00.000Z",
+  "expiresAt": "2027-05-18T19:30:00Z"
+}
+```
+
+### `dataType` {/* #hotsock.messageReactionAdded--dataType */}
+
+The data object type for this event is `messageReaction`.
+
+## `hotsock.messageReactionRemoved` {/* #hotsock.messageReactionRemoved */}
+
+This event is sent whenever a reaction is explicitly removed from a stored message. TTL-driven reaction deletes (when a message expires) do not trigger this event.
+
+### `type` {/* #hotsock.messageReactionRemoved--type */}
+
+This is always `hotsock.messageReactionRemoved`.
+
+### `metadata` {/* #hotsock.messageReactionRemoved--metadata */}
+
+Same as [`hotsock.messageReactionAdded` metadata](#hotsock.messageReactionAdded--metadata).
+
+### `data` {/* #hotsock.messageReactionRemoved--data */}
+
+Same shape as [`hotsock.messageReactionAdded` data](#hotsock.messageReactionAdded--data).
+
+```json
+{
+  "channel": "my-channel",
+  "messageId": "01JA3S0TNEC2QBYMZRBMCEXGNW",
+  "id": "01JB4K7M2NC8QBYMZRBMCEXGNW",
+  "reaction": "thumbsup",
+  "uid": "Jim",
+  "umd": null,
+  "createdAt": "2026-05-18T19:30:00.000Z",
+  "expiresAt": "2027-05-18T19:30:00Z"
+}
+```
+
+### `dataType` {/* #hotsock.messageReactionRemoved--dataType */}
+
+The data object type for this event is `messageReaction`.
+
 ## `hotsock.memberAdded` {/* #hotsock.memberAdded */}
 
 This event is sent whenever a unique member is added to a [presence channel](../channels/presence.mdx). Member events are deduplicated by `uid` to match WebSocket fan-out semantics — if a user is already present on the channel from another connection, no `hotsock.memberAdded` event fires when an additional connection joins.
