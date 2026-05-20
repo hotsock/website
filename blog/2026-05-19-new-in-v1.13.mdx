@@ -96,7 +96,7 @@ You can also fetch reactions for a single message with the dedicated [`connectio
 
 #### Pub/sub events for reactions {/* #pubsub-events-for-reactions */}
 
-[`hotsock.messageReactionAdded`](/docs/server-api/events/#hotsock.messageReactionAdded) and [`hotsock.messageReactionRemoved`](/docs/server-api/events/#hotsock.messageReactionRemoved) events are emitted to SNS/EventBridge after reactions are persisted, gated by the [`emitPubSubEvent`](/docs/connections/claims/#channels.messages.emitPubSubEvent) directive on the matching message event pattern. TTL-driven reaction deletes (when a message expires) do not trigger `messageReactionRemoved`.
+[`hotsock.messageReactionAdded`](/docs/server-api/events/#hotsock.messageReactionAdded) and [`hotsock.messageReactionRemoved`](/docs/server-api/events/#hotsock.messageReactionRemoved) events are emitted to SNS/EventBridge after reactions are persisted, gated by the [`emitPubSubEvent`](/docs/connections/claims/#channels.messages.emitPubSubEvent) directive on the matching message event pattern.
 
 ### Presence member events on pub/sub (SNS/EventBridge) {/* #presence-member-pubsub */}
 
