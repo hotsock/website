@@ -577,11 +577,51 @@ This is always `hotsock.messageReactionRemoved`.
 
 ### `metadata` {/* #hotsock.messageReactionRemoved--metadata */}
 
-Same as [`hotsock.messageReactionAdded` metadata](#hotsock.messageReactionAdded--metadata).
+- `channel` (String): The name of the channel where the reaction was removed.
+- `connectionId` (String): The identifier for the connection that removed the reaction. Only present for client-initiated reactions.
+- `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
+- `reaction` (String): The reaction value that was removed.
+- `requestId` (String): The request ID for the Lambda invocation that originally accepted the reaction.
+- `sourceIp` (String): The IP address of the client. Only present if known.
+- `trigger` (String): The kind of initiator, set to one of `client.websocket`, `client.http`, `server.lambda`, or `server.http`.
+- `userAgent` (String): The User-Agent of the client. Only present if known.
+
+```json
+{
+  "channel": "my-channel",
+  "connectionId": "IDnAdd9kIAMCEsQ=",
+  "hotsockVersion": "1.13.0",
+  "reaction": "👍",
+  "requestId": "9d1d380a-0152-4962-bbbb-6e721b81db52",
+  "sourceIp": "12.34.56.78",
+  "trigger": "client.websocket",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+}
+```
 
 ### `data` {/* #hotsock.messageReactionRemoved--data */}
 
-Same shape as [`hotsock.messageReactionAdded` data](#hotsock.messageReactionAdded--data).
+- `channel` (String): The name of the channel where the reaction was removed.
+- `messageId` (String): The ID of the message that was reacted to ([ULID](https://github.com/ulid/spec)).
+- `id` (String): The unique ID of this reaction ([ULID](https://github.com/ulid/spec)).
+- `reaction` (String): The reaction value.
+- `uid` (String): The user ID of the user who removed the reaction.
+- `umd` (JSON | null): The user metadata of the user who removed the reaction.
+- `createdAt` (String): The ISO3339 timestamp when the reaction was originally created.
+- `expiresAt` (String | null): The RFC3339 timestamp when the reaction would have expired, or `null` if the message has no TTL.
+
+```json
+{
+  "channel": "my-channel",
+  "messageId": "01HZAD885RZ308CJM4YK825G65",
+  "id": "01HZADC44KZ308CJM4YK825G65",
+  "reaction": "👍",
+  "uid": null,
+  "umd": null,
+  "createdAt": "2026-05-19T15:47:45.231Z",
+  "expiresAt": "2027-05-19T15:47:45Z"
+}
+```
 
 ### `dataType` {/* #hotsock.messageReactionRemoved--dataType */}
 
