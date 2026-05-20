@@ -577,14 +577,18 @@ This is always `hotsock.messageReactionRemoved`.
 
 ### `metadata` {/* #hotsock.messageReactionRemoved--metadata */}
 
+:::note
+`connectionId`, `requestId`, `sourceIp`, `trigger`, and `userAgent` reflect the original request that *added* the reaction, not the request that triggered the removal.
+:::
+
 - `channel` (String): The name of the channel where the reaction was removed.
-- `connectionId` (String): The identifier for the connection that removed the reaction. Only present for client-initiated reactions.
+- `connectionId` (String): The identifier for the connection that originally added the reaction. Only present for client-initiated reactions.
 - `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
 - `reaction` (String): The reaction value that was removed.
-- `requestId` (String): The request ID for the Lambda invocation that originally accepted the reaction.
-- `sourceIp` (String): The IP address of the client. Only present if known.
-- `trigger` (String): The kind of initiator, set to one of `client.websocket`, `client.http`, `server.lambda`, or `server.http`.
-- `userAgent` (String): The User-Agent of the client. Only present if known.
+- `requestId` (String): The request ID for the Lambda invocation that originally added the reaction.
+- `sourceIp` (String): The IP address of the client that originally added the reaction. Only present if known.
+- `trigger` (String): The kind of initiator that originally added the reaction, set to one of `client.websocket`, `client.http`, `server.lambda`, or `server.http`.
+- `userAgent` (String): The User-Agent of the client that originally added the reaction. Only present if known.
 
 ```json
 {
