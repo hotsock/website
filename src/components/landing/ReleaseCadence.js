@@ -5,6 +5,14 @@ import Arrow from "../../icons/arrow"
 
 const RELEASES = [
   {
+    version: "v1.13",
+    date: "May 2026",
+    title: "Message reactions & presence pub/sub",
+    summary:
+      "Add and remove reactions on stored messages, presence events on SNS/EventBridge, and server-enforced heartbeats.",
+    href: "/blog/message-reactions-and-presence-pubsub",
+  },
+  {
     version: "v1.12",
     date: "April 2026",
     title: "Channel storage & live user metadata",
@@ -43,14 +51,6 @@ const RELEASES = [
     summary:
       "Query stored messages by channel and event, with connection/source metadata attached.",
     href: "/docs/installation/changelog/#v1.8.0",
-  },
-  {
-    version: "v1.7",
-    date: "September 2025",
-    title: "Auto-subscribe & broadcast",
-    summary:
-      "Channels subscribed the moment you connect, and publishing to channels you're not on.",
-    href: "/blog/auto-subscribe-and-broadcast-messaging",
   },
 ]
 
