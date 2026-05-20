@@ -57,7 +57,7 @@ List the message history for a channel. By default, a connection can only list m
 
 When issuing a connect or subscribe token, specify the [`historyStart`](./claims.mdx#channels.historyStart) claim to expand visibility to message history beyond the lifetime of the active subscription.
 
-This endpoint will return up to `limit` messages (default 100) or up to 1MB of data, whichever comes first. Fetch subsequent pages using `before` or `after`, depending on your use case.
+This endpoint will return up to 100 messages or up to 1MB of data, whichever comes first. Fetch subsequent pages using `before` or `after`, depending on your use case.
 
 If any returned messages have reactions, a `reactions` object is included on each message, keyed by reaction value with `{count, items?}` per entry. By default only `count` is set. Pass [`expandReactions: true`](#connection/listMessages.expandReactions) to also populate `items` with one entry per reacting user.
 
@@ -84,10 +84,6 @@ String (required) - The name of the channel to query message history.
 #### `expandReactions` {/* #connection/listMessages.expandReactions */}
 
 Boolean (optional) - If `true`, the `reactions` object on each returned message is enriched with an `items` array per reaction containing the `uid` and `umd` of each reacting user. Default is `false`, which returns aggregated counts only. Messages with no reactions omit the field when `false` and emit `{}` when `true`.
-
-#### `limit` {/* #connection/listMessages.limit */}
-
-Integer (optional) - The maximum number of messages to return. Default is `100`.
 
 #### `reverse` {/* #connection/listMessages.reverse */}
 
