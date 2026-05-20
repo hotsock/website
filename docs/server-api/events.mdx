@@ -26,7 +26,7 @@ Published events use the same shape for both EventBridge and SNS, where the payl
     "keepAlive": true,
     "sourceIp": "12.34.56.78",
     "uid": "12345",
-    "umd": { "first_name": "Jim", "last_name": "Halpert" },
+    "umd": { "firstName": "Jim", "lastName": "Halpert" },
     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
   },
   "dataType": "connection"
@@ -104,7 +104,7 @@ If enabled, all events are published to a Hotsock-specific event bus in your acc
       "keepAlive": true,
       "sourceIp": "12.34.56.78",
       "uid": "12345",
-      "umd": { "first_name": "Jim", "last_name": "Halpert" },
+      "umd": { "firstName": "Jim", "lastName": "Halpert" },
       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
     },
     "dataType": "connection"
@@ -125,7 +125,7 @@ The following is a sample SNS message for a newly established connection. Most o
   "Type": "Notification",
   "MessageId": "4360060f-c95a-58d5-8a7c-58dbecd688ed",
   "TopicArn": "arn:aws:sns:us-east-1:111111111111:Hotsock-PubSub-EOLFPNQLL8CW-Topic-AZXpBXfkywWc",
-  "Message": "{\"source\":\"hotsock.v1\",\"type\":\"hotsock.connected\",\"metadata\":{\"hotsockVersion\":\"1.13.0\"},\"data\":{\"id\":\"YppzrdWfoAMCJBQ=\",\"umd\":{\"first_name\":\"Jim\",\"last_name\":\"Halpert\"},\"connectedAt\":\"2024-05-31T19:21:47.747616027Z\",\"disconnectedAt\":null,\"keepAlive\":true,\"uid\":\"12345\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0\",\"sourceIp\":\"12.34.56.78\"},\"dataType\":\"connection\"}",
+  "Message": "{\"source\":\"hotsock.v1\",\"type\":\"hotsock.connected\",\"metadata\":{\"hotsockVersion\":\"1.13.0\"},\"data\":{\"id\":\"YppzrdWfoAMCJBQ=\",\"umd\":{\"firstName\":\"Jim\",\"lastName\":\"Halpert\"},\"connectedAt\":\"2024-05-31T19:21:47.747616027Z\",\"disconnectedAt\":null,\"keepAlive\":true,\"uid\":\"12345\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0\",\"sourceIp\":\"12.34.56.78\"},\"dataType\":\"connection\"}",
   "Timestamp": "2024-05-31T19:21:48.428Z",
   "SignatureVersion": "1",
   "Signature": "PSnfnie3xEi4XDiJtcDBJGnQbZS5rvRut+ZAngBnQS7GqA/SC4fZuRFNf5d3pjoOuWM8idp5qyS+SppkBEt2a32cxEIeCMbV7MVeCR1A5FVuKKwZpqmmhyKIVfEvn30htjAgyy7V/OOvvzecoR0rHdG1KcyOze2XQILY6e8AAz8o/3mwpYx+KO7N1Ifs3+zavbjS/nuZbVyPVSxAWn2J9fcOGje/QhPi3wYvnrhsIotxPrLefIOWiRY3ayB5kvdkTTbRW1DADv/daCB9o7wpi9JNFQqklNkVOURNE2pjW/A5m9P1Ah14I437sS7xGHFeAfyBJhf4GwANS7r4Lyb/HQ==",
@@ -178,7 +178,7 @@ This is always `hotsock.connected`.
   "keepAlive": true,
   "sourceIp": "12.34.56.78",
   "uid": "12345",
-  "umd": { "first_name": "Jim", "last_name": "Halpert" },
+  "umd": { "firstName": "Jim", "lastName": "Halpert" },
   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
 }
 ```
@@ -224,7 +224,7 @@ This is always `hotsock.disconnected`.
   "keepAlive": true,
   "sourceIp": "12.34.56.78",
   "uid": "12345",
-  "umd": { "first_name": "Jim", "last_name": "Halpert" },
+  "umd": { "firstName": "Jim", "lastName": "Halpert" },
   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
 }
 ```
@@ -357,7 +357,7 @@ The data object type for this event is `subscription`.
   "channel": "my-channel",
   "connectionId": "IDnAdd9kIAMCEsQ=",
   "uid": "12345",
-  "umd": { "first_name": "Jim", "last_name": "Halpert" }
+  "umd": { "firstName": "Jim", "lastName": "Halpert" }
 }
 ```
 
@@ -393,7 +393,7 @@ This is always `hotsock.unsubscribed`.
   "channel": "my-channel",
   "connectionId": "IDnAdd9kIAMCEsQ=",
   "uid": "12345",
-  "umd": { "first_name": "Jim", "last_name": "Halpert" }
+  "umd": { "firstName": "Jim", "lastName": "Halpert" }
 }
 ```
 
@@ -438,7 +438,7 @@ This is always `hotsock.connectionUpdated`.
   "keepAlive": true,
   "sourceIp": "12.34.56.78",
   "uid": "12345",
-  "umd": { "first_name": "Jim", "last_name": "Halpert" },
+  "umd": { "firstName": "Jim", "lastName": "Halpert" },
   "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
 }
 ```
@@ -499,7 +499,7 @@ SNS filter attributes are limited to `channel`, `key`, and `trigger`.
   "dataPrevious": "away",
   "expired": false,
   "expiresAt": "2026-04-03T12:00:00Z",
-  "meta": { "uid": "12345", "umd": { "first_name": "Jim", "last_name": "Halpert" } }
+  "meta": { "uid": "12345", "umd": { "firstName": "Jim", "lastName": "Halpert" } }
 }
 ```
 
@@ -557,7 +557,7 @@ This is always `hotsock.messageReactionAdded`.
   "id": "01HZADC44KZ308CJM4YK825G65",
   "reaction": "👍",
   "uid": "12345",
-  "umd": { "first_name": "Jim", "last_name": "Halpert" },
+  "umd": { "firstName": "Jim", "lastName": "Halpert" },
   "createdAt": "2026-05-19T15:47:45.231Z",
   "expiresAt": "2027-05-19T15:47:45Z"
 }
@@ -621,7 +621,7 @@ This is always `hotsock.messageReactionRemoved`.
   "id": "01HZADC44KZ308CJM4YK825G65",
   "reaction": "👍",
   "uid": "12345",
-  "umd": { "first_name": "Jim", "last_name": "Halpert" },
+  "umd": { "firstName": "Jim", "lastName": "Halpert" },
   "createdAt": "2026-05-19T15:47:45.231Z",
   "expiresAt": "2027-05-19T15:47:45Z"
 }
