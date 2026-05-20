@@ -72,7 +72,7 @@ Reaction data can be emoji characters, Slack-style colon-wrapped strings like `:
       "data": "Wow. Can we make it a different moment?",
       "meta": { "uid": "Jim", "umd": null },
       // highlight-next-line
-      "reactions": { "thumbsup": { "count": 2 }, "heart": { "count": 1 } }
+      "reactions": { "👍": { "count": 2 }, "❤️": { "count": 1 } }
     }
   ]
 }
@@ -82,7 +82,7 @@ Pass [`expandReactions: true`](/docs/connections/client-http-api/#connection/lis
 
 ```json
 "reactions": {
-  "thumbsup": {
+  "👍": {
     "count": 2,
     "items": [
       { "uid": "Jim", "umd": { "name": "Jim Halpert" } },
