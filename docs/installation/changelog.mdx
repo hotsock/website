@@ -9,7 +9,7 @@
 - Publish [`hotsock.memberAdded`](../server-api/events.mdx#hotsock.memberAdded), [`hotsock.memberRemoved`](../server-api/events.mdx#hotsock.memberRemoved), and [`hotsock.memberUpdated`](../server-api/events.mdx#hotsock.memberUpdated) presence channel events to SNS/EventBridge, deduplicated by `uid` to match WebSocket fan-out semantics.
 - Add [`heartbeatTimeout`](../connections/claims.mdx#heartbeatTimeout) connect-token claim for server-enforced connection heartbeats. When set (5–600 seconds), the client must send a [`hotsock.heartbeat`](../connections/keep-alive.mdx#send-hotsockheartbeat) message at least that often or the server will forcefully disconnect. Useful for [presence channels](../channels/presence.mdx) and other applications that need accurate dropped-connection detection beyond what API Gateway's idle timeout provides.
 - Improve subscription cleanup throughput when many connections disconnect or unsubscribe at the same time.
-- Update the [Web Console](../server-api/web-console.mdx) to the latest build.
+- Update the [Web Console](../server-api/web-console.mdx) with support for sending message reactions.
 - Build with Go 1.26.3.
 - Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-05-12](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-05-12)).
 
