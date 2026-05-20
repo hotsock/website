@@ -509,7 +509,7 @@ The data object type for this event is `channelStorage`.
 
 ## `hotsock.messageReactionAdded` {/* #hotsock.messageReactionAdded */}
 
-This event is sent whenever a reaction is added to a stored message. Reaction pub/sub events are emitted from the DynamoDB stream processor after the reaction is persisted. They are gated by the [`emitPubSubEvent`](../connections/claims.mdx#channels.messages.emitPubSubEvent) directive on the matching message event pattern (always enabled for WebSocket-initiated reactions).
+This event is sent whenever a reaction is added to a stored message. Gated by the [`emitPubSubEvent`](../connections/claims.mdx#channels.messages.emitPubSubEvent) directive on the matching message event pattern.
 
 ### `type` {/* #hotsock.messageReactionAdded--type */}
 
@@ -521,6 +521,7 @@ This is always `hotsock.messageReactionAdded`.
 - `connectionId` (String): The identifier for the connection that added the reaction. Only present for client-initiated reactions.
 - `hotsockVersion` (String): The version of the Hotsock installation that generated this event.
 - `reaction` (String): The reaction value that was added.
+- `requestId` (String): The request ID for the Lambda invocation that originally accepted the reaction.
 - `sourceIp` (String): The IP address of the client. Only present if known.
 - `trigger` (String): The kind of initiator, set to one of `client.websocket`, `client.http`, `server.lambda`, or `server.http`.
 - `userAgent` (String): The User-Agent of the client. Only present if known.
@@ -529,11 +530,12 @@ This is always `hotsock.messageReactionAdded`.
 {
   "channel": "my-channel",
   "connectionId": "IDnAdd9kIAMCEsQ=",
-  "hotsockVersion": "1.13.2",
-  "reaction": "thumbsup",
+  "hotsockVersion": "1.13.0",
+  "reaction": ":thumbsup:",
+  "requestId": "d8c81dec-cf77-40e5-b97e-5e4300c14fbf",
   "sourceIp": "12.34.56.78",
   "trigger": "client.websocket",
-  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:150.0) Gecko/20100101 Firefox/150.0"
 }
 ```
 
@@ -551,13 +553,13 @@ This is always `hotsock.messageReactionAdded`.
 ```json
 {
   "channel": "my-channel",
-  "messageId": "01JA3S0TNEC2QBYMZRBMCEXGNW",
-  "id": "01JB4K7M2NC8QBYMZRBMCEXGNW",
-  "reaction": "thumbsup",
-  "uid": "Jim",
-  "umd": null,
-  "createdAt": "2026-05-18T19:30:00.000Z",
-  "expiresAt": "2027-05-18T19:30:00Z"
+  "messageId": "01KS12S57B17NWNE71GKX1VMY3",
+  "id": "01KS12SJW3VEKXTCQNW5T2PE5D",
+  "reaction": ":thumbsup:",
+  "uid": "james",
+  "umd": "miller",
+  "createdAt": "2026-05-19T21:38:12.483Z",
+  "expiresAt": "2026-05-19T21:54:39Z"
 }
 ```
 
@@ -580,19 +582,6 @@ Same as [`hotsock.messageReactionAdded` metadata](#hotsock.messageReactionAdded-
 ### `data` {/* #hotsock.messageReactionRemoved--data */}
 
 Same shape as [`hotsock.messageReactionAdded` data](#hotsock.messageReactionAdded--data).
-
-```json
-{
-  "channel": "my-channel",
-  "messageId": "01JA3S0TNEC2QBYMZRBMCEXGNW",
-  "id": "01JB4K7M2NC8QBYMZRBMCEXGNW",
-  "reaction": "thumbsup",
-  "uid": "Jim",
-  "umd": null,
-  "createdAt": "2026-05-18T19:30:00.000Z",
-  "expiresAt": "2027-05-18T19:30:00Z"
-}
-```
 
 ### `dataType` {/* #hotsock.messageReactionRemoved--dataType */}
 
