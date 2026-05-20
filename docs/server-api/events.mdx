@@ -17,7 +17,7 @@ Published events use the same shape for both EventBridge and SNS, where the payl
   "source": "hotsock.v1",
   "type": "hotsock.connected",
   "metadata": {
-    "hotsockVersion": "1.9.1"
+    "hotsockVersion": "1.13.0"
   },
   "data": {
     "id": "IDnAdd9kIAMCEsQ=",
@@ -95,7 +95,7 @@ If enabled, all events are published to a Hotsock-specific event bus in your acc
     "source": "hotsock.v1",
     "type": "hotsock.connected",
     "metadata": {
-      "hotsockVersion": "1.9.1"
+      "hotsockVersion": "1.13.0"
     },
     "data": {
       "id": "IDnAdd9kIAMCEsQ=",
@@ -155,7 +155,7 @@ This is always `hotsock.connected`.
 
 ```json
 {
-  "hotsockVersion": "1.9.1"
+  "hotsockVersion": "1.13.0"
 }
 ```
 
@@ -201,7 +201,7 @@ This is always `hotsock.disconnected`.
 
 ```json
 {
-  "hotsockVersion": "1.9.1"
+  "hotsockVersion": "1.13.0"
 }
 ```
 
@@ -249,7 +249,7 @@ This is always `hotsock.channelUpdated`.
 ```json
 {
   "channel": "my-channel",
-  "hotsockVersion": "1.9.1"
+  "hotsockVersion": "1.13.0"
 }
 ```
 
@@ -292,7 +292,7 @@ This is always `hotsock.messagePublished`.
   "channel": "my-channel",
   "connectionId": "IDnAdd9kIAMCEsQ=",
   "event": "my-event",
-  "hotsockVersion": "1.9.1",
+  "hotsockVersion": "1.13.0",
   "requestId": "9d1d380a-0152-4962-bbbb-6e721b81db52",
   "sourceIp": "12.34.56.78",
   "trigger": "client.websocket",
@@ -337,7 +337,7 @@ This is always `hotsock.subscribed`.
 ```json
 {
   "channel": "my-channel",
-  "hotsockVersion": "1.9.1"
+  "hotsockVersion": "1.13.0"
 }
 ```
 
@@ -377,7 +377,7 @@ This is always `hotsock.unsubscribed`.
 ```json
 {
   "channel": "my-channel",
-  "hotsockVersion": "1.9.1"
+  "hotsockVersion": "1.13.0"
 }
 ```
 
@@ -415,7 +415,7 @@ This is always `hotsock.connectionUpdated`.
 
 ```json
 {
-  "hotsockVersion": "1.12.0"
+  "hotsockVersion": "1.13.0"
 }
 ```
 
@@ -473,7 +473,7 @@ SNS filter attributes are limited to `channel`, `key`, and `trigger`.
 {
   "channel": "my-channel",
   "connectionId": "IDnAdd9kIAMCEsQ=",
-  "hotsockVersion": "1.12.0",
+  "hotsockVersion": "1.13.0",
   "key": "status",
   "sourceIp": "12.34.56.78",
   "trigger": "client.websocket",
