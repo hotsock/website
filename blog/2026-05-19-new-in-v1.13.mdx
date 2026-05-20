@@ -47,13 +47,13 @@ The `react` directive accepts `true` (allow any reaction), `false` (deny), or an
 Clients send a `hotsock.messageReaction` message on the WebSocket with the target message ID, the reaction value, and an explicit `add` or `remove` action:
 
 ```
-> {"event":"hotsock.messageReaction", "channel":"room.123", "data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW", "reaction":"thumbsup", "action":"add"}}
+> {"event":"hotsock.messageReaction", "channel":"room.123", "data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW", "reaction":"👍", "action":"add"}}
 ```
 
 All channel subscribers immediately receive a `hotsock.messageReactionAdded` event:
 
 ```
-< {"id":"01JB4K7M2N...","event":"hotsock.messageReactionAdded","channel":"room.123","data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW","reaction":"thumbsup","action":"add"},"meta":{"uid":"Jim","umd":null}}
+< {"id":"01JB4K7M2N...","event":"hotsock.messageReactionAdded","channel":"room.123","data":{"messageId":"01JA3S0TNEC2QBYMZRBMCEXGNW","reaction":"👍","action":"add"},"meta":{"uid":"Jim","umd":null}}
 ```
 
 Reaction data can be emoji characters, Slack-style colon-wrapped strings like `:thumbsup:`, or any short string up to 100 bytes. Each user can have one reaction per reaction value per message.
