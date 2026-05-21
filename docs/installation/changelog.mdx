@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.13.1 - May 20, 2026 {/* #v1.13.1 */}
+
+- Stop publishing zero-duration metrics for EventBridge and SNS publishing in the stream processor functions when no call to the service is made, as it skews averages and other metric math. Zero-count metrics are still published.
+- Optimize the HTTP client used in calls to AWS services for concurrent operations.
+- Detect the lifting of license restriction within 30 seconds instead of needing to await a Lambda cold start for each function.
+
 ## v1.13.0 - May 19, 2026 {/* #v1.13.0 */}
 
 - Add [message reactions](../connections/claims.mdx#channels.messages.react). Clients send `hotsock.messageReaction` events with `add` or `remove` actions, gated by a new [`react`](../connections/claims.mdx#channels.messages.react) directive on channel message event patterns. The `react` directive accepts `true` (allow all reactions), `false` (deny), or an array of strings (allow only specific reactions). Reactions require an active channel subscription, a [`uid`](../connections/claims.mdx#uid), and a stored target message that hasn't expired. Also available via the [Client HTTP API](../connections/client-http-api.mdx) and the server-side [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) and [HTTP URL](../server-api/publish-messages.mdx#publish-with-http-url) publish APIs.
