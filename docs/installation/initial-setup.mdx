@@ -219,6 +219,10 @@ Upon successful creation of your Hotsock stack, the root CloudFormation stack ha
 ![Outputs tab items](../../static/img/screenshots/initial-setup-outputs-tab.png)
 :::
 
+### AutoUpdateInstallation {/* #AutoUpdateInstallation */}
+
+This indicates whether automatic installation updates are currently `enabled` or `disabled`. Automatic updates run once per day when enabled. See [Update Your Installation](./updates.mdx) for details about automatic and manual updates.
+
 ### HttpApiSecretKey1ConsoleUrl {/* #HttpApiSecretKey1ConsoleUrl */}
 
 This is the URL where you can find the primary secret key value for API calls to the `PublishHttpApiUrl`. To access the secret value, go to this URL and click the "Show" link by the "Value" label, which will reveal a 40-character secret key that must be used as a Bearer token in the Authorization header of all HTTP API requests.
@@ -267,9 +271,7 @@ If this URL's value is blank, the installation is already adopted by a Hotsock a
 
 The URL of a CloudWatch Dashboard that combines important metrics about your installation in a single place.
 
-:::info[Example Output Value]
-![LicensingUrl example output](../../static/img/screenshots/initial-setup-outputs-LicensingUrl.png)
-:::
+This value is blank if the monitoring overview dashboard is disabled.
 
 ### PublishFunctionArn {/* #PublishFunctionArn */}
 
