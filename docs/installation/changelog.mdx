@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.13.2 - June 11, 2026 {/* #v1.13.2 */}
+
+- Performance improvements including lower-overhead hot-path JSON handling, improved AWS HTTP connection reuse, and shorter AWS SDK retry/backoff timing.
+- Add sampled lightweight tracing spans to application logs. Spans are structured JSON log records with `type: "app.span"`, `traceId`, `spanId`, timing, status, and correlation fields that can be queried in CloudWatch Logs Insights. Configure with the new "Tracing spans in logs sample rate (%)" (`TracesInLogsSampleRateParameter` via CLI) setting; the default sample rate is `1` (1%), and setting it to `0` disables tracing.
+- Improve the CloudWatch overview dashboard with clearer metric labels, min/average/max Lambda duration views, and message processing function metrics. DynamoDB table metrics now link to the DynamoDB console instead of consuming additional dashboard widgets.
+- Reduce the default consolidated log retention for new installations from 365 days to 90 days. Existing installations keep their configured value unless changed.
+- Improve automatic updates so the updater can retry after filtering CloudFormation parameters that no longer exist in the latest template.
+- Fix a `umdUpdate` bug where updating user metadata for a disconnected connection or missing subscription could create incomplete DynamoDB records.
+- Build with Go 1.26.4.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-06-10](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-06-10)).
+
 ## v1.13.1 - May 20, 2026 {/* #v1.13.1 */}
 
 - Stop publishing zero-duration metrics for EventBridge and SNS publishing in the stream processor functions when no call to the service is made, as it skews averages and other metric math. Zero-count metrics are still published.
