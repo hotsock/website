@@ -499,7 +499,10 @@ SNS filter attributes are limited to `channel`, `key`, and `trigger`.
   "dataPrevious": "away",
   "expired": false,
   "expiresAt": "2026-04-03T12:00:00Z",
-  "meta": { "uid": "12345", "umd": { "firstName": "Jim", "lastName": "Halpert" } }
+  "meta": {
+    "uid": "12345",
+    "umd": { "firstName": "Jim", "lastName": "Halpert" }
+  }
 }
 ```
 
@@ -578,7 +581,7 @@ This is always `hotsock.messageReactionRemoved`.
 ### `metadata` {/* #hotsock.messageReactionRemoved--metadata */}
 
 :::note
-`connectionId`, `requestId`, `sourceIp`, `trigger`, and `userAgent` reflect the original request that *added* the reaction, not the request that triggered the removal.
+`connectionId`, `requestId`, `sourceIp`, `trigger`, and `userAgent` reflect the original request that _added_ the reaction, not the request that triggered the removal.
 :::
 
 - `channel` (String): The name of the channel where the reaction was removed.

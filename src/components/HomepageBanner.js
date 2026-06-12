@@ -11,8 +11,8 @@ export default function HomepageBanner() {
                 New in v1.13: message reactions and presence pub/sub!
               </span>
               <span className="hidden md:inline">
-                New in v1.13: message reactions, presence events on pub/sub,
-                and server-enforced heartbeats!
+                New in v1.13: message reactions, presence events on pub/sub, and
+                server-enforced heartbeats!
               </span>
             </p>
           </div>
