@@ -2,7 +2,7 @@ import ExampleIframe from "@site/src/components/ExampleIframe"
 
 # Real-Time Chat
 
-The two windows below allow chatting with one another. Although they are on the same screen for the purposes of the demo, they each have their own isolated Hotsock connection over WebSockets and all messages are routed through the Hotsock installation before showing in the other window. Chat history is stored and persists across page loads.
+The two windows below allow chatting with one another and reacting to individual messages. Although they are on the same screen for the purposes of the demo, they each have their own isolated Hotsock connection over WebSockets and all messages and reactions are routed through the Hotsock installation before showing in the other window. Chat history and reaction counts are stored and persist across page loads.
 
 <ExampleIframe name="real-time-chat" height="550px" />
 
@@ -10,7 +10,7 @@ Get the code for this example and run it yourself [from the GitHub repository](h
 
 ## How it works {/* #how-it-works */}
 
-This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect two users to the same channel, exchange messages in real time, and persist chat history using stored messages and the [Client HTTP API](/docs/connections/client-http-api/). Below is a walkthrough of each piece.
+This example uses the [`@hotsock/hotsock-js`](https://www.npmjs.com/package/@hotsock/hotsock-js) client library to connect two users to the same channel, exchange messages and reactions in real time, and persist chat history using stored messages and the [Client HTTP API](/docs/connections/client-http-api/). Below is a walkthrough of each piece.
 
 ### Session persistence {/* #session-persistence */}
 
@@ -51,7 +51,13 @@ For this demo, a backend endpoint issues tokens for two users (Jim and Pam) that
       "subscribe": true,
       "historyStart": 0,
       "messages": {
-        "chat": { "publish": true, "echo": true, "store": 86400 },
+        "chat": {
+          "publish": true,
+          "echo": true,
+          "store": 86400,
+          "react": ["❤️", "👍", "👎", "😂"]
+        },
+        "hotsock.messageReaction": { "echo": true },
         "is-typing": { "publish": true }
       }
     }
@@ -59,7 +65,7 @@ For this demo, a backend endpoint issues tokens for two users (Jim and Pam) that
 }
 ```
 
-The [`uid`](/docs/connections/claims/#uid) claim identifies each user and is included in the metadata of every message they send. The [`channels`](/docs/connections/claims/#channels) claim grants subscribe access and permission to publish `chat` and `is-typing` events. Setting [`echo: true`](/docs/connections/claims/#channels.messages.echo) on `chat` means the sender receives their own message back, which simplifies rendering. The [`store: 86400`](/docs/connections/claims/#channels.messages.store) claim retains chat messages for 24 hours, and [`historyStart: 0`](/docs/connections/claims/#channels.historyStart) grants access to the full message history. The `is-typing` event is intentionally ephemeral — no `store` — since typing indicators are only relevant to live subscribers.
+The [`uid`](/docs/connections/claims/#uid) claim identifies each user and is included in the metadata of every message and reaction they send. The [`channels`](/docs/connections/claims/#channels) claim grants subscribe access and permission to publish `chat` and `is-typing` events. Setting [`echo: true`](/docs/connections/claims/#channels.messages.echo) on `chat` means the sender receives their own message back, which simplifies rendering. Setting `echo: true` on `hotsock.messageReaction` means the sender also receives their own `hotsock.messageReactionAdded` and `hotsock.messageReactionRemoved` events, so their reaction counts and active state update through the same real-time path as every other subscriber. The [`store: 86400`](/docs/connections/claims/#channels.messages.store) claim retains chat messages for 24 hours, and [`historyStart: 0`](/docs/connections/claims/#channels.historyStart) grants access to the full message history. The [`react`](/docs/connections/claims/#channels.messages.react) claim allows reactions on stored `chat` messages and restricts the allowed values to the four reactions shown by the UI: `❤️`, `👍`, `👎`, and `😂`. The `is-typing` event is intentionally ephemeral — no `store` — since typing indicators are only relevant to live subscribers.
 
 The client fetches tokens from the backend with a `connectTokenFn` — a function the Hotsock client calls whenever it needs a new or refreshed token:
 
@@ -92,7 +98,7 @@ The client handles the WebSocket lifecycle automatically — connecting, reconne
 
 ### Loading message history {/* #loading-message-history */}
 
-When the WebSocket connects, the [`hotsock.connected`](/docs/connections/client-http-api/#authentication) message provides `connectionId` and `connectionSecret` credentials. After subscribing to the channel, the client uses these credentials to call the [Client HTTP API's `connection/listMessages`](/docs/connections/client-http-api/#connection/listMessages) endpoint to load stored chat messages:
+When the WebSocket connects, the [`hotsock.connected`](/docs/connections/client-http-api/#authentication) message provides `connectionId` and `connectionSecret` credentials. After subscribing to the channel, the client uses these credentials to call the [Client HTTP API's `connection/listMessages`](/docs/connections/client-http-api/#connection/listMessages) endpoint to load stored chat messages and their reactions:
 
 ```jsx
 hotsockClient.bind("hotsock.connected", (message) => {
@@ -112,7 +118,7 @@ channel.bind("hotsock.subscribed", () => {
 })
 ```
 
-The `listMessages` endpoint returns up to 100 messages per request. If a full page is returned, the client paginates forward using the `after` parameter with the last message's ID until all history is loaded:
+The `listMessages` endpoint returns up to 100 messages per request. The demo passes `expandReactions: true` so each message includes reaction counts and the reacting users. If a full page is returned, the client paginates forward using the `after` parameter with the last message's ID until all history is loaded:
 
 ```jsx
 const loadHistory = async (connId, connSecret) => {
@@ -123,7 +129,7 @@ const loadHistory = async (connId, connSecret) => {
   const allMessages = []
   let after = undefined
   while (true) {
-    const body = { channel: channelName }
+    const body = { channel: channelName, expandReactions: true }
     if (after) body.after = after
     const resp = await fetch(
       `${httpApiUrl}/connection/listMessages?${params}`,
@@ -144,15 +150,17 @@ const loadHistory = async (connId, connSecret) => {
     allMessages
       .filter((msg) => msg.event === "chat")
       .map((msg) => ({
+        id: msg.id,
         sender: msg.meta.uid,
         content: msg.data,
+        reactions: msg.reactions || {},
         time: formatTime(new Date(decodeUlidTime(msg.id))),
       })),
   )
 }
 ```
 
-History messages get their timestamps from the message ID — Hotsock message IDs are [ULIDs](https://github.com/ulid/spec), which encode the creation time in their first 10 characters. Only `chat` events are loaded; ephemeral `is-typing` events are not stored.
+History messages get their timestamps from the message ID — Hotsock message IDs are [ULIDs](https://github.com/ulid/spec), which encode the creation time in their first 10 characters. The message ID is also required when adding or removing a reaction, because a `hotsock.messageReaction` event targets one stored message by ID. Only `chat` events are loaded; ephemeral `is-typing` events are not stored.
 
 ### Subscribing and receiving messages {/* #subscribing-and-receiving-messages */}
 
@@ -169,11 +177,21 @@ channel.bind("chat", (message) => {
   setMessages((prev) => [
     ...prev,
     {
+      id: message.id,
       sender: message.meta.uid,
       content: message.data,
+      reactions: {},
       time: formatTime(new Date()),
     },
   ])
+})
+
+channel.bind("hotsock.messageReactionAdded", (message) => {
+  setMessages((prev) => updateMessageReaction(prev, message, "add"))
+})
+
+channel.bind("hotsock.messageReactionRemoved", (message) => {
+  setMessages((prev) => updateMessageReaction(prev, message, "remove"))
 })
 
 channel.bind("is-typing", (message) => {
@@ -184,6 +202,104 @@ channel.bind("is-typing", (message) => {
 ```
 
 The `channel.uid` property contains the user's identifier from their token, making it easy to distinguish your own messages from others and align them left or right in the UI.
+
+### Adding and removing reactions {/* #adding-and-removing-reactions */}
+
+Reactions are sent as `hotsock.messageReaction` events. Reaction authorization comes from the `react` directive on the stored message type being reacted to, not from `publish: true` on `hotsock.messageReaction`. The connection token should set `echo: true` on `hotsock.messageReaction`; without `echo`, other subscribers will see the reaction in real time, but the sender will not receive the reaction event that updates their own local UI. The payload identifies the stored message to update, the reaction value, and whether the user is adding or removing it:
+
+```jsx
+channel.sendMessage("hotsock.messageReaction", {
+  data: {
+    messageId: message.id,
+    reaction: "❤️",
+    action: "add",
+  },
+})
+```
+
+To remove a reaction, send the same payload with `action: "remove"`:
+
+```jsx
+channel.sendMessage("hotsock.messageReaction", {
+  data: {
+    messageId: message.id,
+    reaction: "❤️",
+    action: "remove",
+  },
+})
+```
+
+The example keeps the UI close to Apple Messages behavior by allowing each user to have one active reaction on a message at a time. If the user clicks a different reaction, the client removes the previous reaction first and then adds the new one:
+
+```jsx
+const REACTIONS = ["❤️", "👍", "👎", "😂"]
+
+const handleReaction = (message, reaction) => {
+  const currentReaction = userReaction(message, channel.uid)
+
+  if (currentReaction) {
+    channel.sendMessage("hotsock.messageReaction", {
+      data: {
+        messageId: message.id,
+        reaction: currentReaction,
+        action: "remove",
+      },
+    })
+  }
+
+  if (currentReaction !== reaction) {
+    channel.sendMessage("hotsock.messageReaction", {
+      data: {
+        messageId: message.id,
+        reaction,
+        action: "add",
+      },
+    })
+  }
+}
+```
+
+Hotsock persists the reaction and fans out either `hotsock.messageReactionAdded` or `hotsock.messageReactionRemoved` to all channel subscribers. Those real-time events include `data.messageId`, `data.reaction`, and `meta.uid`, which is enough to update the local reaction counts and active state without reloading history:
+
+```jsx
+function updateMessageReaction(messages, reactionMessage, action) {
+  const { messageId, reaction } = reactionMessage.data
+  const uid = reactionMessage.meta.uid
+
+  return messages.map((message) => {
+    if (message.id !== messageId) return message
+
+    const reactions = { ...message.reactions }
+    const existing = reactions[reaction] || { count: 0, items: [] }
+    const items = existing.items || []
+    const alreadyReacted = items.some((item) => item.uid === uid)
+
+    if (action === "add" && !alreadyReacted) {
+      const nextItems = [...items, { uid, umd: reactionMessage.meta.umd }]
+      reactions[reaction] = {
+        count: Math.max(existing.count + 1, nextItems.length),
+        items: nextItems,
+      }
+    }
+
+    if (action === "remove") {
+      const nextItems = items.filter((item) => item.uid !== uid)
+      const nextCount = Math.max(0, existing.count - (alreadyReacted ? 1 : 0))
+
+      if (nextCount === 0) {
+        delete reactions[reaction]
+      } else {
+        reactions[reaction] = {
+          count: nextItems.length || nextCount,
+          items: nextItems,
+        }
+      }
+    }
+
+    return { ...message, reactions }
+  })
+}
+```
 
 ### Sending messages {/* #sending-messages */}
 
@@ -233,6 +349,6 @@ useEffect(() => {
 
 ## Putting it all together {/* #putting-it-all-together */}
 
-The full flow is: the client resolves a session ID (from URL hash, localStorage, or a fresh one from the backend), connects both users with tokens granting publish and history access, loads existing chat messages by paginating through stored history via the Client HTTP API, then publishes and receives messages in real time. Chat messages are stored for 24 hours while typing indicators remain ephemeral. The session persists automatically — returning visitors see their previous conversation, and sharing the URL lets others join the same chat.
+The full flow is: the client resolves a session ID (from URL hash, localStorage, or a fresh one from the backend), connects both users with tokens granting publish, reaction, and history access, loads existing chat messages by paginating through stored history via the Client HTTP API with `expandReactions: true`, then publishes and receives messages and reactions in real time. Chat messages are stored for 24 hours while typing indicators remain ephemeral. Reactions attach to stored chat messages, inherit the parent message lifetime, and are visible immediately to live subscribers and later to users who reload the same session. The session persists automatically — returning visitors see their previous conversation and past reactions, and sharing the URL lets others join the same chat.
 
-For a deeper dive into each concept, see the [Client HTTP API](/docs/connections/client-http-api/) documentation, the [Message Storage (`store`)](/docs/connections/claims/#channels.messages.store) claim, the [History Access (`historyStart`)](/docs/connections/claims/#channels.historyStart) claim, and the [Client Messages](/docs/channels/client-messages/) documentation.
+For a deeper dive into each concept, see the [Client HTTP API](/docs/connections/client-http-api/) documentation, the [Message Storage (`store`)](/docs/connections/claims/#channels.messages.store) claim, the [History Access (`historyStart`)](/docs/connections/claims/#channels.historyStart) claim, the [Message Reactions (`react`)](/docs/connections/claims/#channels.messages.react) claim, and the [Client Messages](/docs/channels/client-messages/) documentation.

@@ -5,6 +5,12 @@ const wssUrl = "wss://975x5pgn0h.execute-api.us-east-1.amazonaws.com/v1"
 const httpApiUrl =
   "https://f3hl5m33mxzpbu3ybcwcmcznu40njuio.lambda-url.us-east-1.on.aws"
 const STORAGE_KEY = "hotsock-chat-session"
+const REACTIONS = [
+  { value: "❤️", label: "Love" },
+  { value: "👍", label: "Like" },
+  { value: "👎", label: "Dislike" },
+  { value: "😂", label: "Laugh" },
+]
 
 function getSessionId() {
   const hash = window.location.hash.slice(1)
@@ -82,6 +88,64 @@ function formatTime(date) {
   return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
 }
 
+function normalizeReactions(reactions = {}) {
+  return REACTIONS.reduce((normalized, { value }) => {
+    const reaction = reactions[value]
+    if (!reaction) return normalized
+
+    normalized[value] = {
+      count: reaction.count || reaction.items?.length || 0,
+      items: reaction.items || [],
+    }
+
+    return normalized
+  }, {})
+}
+
+function userReaction(message, uid) {
+  return REACTIONS.find(({ value }) =>
+    message.reactions?.[value]?.items?.some((item) => item.uid === uid),
+  )?.value
+}
+
+function updateMessageReaction(messages, reactionMessage, action) {
+  const { messageId, reaction } = reactionMessage.data
+  const uid = reactionMessage.meta.uid
+
+  return messages.map((message) => {
+    if (message.id !== messageId) return message
+
+    const reactions = { ...message.reactions }
+    const existing = reactions[reaction] || { count: 0, items: [] }
+    const items = existing.items || []
+    const alreadyReacted = items.some((item) => item.uid === uid)
+
+    if (action === "add") {
+      if (alreadyReacted) return message
+
+      const nextItems = [...items, { uid, umd: reactionMessage.meta.umd }]
+      reactions[reaction] = {
+        count: Math.max(existing.count + 1, nextItems.length),
+        items: nextItems,
+      }
+    } else {
+      const nextItems = items.filter((item) => item.uid !== uid)
+      const nextCount = Math.max(0, existing.count - (alreadyReacted ? 1 : 0))
+
+      if (nextCount === 0) {
+        delete reactions[reaction]
+      } else {
+        reactions[reaction] = {
+          count: nextItems.length || nextCount,
+          items: nextItems,
+        }
+      }
+    }
+
+    return { ...message, reactions }
+  })
+}
+
 function App() {
   const [channelName, setChannelName] = useState(null)
   const [sessionId, setSessionId] = useState(null)
@@ -113,7 +177,7 @@ function App() {
       jimClient.terminate()
       pamClient.terminate()
     }
-  }, [])
+  }, [jimClient, pamClient])
 
   const handleNewChat = () => {
     localStorage.removeItem(STORAGE_KEY)
@@ -166,6 +230,7 @@ function ChatPanel({ hotsockClient, channelName }) {
   const [isTyping, setIsTyping] = useState("")
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
+  const [activeReactionMessageId, setActiveReactionMessageId] = useState(null)
   const isTypingTimeout = useRef(null)
   const wasCalled = useRef(false)
   const channel = useRef({})
@@ -188,7 +253,7 @@ function ChatPanel({ hotsockClient, channelName }) {
       const allMessages = []
       let after = undefined
       while (true) {
-        const body = { channel: channelName }
+        const body = { channel: channelName, expandReactions: true }
         if (after) body.after = after
         const resp = await fetch(
           `${httpApiUrl}/connection/listMessages?${params}`,
@@ -212,8 +277,10 @@ function ChatPanel({ hotsockClient, channelName }) {
           allMessages
             .filter((msg) => msg.event === "chat")
             .map((msg) => ({
+              id: msg.id,
               sender: msg.meta.uid,
               content: msg.data,
+              reactions: normalizeReactions(msg.reactions),
               time: formatTime(
                 new Date(msg.id ? decodUlidTime(msg.id) : Date.now()),
               ),
@@ -252,12 +319,20 @@ function ChatPanel({ hotsockClient, channelName }) {
       setMessages((prev) => [
         ...prev,
         {
+          id: message.id,
           sender: message.meta.uid,
           content: message.data,
+          reactions: {},
           time: formatTime(new Date()),
         },
       ])
       setIsTyping("")
+    })
+    channel.current.bind("hotsock.messageReactionAdded", (message) => {
+      setMessages((prev) => updateMessageReaction(prev, message, "add"))
+    })
+    channel.current.bind("hotsock.messageReactionRemoved", (message) => {
+      setMessages((prev) => updateMessageReaction(prev, message, "remove"))
     })
     channel.current.bind("is-typing", (message) => {
       setIsTyping(`${message.meta.uid} is typing...`)
@@ -288,6 +363,39 @@ function ChatPanel({ hotsockClient, channelName }) {
       channel.current.sendMessage("chat", { data: message })
       e.target.value = ""
     }
+  }
+
+  const handleReaction = (message, reaction) => {
+    if (!message.id) return
+
+    const currentReaction = userReaction(message, name)
+    if (currentReaction) {
+      channel.current.sendMessage("hotsock.messageReaction", {
+        data: {
+          messageId: message.id,
+          reaction: currentReaction,
+          action: "remove",
+        },
+      })
+    }
+
+    if (currentReaction !== reaction) {
+      channel.current.sendMessage("hotsock.messageReaction", {
+        data: {
+          messageId: message.id,
+          reaction,
+          action: "add",
+        },
+      })
+    }
+  }
+
+  const handleMessageTap = (message) => {
+    if (!message.id) return
+
+    setActiveReactionMessageId((currentId) =>
+      currentId === message.id ? null : message.id,
+    )
   }
 
   const isSelf = (sender) => sender === name
@@ -331,31 +439,119 @@ function ChatPanel({ hotsockClient, channelName }) {
             Start the conversation by typing a message below...
           </div>
         )}
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${isSelf(message.sender) ? "justify-end" : "justify-start"}`}
-          >
-            <div className="flex flex-col max-w-[85%]">
+        {messages.map((message, index) => {
+          const isPickerOpen = activeReactionMessageId === message.id
+          const visibleReactions = REACTIONS.map(({ value, label }) => ({
+            value,
+            label,
+            count: message.reactions?.[value]?.count || 0,
+            active: userReaction(message, name) === value,
+          })).filter(({ count }) => count > 0)
+
+          return (
+            <div
+              key={message.id || index}
+              className={`group flex ${isSelf(message.sender) ? "justify-end" : "justify-start"}`}
+              onClick={() => handleMessageTap(message)}
+            >
               <div
-                className={`px-3 py-2 text-sm ${
-                  isSelf(message.sender)
-                    ? "bg-pink-500 text-white rounded-2xl rounded-br-md"
-                    : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-2xl rounded-bl-md border border-gray-200 dark:border-gray-700"
+                className={`flex flex-col max-w-[85%] ${
+                  isSelf(message.sender) ? "items-end" : "items-start"
                 }`}
               >
-                {message.content}
+                <div className="relative">
+                  <div
+                    className={`px-3 py-2 text-sm ${
+                      isSelf(message.sender)
+                        ? "bg-pink-500 text-white rounded-2xl rounded-br-md"
+                        : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-2xl rounded-bl-md border border-gray-200 dark:border-gray-700"
+                    }`}
+                  >
+                    {message.content}
+                  </div>
+                  {message.id && (
+                    <div
+                      className={`absolute bottom-full z-30 flex-col ${
+                        isSelf(message.sender)
+                          ? "right-0 items-end"
+                          : "left-0 items-start"
+                      } ${isPickerOpen ? "flex" : "hidden group-hover:flex"}`}
+                    >
+                      <div className="flex rounded-full border border-gray-200 bg-white/95 p-1 shadow-lg backdrop-blur dark:border-gray-700 dark:bg-gray-800/95">
+                        {REACTIONS.map(({ value, label }) => {
+                          const active = userReaction(message, name) === value
+                          return (
+                            <button
+                              key={value}
+                              type="button"
+                              title={`${active ? "Remove" : "Add"} ${label}`}
+                              aria-label={`${active ? "Remove" : "Add"} ${label}`}
+                              aria-pressed={active}
+                              onClick={(event) => {
+                                event.stopPropagation()
+                                handleReaction(message, value)
+                              }}
+                              className={`flex h-7 w-7 items-center justify-center rounded-full text-sm leading-none transition-colors ${
+                                active
+                                  ? "bg-pink-50 text-pink-700 dark:bg-pink-500/15 dark:text-pink-200"
+                                  : "text-gray-600 hover:bg-pink-50 hover:text-pink-700 dark:text-gray-300 dark:hover:bg-pink-500/10 dark:hover:text-pink-200"
+                              }`}
+                            >
+                              <span aria-hidden="true">{value}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                      <div className="h-1 w-full" />
+                    </div>
+                  )}
+                  {visibleReactions.length > 0 && (
+                    <div
+                      className={`absolute -top-2 z-20 flex w-max max-w-none items-center gap-1 whitespace-nowrap rounded-full border border-gray-200 bg-white px-1.5 py-0.5 text-[10px] leading-none text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 ${
+                        isSelf(message.sender)
+                          ? "right-[calc(100%-0.75rem)] flex-row-reverse"
+                          : "left-[calc(100%-0.75rem)]"
+                      }`}
+                    >
+                      {visibleReactions.map(
+                        ({ value, label, count, active }) => (
+                          <button
+                            key={value}
+                            type="button"
+                            title={`${active ? "Remove" : "Add"} ${label}`}
+                            aria-label={`${active ? "Remove" : "Add"} ${label}`}
+                            aria-pressed={active}
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              handleReaction(message, value)
+                            }}
+                            className={`flex h-4 min-w-6 items-center justify-center gap-0.5 rounded-full px-1 transition-colors ${
+                              active
+                                ? "text-pink-700 dark:text-pink-200"
+                                : "hover:bg-pink-50 hover:text-pink-700 dark:hover:bg-pink-500/10 dark:hover:text-pink-200"
+                            }`}
+                          >
+                            <span aria-hidden="true">{value}</span>
+                            <span className="font-medium tabular-nums">
+                              {count}
+                            </span>
+                          </button>
+                        ),
+                      )}
+                    </div>
+                  )}
+                </div>
+                <span
+                  className={`text-[10px] text-gray-400 dark:text-gray-500 mt-2 ${
+                    isSelf(message.sender) ? "text-right" : "text-left"
+                  }`}
+                >
+                  {message.time}
+                </span>
               </div>
-              <span
-                className={`text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 ${
-                  isSelf(message.sender) ? "text-right" : "text-left"
-                }`}
-              >
-                {message.time}
-              </span>
             </div>
-          </div>
-        ))}
+          )
+        })}
         {isTyping !== "" && (
           <div className="flex justify-start">
             <span className="text-xs text-gray-400 dark:text-gray-500 px-1 py-1">
