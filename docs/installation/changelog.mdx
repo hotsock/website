@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.13.3 - June 13, 2026 {/* #v1.13.3 */}
+
+- Fixes an issue where client HTTP calls to `connection/listReactions` could load reactions for a message prior to the `historyStart` directive.
+- Update the web console to use hotsock-js v1.4.0.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-06-12](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-06-12)).
+
 ## v1.13.2 - June 11, 2026 {/* #v1.13.2 */}
 
 - Performance improvements including lower-overhead hot-path JSON handling, improved AWS HTTP connection reuse, and shorter AWS SDK retry/backoff timing.
