@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.13.5 - July 27, 2026 {/* #v1.13.5 */}
+
+- Isolated WebSocket message delivery into per-connection FIFO lanes so throttled or disconnected clients can no longer block message delivery to healthy connections.
+- Switch to [vokercfn](https://github.com/hotsock/voker/blob/main/README.md#cloudformation-custom-resources) for all CloudFormation custom resource function entrypoints.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-07-27](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-07-27)).
+
 ## v1.13.4 - July 8, 2026 {/* #v1.13.4 */}
 
 - Build with Go 1.26.5.
