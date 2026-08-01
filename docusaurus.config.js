@@ -87,6 +87,18 @@ const config = {
             label: "Examples",
           },
           {
+            type: "doc",
+            docId: "licensing/pricing",
+            position: "left",
+            label: "Pricing",
+          },
+          {
+            type: "doc",
+            docId: "installation/changelog",
+            position: "left",
+            label: "Changelog",
+          },
+          {
             to: "/blog/",
             label: "Blog & Updates",
             position: "left",
