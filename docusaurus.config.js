@@ -87,14 +87,14 @@ const config = {
             label: "Examples",
           },
           {
-            type: "doc",
-            docId: "licensing/pricing",
+            to: "/docs/licensing/pricing/",
+            exact: true,
             position: "left",
             label: "Pricing",
           },
           {
-            type: "doc",
-            docId: "installation/changelog",
+            to: "/docs/installation/changelog/",
+            exact: true,
             position: "left",
             label: "Changelog",
           },
