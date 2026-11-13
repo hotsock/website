@@ -177,6 +177,8 @@ There are some downsides to using this publish method. It is and will continue t
 - API keys can be used to publish messages from anywhere on the Internet by anyone who has a key. Not ideal from a usage auditing perspective and often tough to keep track of who has the key(s).
 - Rotating the key is a manual process that you need to remember to do periodically.
 
+If you publish exclusively with Lambda, you can turn off API-key access entirely by [disabling HTTP admin APIs](../installation/http-api-settings.mdx#http-admin-apis).
+
 :::
 
 #### Access your API keys {/* #publish-with-http-url-access-api-keys */}
@@ -189,7 +191,7 @@ You can use either key for HTTP-based message publishing. There are two keys to 
 
 #### Get your publish URL {/* #publish-with-http-url-get-url */}
 
-Your HTTP URL is displayed in the [PublishHttpApiUrl](../installation/initial-setup.mdx#PublishHttpApiUrl) stack output of your installation.
+Your HTTP URL is displayed in the [PublishHttpApiUrl](../installation/initial-setup.mdx#PublishHttpApiUrl) stack output of your installation. Its format depends on your installation's [HTTP entry point](../installation/http-api-settings.mdx#http-entry-point).
 
 #### Make a publish request {/* #publish-with-http-url-make-request */}
 

@@ -23,6 +23,7 @@ const sidebars = {
         "installation/region-support",
         "installation/updates",
         "installation/custom-domains",
+        "installation/http-api-settings",
         "installation/security",
         "installation/changelog",
         "installation/versioning",

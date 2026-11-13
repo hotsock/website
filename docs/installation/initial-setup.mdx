@@ -151,30 +151,41 @@ Once the stack creation completes, installation was successful. Next you'll like
 1. Sign into your AWS account as an administrator user or role.
 1. Click the "Launch Stack" link from the table below **for your desired region**. This will take you to a pre-filled form in the CloudFormation console.
 
-| Region                    | Alias          |                                                                                                                URL                                                                                                                 |
-| ------------------------- | -------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| US East (N. Virginia)     | us-east-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-us-east-1.s3.us-east-1.amazonaws.com/hotsock-v1.x.yml)         |
-| US East (Ohio)            | us-east-2      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-us-east-2.s3.us-east-2.amazonaws.com/hotsock-v1.x.yml)         |
-| US West (N. California)   | us-west-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-us-west-1.s3.us-west-1.amazonaws.com/hotsock-v1.x.yml)         |
-| US West (Oregon)          | us-west-2      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-us-west-2.s3.us-west-2.amazonaws.com/hotsock-v1.x.yml)         |
-| Africa (Cape Town)        | af-south-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=af-south-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-af-south-1.s3.af-south-1.amazonaws.com/hotsock-v1.x.yml)       |
-| Asia Pacific (Hong Kong)  | ap-east-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-east-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-east-1.s3.ap-east-1.amazonaws.com/hotsock-v1.x.yml)         |
-| Asia Pacific (Jakarta)    | ap-southeast-3 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-3#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-3.s3.ap-southeast-3.amazonaws.com/hotsock-v1.x.yml) |
-| Asia Pacific (Mumbai)     | ap-south-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-south-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-south-1.s3.ap-south-1.amazonaws.com/hotsock-v1.x.yml)       |
-| Asia Pacific (Osaka)      | ap-northeast-3 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-3#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-northeast-3.s3.ap-northeast-3.amazonaws.com/hotsock-v1.x.yml) |
-| Asia Pacific (Seoul)      | ap-northeast-2 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-northeast-2.s3.ap-northeast-2.amazonaws.com/hotsock-v1.x.yml) |
-| Asia Pacific (Singapore)  | ap-southeast-1 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/hotsock-v1.x.yml) |
-| Asia Pacific (Sydney)     | ap-southeast-2 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-2.s3.ap-southeast-2.amazonaws.com/hotsock-v1.x.yml) |
-| Asia Pacific (Tokyo)      | ap-northeast-1 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-northeast-1.s3.ap-northeast-1.amazonaws.com/hotsock-v1.x.yml) |
-| Canada (Central)          | ca-central-1   |    [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ca-central-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ca-central-1.s3.ca-central-1.amazonaws.com/hotsock-v1.x.yml)    |
-| Europe (Frankfurt)        | eu-central-1   |    [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-central-1.s3.eu-central-1.amazonaws.com/hotsock-v1.x.yml)    |
-| Europe (Ireland)          | eu-west-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-west-1.s3.eu-west-1.amazonaws.com/hotsock-v1.x.yml)         |
-| Europe (London)           | eu-west-2      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-west-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-west-2.s3.eu-west-2.amazonaws.com/hotsock-v1.x.yml)         |
-| Europe (Milan)            | eu-south-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-south-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-south-1.s3.eu-south-1.amazonaws.com/hotsock-v1.x.yml)       |
-| Europe (Paris)            | eu-west-3      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-west-3#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-west-3.s3.eu-west-3.amazonaws.com/hotsock-v1.x.yml)         |
-| Europe (Stockholm)        | eu-north-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-north-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-north-1.s3.eu-north-1.amazonaws.com/hotsock-v1.x.yml)       |
-| Middle East (Bahrain)     | me-south-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=me-south-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-me-south-1.s3.me-south-1.amazonaws.com/hotsock-v1.x.yml)       |
-| South America (São Paulo) | sa-east-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=sa-east-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-sa-east-1.s3.sa-east-1.amazonaws.com/hotsock-v1.x.yml)         |
+| Region                     | Alias          |                                                                                                                URL                                                                                                                 |
+| -------------------------- | -------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| US East (N. Virginia)      | us-east-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-us-east-1.s3.us-east-1.amazonaws.com/hotsock-v1.x.yml)         |
+| US East (Ohio)             | us-east-2      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-us-east-2.s3.us-east-2.amazonaws.com/hotsock-v1.x.yml)         |
+| US West (N. California)    | us-west-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-us-west-1.s3.us-west-1.amazonaws.com/hotsock-v1.x.yml)         |
+| US West (Oregon)           | us-west-2      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-us-west-2.s3.us-west-2.amazonaws.com/hotsock-v1.x.yml)         |
+| Africa (Cape Town)         | af-south-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=af-south-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-af-south-1.s3.af-south-1.amazonaws.com/hotsock-v1.x.yml)       |
+| Asia Pacific (Hong Kong)   | ap-east-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-east-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-east-1.s3.ap-east-1.amazonaws.com/hotsock-v1.x.yml)         |
+| Asia Pacific (Hyderabad)   | ap-south-2     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-south-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-south-2.s3.ap-south-2.amazonaws.com/hotsock-v1.x.yml)       |
+| Asia Pacific (Jakarta)     | ap-southeast-3 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-3#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-3.s3.ap-southeast-3.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Malaysia)    | ap-southeast-5 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-5#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-5.s3.ap-southeast-5.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Melbourne)   | ap-southeast-4 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-4#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-4.s3.ap-southeast-4.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Mumbai)      | ap-south-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-south-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-south-1.s3.ap-south-1.amazonaws.com/hotsock-v1.x.yml)       |
+| Asia Pacific (New Zealand) | ap-southeast-6 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-6#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-6.s3.ap-southeast-6.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Osaka)       | ap-northeast-3 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-3#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-northeast-3.s3.ap-northeast-3.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Seoul)       | ap-northeast-2 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-northeast-2.s3.ap-northeast-2.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Singapore)   | ap-southeast-1 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Sydney)      | ap-southeast-2 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-2.s3.ap-southeast-2.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Taipei)      | ap-east-2      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-east-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-east-2.s3.ap-east-2.amazonaws.com/hotsock-v1.x.yml)         |
+| Asia Pacific (Thailand)    | ap-southeast-7 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-7#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-southeast-7.s3.ap-southeast-7.amazonaws.com/hotsock-v1.x.yml) |
+| Asia Pacific (Tokyo)       | ap-northeast-1 | [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ap-northeast-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ap-northeast-1.s3.ap-northeast-1.amazonaws.com/hotsock-v1.x.yml) |
+| Canada (Calgary)           | ca-west-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ca-west-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ca-west-1.s3.ca-west-1.amazonaws.com/hotsock-v1.x.yml)         |
+| Canada (Central)           | ca-central-1   |    [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=ca-central-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-ca-central-1.s3.ca-central-1.amazonaws.com/hotsock-v1.x.yml)    |
+| Europe (Frankfurt)         | eu-central-1   |    [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-central-1.s3.eu-central-1.amazonaws.com/hotsock-v1.x.yml)    |
+| Europe (Ireland)           | eu-west-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-west-1.s3.eu-west-1.amazonaws.com/hotsock-v1.x.yml)         |
+| Europe (London)            | eu-west-2      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-west-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-west-2.s3.eu-west-2.amazonaws.com/hotsock-v1.x.yml)         |
+| Europe (Milan)             | eu-south-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-south-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-south-1.s3.eu-south-1.amazonaws.com/hotsock-v1.x.yml)       |
+| Europe (Paris)             | eu-west-3      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-west-3#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-west-3.s3.eu-west-3.amazonaws.com/hotsock-v1.x.yml)         |
+| Europe (Spain)             | eu-south-2     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-south-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-south-2.s3.eu-south-2.amazonaws.com/hotsock-v1.x.yml)       |
+| Europe (Stockholm)         | eu-north-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-north-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-north-1.s3.eu-north-1.amazonaws.com/hotsock-v1.x.yml)       |
+| Europe (Zurich)            | eu-central-2   |    [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=eu-central-2#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-eu-central-2.s3.eu-central-2.amazonaws.com/hotsock-v1.x.yml)    |
+| Israel (Tel Aviv)          | il-central-1   |    [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=il-central-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-il-central-1.s3.il-central-1.amazonaws.com/hotsock-v1.x.yml)    |
+| Mexico (Central)           | mx-central-1   |    [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=mx-central-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-mx-central-1.s3.mx-central-1.amazonaws.com/hotsock-v1.x.yml)    |
+| Middle East (Bahrain)      | me-south-1     |       [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=me-south-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-me-south-1.s3.me-south-1.amazonaws.com/hotsock-v1.x.yml)       |
+| South America (São Paulo)  | sa-east-1      |        [Launch Stack](https://console.aws.amazon.com/cloudformation/home?region=sa-east-1#/stacks/new?stackName=Hotsock&templateURL=https://hotsock-stack-templates-sa-east-1.s3.sa-east-1.amazonaws.com/hotsock-v1.x.yml)         |
 
 :::info
 You may notice that the URLs in the `templateURL` parameter of each stack URL above cannot be accessed directly from your browser - you'll get an `AccessDenied` error if you try. This is by design - they are only meant to be accessed from within AWS by AWS services. CloudFormation accepts them as valid template URLs and can read their contents without issues.
@@ -243,7 +254,7 @@ This secondary key exists to allow for zero-downtime secret key rotation. You ca
 
 ### HttpApiUrl {/* #HttpApiUrl */}
 
-This is the base URL for all HTTP API endpoints.
+This is the base URL for all HTTP API endpoints. Its format depends on your installation's [HTTP entry point](./http-api-settings.mdx#http-entry-point), which varies by region. Use the complete value as your base URL, including the trailing slash.
 
 :::info[Example Output Value]
 ![HttpApiUrl example output](../../static/img/screenshots/initial-setup-outputs-HttpApiUrl.png)
@@ -283,7 +294,7 @@ This is the Arn of the Lambda function that your backend systems can use to publ
 
 ### PublishHttpApiUrl {/* #PublishHttpApiUrl */}
 
-This is the URL that your backend systems uses to publish messages if using HTTP with static API keys.
+This is the URL that your backend systems uses to publish messages if using HTTP with static API keys. Requests to this URL return a `404` if [HTTP admin APIs](./http-api-settings.mdx#http-admin-apis) are disabled.
 
 :::info[Example Output Value]
 ![PublishHttpApiUrl example output](../../static/img/screenshots/initial-setup-outputs-PublishHttpApiUrl.png)
@@ -369,6 +380,10 @@ All logic is run in Lambda using functions written in Go using the `provided.al2
 
 Lambda is also the entry-point for all backend-initated messages. It then immediately passes those messages to SQS for further processing.
 
+### Lambda Function URLs & API Gateway HTTP {/* #lambda-function-urls--api-gateway-http */}
+
+The HTTP API and web console are served by Lambda function URLs in most regions. In regions without Lambda function URLs, they're served by an API Gateway HTTP API or REST API instead. You can also choose the [HTTP entry point](./http-api-settings.mdx#http-entry-point) yourself.
+
 ### DynamoDB & DynamoDB Streams {/* #dynamodb--dynamodb-streams */}
 
 Any data that needs to be persisted - connection information, channel subscriptions, etc. - is stored in DynamoDB. Hotsock makes an effort to keep the database lean by expiring/deleting most items once they are no longer needed.
@@ -393,7 +408,7 @@ Messages can be scheduled for future delivery using [EventBridge Scheduler](http
 
 ### Systems Manager Parameter Store {/* #systems-manager-parameter-store */}
 
-If you're using HTTP to publish messages from your backend, the (secret) API keys are stored here.
+If you're using HTTP to publish messages from your backend, the (secret) API keys are stored here. If you're not, you can [disable the HTTP admin APIs](./http-api-settings.mdx#http-admin-apis) that accept these keys.
 
 ### CloudWatch {/* #cloudwatch */}
 

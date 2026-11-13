@@ -12,6 +12,8 @@ All requests **must include an `Authorization` header** with a Bearer token set 
 
 Your base URL is available in your installation's [HttpApiUrl](../installation/initial-setup.mdx#HttpApiUrl) stack output.
 
+These endpoints return a `404` if [HTTP admin APIs](../installation/http-api-settings.mdx#http-admin-apis) are disabled for your installation.
+
 ```
 Authorization: Bearer YOUR_API_KEY
 ```

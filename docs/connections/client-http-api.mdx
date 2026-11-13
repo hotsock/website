@@ -11,6 +11,8 @@ In addition to WebSocket interactions, connected clients can also make use of an
 
 Your installation's HTTP API URL can be found in your CloudFormation stack outputs screen under [`HttpApiUrl`](../installation/initial-setup.mdx#HttpApiUrl). Example: `https://r6zcm2.lambda-url.us-east-1.on.aws/`
 
+The format of this URL depends on your installation's [HTTP entry point](../installation/http-api-settings.mdx#http-entry-point). In some regions it's an API Gateway URL instead, which can include a `/v1/` path. Always treat the full `HttpApiUrl` value as your base URL and append endpoint paths like `connection/publishMessage` to it.
+
 :::note
 Custom Domains are not currently supported for HTTP API endpoints.
 :::

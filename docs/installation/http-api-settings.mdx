@@ -1,0 +1,93 @@
+---
+sidebar_label: HTTP API Settings
+---
+
+# HTTP API Settings
+
+Each installation has an HTTP endpoint that serves the [Client HTTP API](../connections/client-http-api.mdx), [HTTP message publishing](../server-api/publish-messages.mdx#publish-with-http-url), and the [Channels API](../server-api/channels.mdx), plus a second endpoint that serves the [Web Console](../server-api/web-console.mdx). Two installation settings control how these endpoints are exposed and which APIs they offer.
+
+## HTTP entry point {/* #http-entry-point */}
+
+The "HTTP entry point" (`HttpFrontDoorParameter` via CLI) setting chooses the AWS service that sits in front of the HTTP API and web console.
+
+| Value            | Behavior                                                   |
+| ---------------- | ---------------------------------------------------------- |
+| `auto` (default) | Use the default entry point for the installation's region. |
+| `function-url`   | Use Lambda function URLs.                                  |
+| `http-api`       | Use API Gateway HTTP APIs.                                 |
+| `rest-api`       | Use regional API Gateway REST APIs with a `v1` stage.      |
+
+With `auto`, Hotsock uses Lambda function URLs in every region that has them. In the other [supported regions](./region-support.mdx), it uses API Gateway:
+
+- **HTTP APIs**: Asia Pacific (Hyderabad), Asia Pacific (Malaysia), Asia Pacific (Melbourne), Asia Pacific (Thailand), Canada (Calgary), Europe (Spain), Europe (Zurich), and Israel (Tel Aviv).
+- **REST APIs**: Asia Pacific (New Zealand), Asia Pacific (Taipei), and Mexico (Central).
+
+The API behaves the same regardless of the entry point. Requests, responses, and authentication work the same way and all three support CORS, so the only difference your clients and backend systems see is the URL.
+
+If you choose an entry point explicitly, it must be one that AWS offers in the installation's region.
+
+### URL formats {/* #http-entry-point-url-formats */}
+
+The [`HttpApiUrl`](./initial-setup.mdx#HttpApiUrl) stack output always has the base URL for your installation. Its format depends on the entry point.
+
+| Entry point    | Example `HttpApiUrl`                                        |
+| -------------- | ----------------------------------------------------------- |
+| `function-url` | `https://r6zcm2.lambda-url.us-east-1.on.aws/`               |
+| `http-api`     | `https://r6zcm2.execute-api.ca-west-1.amazonaws.com/`       |
+| `rest-api`     | `https://r6zcm2.execute-api.mx-central-1.amazonaws.com/v1/` |
+
+Use the complete `HttpApiUrl` value as your base URL, including its trailing slash, and append endpoint paths without a leading slash. This matters for REST APIs, where the `/v1/` stage is part of the base URL.
+
+```js
+const publishUrl = new URL("connection/publishMessage", httpApiUrl)
+```
+
+:::caution
+Resolving a path with a leading slash, like `new URL("/connection/publishMessage", httpApiUrl)`, discards the `/v1/` stage from a REST API base URL and the request fails.
+:::
+
+The [`PublishHttpApiUrl`](./initial-setup.mdx#PublishHttpApiUrl) and [`WebConsoleHttpUrl`](./initial-setup.mdx#WebConsoleHttpUrl) stack outputs already include the stage when there is one, so you can use them as they are.
+
+### Changing the entry point {/* #http-entry-point-change */}
+
+Existing installations keep the entry point they already have when they update, so nothing changes unless you change this setting.
+
+:::warning
+Changing the entry point replaces your HTTP API and web console URLs. The previous URLs stop working once the stack update completes, so anything using them must switch to the new values in your stack outputs. This includes clients using the Client HTTP API and backend systems that publish over HTTP.
+:::
+
+Your WebSocket URL, your API keys, and direct [Lambda publishing](../server-api/publish-messages.mdx#publish-with-lambda) are not affected by changing the entry point.
+
+## HTTP admin APIs {/* #http-admin-apis */}
+
+The "HTTP admin APIs" (`HttpAdminApisParameter` via CLI) setting controls the HTTP endpoints that are authenticated with your installation's API keys:
+
+- [`POST /publish`](../server-api/publish-messages.mdx#publish-with-http-url)
+- [`GET /channels/{name}`](../server-api/channels.mdx#get-channel)
+- [`GET /channels/{name}/storage`](../server-api/channels.mdx#get-channel-storage)
+
+This setting is `enabled` by default. Set it to `disabled` if your backend publishes exclusively [with Lambda](../server-api/publish-messages.mdx#publish-with-lambda) and you'd rather not have API-key access to your installation from the Internet at all.
+
+When HTTP admin APIs are disabled:
+
+- Requests to the endpoints above return a `404`, even with a valid API key.
+- The HTTP API function no longer loads the API keys and its permission to read them from Parameter Store is removed.
+- Your API keys stay in Parameter Store, so the same keys work again if you re-enable the setting.
+- The [Client HTTP API](../connections/client-http-api.mdx) and [Lambda publishing](../server-api/publish-messages.mdx#publish-with-lambda) continue to work as usual.
+
+:::note
+Lambda publishing does not have an equivalent for the [Channels API](../server-api/channels.mdx) read endpoints. If your backend reads channel info or channel storage over HTTP, keep HTTP admin APIs enabled.
+:::
+
+## Change HTTP API settings {/* #change-http-api-settings */}
+
+Sign into your AWS account as a principal with administrative permissions and open the CloudFormation console. Find the root Hotsock stack and click on its radio button. There are many Hotsock stacks marked as "nested", you'll want to ignore those and find the root stack that is _not_ marked as nested.
+
+1. In the upper-right, click the "Update" button.
+1. On the "Prepare template" screen, keep "Use current template" selected and click "Next".
+1. On the "Specify stack details" screen, find the "HTTP API Settings" section and set **"HTTP entry point"** and **"HTTP admin APIs"** to the values you want.
+1. Scroll to the bottom and click "Next".
+1. Scroll to the bottom of the "Configure stack options" screen and click "Next".
+1. Scroll to the bottom of the "Review Hotsock" screen, check all the boxes in the "Capabilities and transforms" section and click "Submit".
+
+The settings apply as soon as the stack update completes. If you changed the entry point, grab your new URLs from the [stack outputs](./initial-setup.mdx#stack-outputs-and-endpoints).

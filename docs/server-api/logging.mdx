@@ -31,6 +31,8 @@ This default log level is the "INFO" level. There are 4 log levels available. A 
 - `WARN`: Improper use of inputs, deprecation warnings, etc. Includes ERROR logs.
 - `ERROR`: Unexpected errors that likely could not be recovered.
 
+The `DEBUG` level also turns on API Gateway execution logging for the WebSocket API, which otherwise only logs errors. API Gateway writes these logs to a log group that it manages, separate from your consolidated log group.
+
 To minimize log volume while retaining important messages, `WARN` is a reasonable choice for high-throughput production installations. If you configure an installation for a development or staging environment, "DEBUG" can be a good choice so you can follow individual requests through Hotsock.
 
 :::warning

@@ -561,7 +561,7 @@ The following grants observe on the `settings` storage key storage key with the 
 
 #### `emitPubSubEvent` {/* #channels.storage.emitPubSubEvent */}
 
-`Boolean` (optional) - If [`set`](#channels.storage.set) is permitted for matching storage keys, the `emitPubSubEvent` attribute specifies whether or not storage writes from this connection will trigger a [`hotsock.channelStorageUpdated`](../server-api/events.mdx#hotsock.channelStorageUpdated) [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). Default is `false`. Has no effect if `set` resolves to `false`. Also has no effect if both SNS and EventBridge events are disabled globally.
+`Boolean` (optional) - If [`set`](#channels.storage.set) is permitted for matching storage keys, the `emitPubSubEvent` attribute specifies whether or not storage writes from this connection will trigger a [`hotsock.channelStorageUpdated`](../server-api/events.mdx#hotsock.channelStorageUpdated) [backend pub/sub event to SNS/EventBridge](../server-api/events.mdx). Default is `false`. Has no effect if `set` resolves to `false`. Also has no effect if both SNS and EventBridge events are disabled globally. If more than one key pattern matches a storage key, an explicit `false` from any matching pattern wins.
 
 ```json
 {
@@ -701,7 +701,7 @@ The `hotsock.channelStorageSet` event can also be published via the server-side 
 
 #### `store` {/* #channels.storage.store */}
 
-`Integer` (optional) - The retention duration in seconds for storage entries written by this connection to matching keys. `-1` keeps entries forever (the default when `set` is allowed but `store` is not explicitly configured). `0` is not valid for storage entries. The highest number you can specify is `3155695200`, roughly 100 years.
+`Integer` (optional) - The retention duration in seconds for storage entries written by this connection to matching keys. `-1` keeps entries forever (the default when `set` is allowed but `store` is not explicitly configured). `0` is not valid for storage entries. The highest number you can specify is `3155695200`, roughly 100 years. If more than one key pattern matches a storage key, the longest duration applies, and `-1` is the longest.
 
 ```json
 {
@@ -927,7 +927,7 @@ Say you issue a token with `{"scope":"connect subscribe","uid":"jim","channels":
 
 ## `singleUse` {/* #singleUse */}
 
-`Boolean` (optional) - Setting to `true` ensures that this JWT is only used for a single connect operation (when used with a `connect` scope) or a single subscribe operation (when used with a `subscribe` scope). Follow-up attempts to use the same JWT results in denied access. If enabled, `singleUse` also requires the [`jti`](#jti) claim to be set to a unique value (UUID is a good choice). Default is `false`.
+`Boolean` (optional) - Setting to `true` ensures that this JWT is only used for a single connect operation (when used with a `connect` scope) or a single subscribe operation (when used with a `subscribe` scope). Follow-up attempts to use the same JWT results in denied access. A token that fails validation, such as one with an invalid signature or one that is expired or not yet valid, does not count as used. If enabled, `singleUse` also requires the [`jti`](#jti) claim to be set to a unique value (UUID is a good choice). Default is `false`.
 
 ```json
 {

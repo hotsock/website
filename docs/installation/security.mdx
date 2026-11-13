@@ -12,6 +12,10 @@ For licensing purposes, Hotsock systems can assume the `HotsockLicensingRole` in
 
 For support purposes, you can request that Hotsock staff assume the `HotsockSupport` role in your account to help with issues. In this case, we would be able to access your data. **However, our ability to assume this role is disabled by default** and only you can explicity grant it. [Learn more](../licensing/support.mdx)
 
+### API keys {/* #api-keys */}
+
+Each installation has a pair of static API keys that can [publish messages](../server-api/publish-messages.mdx#publish-with-http-url) and read [channel info and storage](../server-api/channels.mdx) over HTTP. If your backend publishes with [Lambda](../server-api/publish-messages.mdx#publish-with-lambda) and IAM permissions instead, you can [disable HTTP admin APIs](./http-api-settings.mdx#http-admin-apis) so these keys can't be used at all.
+
 ## Encryption {/* #encryption */}
 
 As data moves between AWS services and out to the Internet from your Hotsock installation, all data is encrypted in transit and at rest.

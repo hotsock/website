@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.14.0 - November 12, 2026 {/* #v1.14.0 */}
+
+- Add support for 11 more AWS regions: Asia Pacific (Hyderabad), Asia Pacific (Malaysia), Asia Pacific (Melbourne), Asia Pacific (New Zealand), Asia Pacific (Taipei), Asia Pacific (Thailand), Canada (Calgary), Europe (Spain), Europe (Zurich), Israel (Tel Aviv), and Mexico (Central). These regions don't have Lambda function URLs, so the HTTP API and [Web Console](../server-api/web-console.mdx) are served by API Gateway there instead. See [Region Support](./region-support.mdx).
+- Add an ["HTTP entry point"](./http-api-settings.mdx#http-entry-point) (`HttpFrontDoorParameter` via CLI) setting to choose whether the HTTP API and web console are served by Lambda function URLs, an API Gateway HTTP API, or an API Gateway REST API. The default, `auto`, picks the right one for the region, and existing installations keep their function URLs. Changing this setting replaces your HTTP endpoint URLs, and REST API URLs include a `/v1/` stage path.
+- Add an ["HTTP admin APIs"](./http-api-settings.mdx#http-admin-apis) (`HttpAdminApisParameter` via CLI) setting to turn off the API-key-authenticated HTTP endpoints for publishing messages and reading channel info and storage. This is a good fit if you publish exclusively [with Lambda](../server-api/publish-messages.mdx#publish-with-lambda). The [Client HTTP API](../connections/client-http-api.mdx) is unaffected and your API keys are kept in case you re-enable it. Enabled by default.
+- Failures processing queued messages, keep-alives, and heartbeat checks are now retried and land in the dead-letter queue if they keep failing. Previously they were dropped after the first failure.
+- Retry individual events that SNS or EventBridge reject from an otherwise successful batch, and fix an issue where one oversized pub/sub event could cause other events in the same batch to be dropped.
+- Improve [`heartbeatTimeout`](../connections/claims.mdx#heartbeatTimeout) enforcement so that a transient AWS error can no longer leave a stale connection open or end heartbeat checks for a connection.
+- Fix an issue where disconnected connections were not cleaned up during message delivery to channels with more than 250 subscribers.
+- Fix an issue that could cause tokens signed with an Ed25519 key to be rejected, and return an authorization failure instead of a function error for a token without `exp`.
+- A [`singleUse`](../connections/claims.mdx#singleUse) token that fails validation for another reason is no longer marked as used.
+- When overlapping [channel storage](../connections/claims.mdx#channels.storage) key patterns match the same key, the longest `store` duration now always wins and an `emitPubSubEvent` of `false` always wins. Previously the result could vary between requests.
+- Fix [`connection/listMessages`](../connections/client-http-api.mdx#connection/listMessages) returning a `503` when paging from a cursor older than the connection's visible history, and missing reaction counts on the last message of a page.
+- Invalid publish and channel storage requests now consistently return a client error instead of a `500`, malformed request URLs return a `400`, and scheduled [`connection/publishMessage`](../connections/client-http-api.mdx#connection/publishMessage) requests now return `scheduleArn`.
+- Setting the application log level to `DEBUG` now also turns on API Gateway execution logging for the WebSocket API, as originally intended.
+- Restrict the WebSocket Lambda function permissions so they can only be invoked by the installation's own WebSocket API routes.
+- Build with Go 1.27.4.
+- Update all aws-sdk-go-v2 SDK modules to their latest versions (as of [2026-11-10](https://github.com/aws/aws-sdk-go-v2/releases/tag/release-2026-11-10)).
+
 ## v1.13.6 - August 21, 2026 {/* #v1.13.6 */}
 
 - Performance optimizations in the stream processor function.

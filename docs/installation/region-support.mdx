@@ -18,41 +18,48 @@ The following commercial AWS regions are fully supported for a Hotsock installat
 - US West (Oregon) - us-west-2
 - Africa (Cape Town) - af-south-1
 - Asia Pacific (Hong Kong) - ap-east-1
+- Asia Pacific (Hyderabad) - ap-south-2
 - Asia Pacific (Jakarta) - ap-southeast-3
+- Asia Pacific (Malaysia) - ap-southeast-5
+- Asia Pacific (Melbourne) - ap-southeast-4
 - Asia Pacific (Mumbai) - ap-south-1
+- Asia Pacific (New Zealand) - ap-southeast-6
 - Asia Pacific (Osaka) - ap-northeast-3
 - Asia Pacific (Seoul) - ap-northeast-2
 - Asia Pacific (Singapore) - ap-southeast-1
-- Asia Pacific (Sydney) - ap-southest-2
+- Asia Pacific (Sydney) - ap-southeast-2
+- Asia Pacific (Taipei) - ap-east-2
+- Asia Pacific (Thailand) - ap-southeast-7
 - Asia Pacific (Tokyo) - ap-northeast-1
+- Canada (Calgary) - ca-west-1
 - Canada (Central) - ca-central-1
 - Europe (Frankfurt) - eu-central-1
 - Europe (Ireland) - eu-west-1
 - Europe (London) - eu-west-2
 - Europe (Milan) - eu-south-1
 - Europe (Paris) - eu-west-3
+- Europe (Spain) - eu-south-2
 - Europe (Stockholm) - eu-north-1
+- Europe (Zurich) - eu-central-2
+- Israel (Tel Aviv) - il-central-1
+- Mexico (Central) - mx-central-1
 - ~Middle East (Bahrain) - me-south-1~ Temporarily unavailable [Learn More](https://health.aws.amazon.com/health/status?region=me-south-1)
 - South America (São Paulo) - sa-east-1
 
+### HTTP entry point by region {/* #http-entry-point-by-region */}
+
+Most regions serve the HTTP API and web console with Lambda function URLs. A few regions don't have Lambda function URLs, so Hotsock uses API Gateway there instead. The API works the same way, but the URLs look different. See [HTTP entry point](./http-api-settings.mdx#http-entry-point) for details.
+
+- **API Gateway HTTP APIs**: Asia Pacific (Hyderabad), Asia Pacific (Malaysia), Asia Pacific (Melbourne), Asia Pacific (Thailand), Canada (Calgary), Europe (Spain), Europe (Zurich), and Israel (Tel Aviv).
+- **API Gateway REST APIs**: Asia Pacific (New Zealand), Asia Pacific (Taipei), and Mexico (Central).
+
 ## Unsupported Regions {/* #unsupported-regions */}
 
-The following regions are _not_ supported. Please reach out to AWS Support or to your rep to request adding the missing service features in unsupported regions!
+The following regions are _not_ currently supported.
 
-- Asia Pacific (Hyderabad) - ap-south-2: Missing Lambda function URLs
-- Asia Pacific (Malaysia) - ap-southeast-5: Missing API Gateway WebSockets, Missing Lambda function URLs
-- Asia Pacific (Melbourne) - ap-southeast-4: Missing Lambda function URLs
-- Asia Pacific (New Zealand) - ap-southeast-6: Missing API Gateway WebSockets, Missing Lambda function URLs
-- Asia Pacific (Taipei) - ap-east-2: Missing API Gateway WebSockets, Missing Lambda function URLs
-- Asia Pacific (Thailand) - ap-southeast-7: Missing API Gateway WebSockets, Missing Lambda function URLs
-- Canada (Calgary) - ca-west-1: Missing Lambda function URLs
-- Europe (Spain) - eu-south-2: Missing Lambda function URLs
-- Europe (Zurich) - eu-central-2: Missing Lambda function URLs
-- Israel (Tel Aviv) - il-central-1: Missing Lambda function URLs
-- Mexico (Central) - mx-central-1: Missing API Gateway WebSockets, Missing Lambda function URLs
-- Middle East (UAE) - me-central-1: Missing Lambda function URLs
+- Middle East (UAE) - me-central-1
 
-The following [GovCloud](https://aws.amazon.com/govcloud-us/) AWS regions are currently unsupported as well. Both regions are [missing required AWS Lambda features](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/govcloud-lambda.html#govcloud-lambda-diffs) - specifically Lambda function URLs.
+The [GovCloud](https://aws.amazon.com/govcloud-us/) AWS regions are not supported either.
 
 - US East - us-gov-east-1
 - US West - us-gov-west-1
